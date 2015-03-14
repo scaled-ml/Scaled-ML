@@ -13,7 +13,7 @@ public class VowpalWabbitFormatTest {
                 "|device_model 76dc4769 |device_type 1 |device_conn_type 0 |C14 8330 |C15 320 |C16 50 |C17 761 |C18 3 " +
                 "|C19 175 |C20 100075";
         VowpalWabbitFormat format = new VowpalWabbitFormat();
-        SparseLabeledItem item = format.parse(line1, 500);
+        SparseItem item = format.parse(line1, 500);
         assertNotNull(item);
         assertEquals(-1.f, item.getLabel(), 0.000001);
         assertEquals(20, item.getIndexes().size());

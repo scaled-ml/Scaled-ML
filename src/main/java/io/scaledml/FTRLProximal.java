@@ -1,9 +1,10 @@
 package io.scaledml;
 
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class FTRLProximal {
+public class FTRLProximal implements Serializable {
     private FloatVector z;
     private FloatVector n;
     private double lambda1;
@@ -17,16 +18,12 @@ public class FTRLProximal {
         long size = 2L << b;
         z = new FloatVector(size);
         n = new FloatVector(size);
-        this.lambda1 = lambda1;
-        this.lambda2 = lambda2;
-        this.alfa = alfa;
-        this.beta = beta;
     }
 
     public FTRLProximal() {
     }
 
-    public void learnItem(SparseLabeledItem item) {
+    public double train(SparseItem item) {
         calculateWeights(item);
         double predict = predict();
         double gradient = predict - item.getLabel();
@@ -39,6 +36,7 @@ public class FTRLProximal {
             }
             n.set(index, (float) (n.get(index) + gradient * gradient));
         }
+        return predict;
     }
 
     private double predict() {
@@ -55,8 +53,28 @@ public class FTRLProximal {
         }
     }
 
-    public double apply(SparseItem item) {
+    public double test(SparseItem item) {
         calculateWeights(item);
         return Math.log(predict()) - Math.log(1. - predict());
+    }
+
+    public void setLambda1(double lambda1) {
+        this.lambda1 = lambda1;
+    }
+
+    public void setLambda2(double lambda2) {
+        this.lambda2 = lambda2;
+    }
+
+    public void setAlfa(double alfa) {
+        this.alfa = alfa;
+    }
+
+    public void setBeta(double beta) {
+        this.beta = beta;
+    }
+
+    public long featuresNum() {
+        return z.getSize();
     }
 }

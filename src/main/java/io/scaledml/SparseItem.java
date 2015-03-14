@@ -1,13 +1,12 @@
 package io.scaledml;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by aonuchin on 14.03.15.
- */
-public class SparseItem {
+public class SparseItem implements Serializable {
     private final List<Long> indexes = new ArrayList<>();
+    private float label;
 
     public void addIndex(long index) {
         indexes.add(index);
@@ -15,5 +14,13 @@ public class SparseItem {
 
     public List<Long> getIndexes() {
         return indexes;
+    }
+
+    public void setLabel(float label) {
+        this.label = label;
+    }
+
+    public float getLabel() {
+        return label;
     }
 }
