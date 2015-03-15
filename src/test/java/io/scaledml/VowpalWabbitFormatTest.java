@@ -12,8 +12,8 @@ public class VowpalWabbitFormatTest {
                 "|app_id ecad2386 |app_domain 7801e8d9 |app_category 07d7df22 |device_id a99f214a |device_ip 0cff710f " +
                 "|device_model 76dc4769 |device_type 1 |device_conn_type 0 |C14 8330 |C15 320 |C16 50 |C17 761 |C18 3 " +
                 "|C19 175 |C20 100075";
-        VowpalWabbitFormat format = new VowpalWabbitFormat();
-        SparseItem item = format.parse(line1, 500);
+        VowpalWabbitFormat format = new VowpalWabbitFormat(500);
+        SparseItem item = format.parse(line1);
         assertNotNull(item);
         assertEquals(-1.f, item.getLabel(), 0.000001);
         assertEquals(20, item.getIndexes().size());

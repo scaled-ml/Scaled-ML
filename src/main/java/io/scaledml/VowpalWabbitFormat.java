@@ -35,9 +35,9 @@ public class VowpalWabbitFormat {
             Matcher featuresMatcher = FEATURE_PATTERN.matcher(features);
             while (featuresMatcher.find()) {
                 String feature = featuresMatcher.group();
-                long hashCode = murmur.newHasher()
+                long hashCode = Math.abs(murmur.newHasher()
                         .putUnencodedChars(nameSpace)
-                        .putUnencodedChars(feature).hash().asLong() % featuresNumber;
+                        .putUnencodedChars(feature).hash().asLong()) % featuresNumber;
                 item.addIndex(hashCode);
             }
         }

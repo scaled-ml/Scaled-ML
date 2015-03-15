@@ -1,28 +1,35 @@
 package io.scaledml;
 
 
+import it.unimi.dsi.fastutil.BigArrays;
+import it.unimi.dsi.fastutil.floats.FloatBigArrayBigList;
+import it.unimi.dsi.fastutil.floats.FloatBigList;
+import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
+import it.unimi.dsi.fastutil.longs.Long2DoubleOpenHashMap;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
 public class FTRLProximal implements Serializable {
-    private FloatVector z;
-    private FloatVector n;
+    private FloatBigList z;
+    private FloatBigList n;
     private double lambda1;
     private double lambda2;
     private double alfa;
     private double beta;
-    private HashMap<Long, Float> weights = new HashMap<>();
+    private Long2DoubleMap weights = new Long2DoubleOpenHashMap();
 
     public FTRLProximal(long b, double lambda1, double lambda2, double alfa, double beta) {
         assert b < 64;
-        long size = 2L << b;
-        z = new FloatVector(size);
-        n = new FloatVector(size);
+        long size = 1L << b;
+        z = new FloatBigArrayBigList(size);
+        z.size(size);
+        n = new FloatBigArrayBigList(size);
+        n.size(size);
     }
 
     public FTRLProximal() {
     }
-
     public double train(SparseItem item) {
         calculateWeights(item);
         double predict = predict();
@@ -40,15 +47,15 @@ public class FTRLProximal implements Serializable {
     }
 
     private double predict() {
-        return 1. / (1. + Math.exp(weights.values().stream().mapToDouble(Float::doubleValue).sum()));
+        return 1. / (1. + Math.exp(weights.values().stream().mapToDouble(Double::valueOf).sum()));
     }
 
     private void calculateWeights(SparseItem item) {
         weights.clear();
         for (long index : item.getIndexes()) {
             if (z.get(index) > lambda1) {
-                weights.put(index, (float) (-1. / ((beta + Math.sqrt(n.get(index))) / alfa + lambda2) * (z.get(index) -
-                        Math.signum(z.get(index)) * lambda1)));
+                weights.put(index, -1. / ((beta + Math.sqrt(n.get(index))) / alfa + lambda2) * (z.get(index) -
+                        Math.signum(z.get(index)) * lambda1));
             }
         }
     }
@@ -75,6 +82,6 @@ public class FTRLProximal implements Serializable {
     }
 
     public long featuresNum() {
-        return z.getSize();
+        return z.size64();
     }
 }
