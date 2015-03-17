@@ -30,6 +30,18 @@ Apply:
 ```
 $ java -Xmx2G -jar ftrl-proximal.jar -d test.slit.logit.vw -i model1 -p predictions
 ```
+
+Run from java
+-------------
+You can train or apply the algorithm from java by specifing options via FtrlOptionsObject:
+```
+ Main.runFtrlProximal(new FtrlOptionsObject()
+                .finalRegressor("model")
+                .data("train-small.vw")
+                .alfa(0.01)
+                .lambda1(1.)
+                .lambda2(2.)));
+```
 Options
 -------
 
