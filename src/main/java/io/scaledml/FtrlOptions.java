@@ -36,7 +36,7 @@ interface FtrlOptions {
             description = "Initial regressor(s) to load into memory (arg is filename)")
     String initialRegressor();
 
-    @Option(shortName = "t", longName = "testonly", defaultToNull = true,
+    @Option(shortName = "t", longName = "testonly",
             description = "Ignore label information and just test")
     boolean testOnly();
 

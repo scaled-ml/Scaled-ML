@@ -35,6 +35,7 @@ public class FTRLProximal implements Serializable {
 
     public FTRLProximal() {
     }
+
     public double train(SparseItem item) {
         calculateWeights(item);
         double predict = predict();

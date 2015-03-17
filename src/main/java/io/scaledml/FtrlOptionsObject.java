@@ -5,7 +5,7 @@ public class FtrlOptionsObject implements FtrlOptions {
     private int hashcodeBits = 18;
     private double alfa = 0.005;
     private double beta = 0.1;
-    private double l1 = 10;
+    private double l1 = 0.;
     private double l2 = 0.;
     private String predictions;
     private String data;

@@ -82,7 +82,9 @@ public class Main {
             lossSum += Math.abs(item.getLabel() - prediction);
             if (itemNo == nextItemNoToPrint) {
                 nextItemNoToPrint *= 2;
-                System.out.println(lossSum / itemNo + "\t" + itemNo + "\t" + item.getLabel() + "");
+                System.out.println(lossSum / itemNo + "\t" + itemNo + "\t" +
+                                item.getLabel() + "\t" + prediction + "\t" +
+                                item.getIndexes().size());
             }
 
         }
@@ -91,10 +93,11 @@ public class Main {
             throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line;
+            Statistics outputStatistics = new Statistics();
             while ((line = reader.readLine()) != null) {
                 SparseItem item = format.parse(line);
                 double prediction = processor.apply(item);
-
+                outputStatistics.consume(item, prediction);
                 consumer.consume(prediction + "\n");
             }
         }
