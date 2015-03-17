@@ -15,7 +15,7 @@ public class VowpalWabbitFormatTest {
         VowpalWabbitFormat format = new VowpalWabbitFormat(500);
         SparseItem item = format.parse(line1);
         assertNotNull(item);
-        assertEquals(-1.f, item.getLabel(), 0.000001);
+        assertEquals(0., item.getLabel(), 0.000001);
         assertEquals(20, item.getIndexes().size());
     }
 }
