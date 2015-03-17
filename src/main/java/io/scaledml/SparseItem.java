@@ -6,7 +6,7 @@ import java.util.List;
 
 public class SparseItem implements Serializable {
     private final List<Long> indexes = new ArrayList<>();
-    private float label;
+    private double label;
 
     public void addIndex(long index) {
         indexes.add(index);
@@ -16,11 +16,11 @@ public class SparseItem implements Serializable {
         return indexes;
     }
 
-    public void setLabel(float label) {
+    public void setLabel(double label) {
         this.label = label;
     }
 
-    public float getLabel() {
+    public double getLabel() {
         return label;
     }
 }

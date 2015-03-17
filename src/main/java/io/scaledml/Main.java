@@ -72,12 +72,30 @@ public class Main {
         applyModel(format, processor, is, consumer);
     }
 
+    static class Statistics {
+        double lossSum = 0.;
+        long itemNo = 0;
+        long nextItemNoToPrint = 1;
+
+        void consume(SparseItem item, double prediction) {
+            itemNo++;
+            lossSum += Math.abs(item.getLabel() - prediction);
+            if (itemNo == nextItemNoToPrint) {
+                nextItemNoToPrint *= 2;
+                System.out.println(lossSum / itemNo + "\t" + itemNo + "\t" + item.getLabel() + "");
+            }
+
+        }
+    }
     private static void applyModel(VowpalWabbitFormat format, ItemProcessor processor, InputStream is, PredictionConsumer consumer)
             throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                consumer.consume(processor.apply(format.parse(line)) + "\n");
+                SparseItem item = format.parse(line);
+                double prediction = processor.apply(item);
+
+                consumer.consume(prediction + "\n");
             }
         }
     }

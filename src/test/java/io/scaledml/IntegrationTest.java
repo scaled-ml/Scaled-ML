@@ -10,8 +10,9 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.DoubleSummaryStatistics;
 import java.util.function.Consumer;
+import java.util.stream.DoubleStream;
 
-public class MainTest {
+public class IntegrationTest {
     private Path tempDirectory;
 
     @Before
@@ -29,9 +30,10 @@ public class MainTest {
                 .testOnly(true)
                 .predictions(tempDirectory + "/predictions")
                 .data(getClass().getResource("/test-small.vw").getPath()));
-        long predictionsNum = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
-                .stream().mapToDouble(Double::parseDouble).count();
-        assertEquals(predictionsNum, 100L);
+        double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
+                .stream().mapToDouble(Double::parseDouble).toArray();
+        int predictionsNum = predictions.length;
+        assertEquals(predictionsNum, 100);
     }
 
     @After

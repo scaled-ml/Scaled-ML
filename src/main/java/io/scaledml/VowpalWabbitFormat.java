@@ -25,7 +25,10 @@ public class VowpalWabbitFormat {
             throw new IllegalArgumentException();
         }
         SparseItem item = new SparseItem();
-        float label = Float.parseFloat(matcher.group(1).trim());
+        double label = Double.parseDouble(matcher.group(1).trim());
+        if (label < 0.) {
+            label = 0.;
+        }
         item.setLabel(label);
         String labels = matcher.group(2);
         Matcher namespaceMatcher = NAMESPACE_PATTERN.matcher(labels);
