@@ -1,6 +1,8 @@
 # Java FTRL-Proximal implementation
 
-Here is java FTRL-Proximal implementation. It is a machine learning algorithm that predict the probability of some kind of events such as clicks on ad.
+Here is java FTRL-Proximal implementation. 
+
+It is a machine learning algorithm that predict the probability of some kind of events such as clicks on ad.
 
 Build
 -----
