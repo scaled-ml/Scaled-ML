@@ -8,9 +8,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.DoubleSummaryStatistics;
-import java.util.function.Consumer;
-import java.util.stream.DoubleStream;
 
 public class IntegrationTest {
     private Path tempDirectory;
@@ -39,28 +36,5 @@ public class IntegrationTest {
     @After
     public void teardown() throws IOException {
         FileUtils.deleteDirectory(tempDirectory.toFile());
-    }
-
-    // TODO: move to lambda-plus
-    @FunctionalInterface
-    public interface ConsumerWithException<T, E extends Exception> {
-        void apply(T el) throws E;
-    }
-
-    public static <T, E extends Exception> Consumer<T> wrapUnchecked(
-            ConsumerWithException<T, E> consumer) {
-        return element -> {
-            try {
-                consumer.apply(element);
-            } catch (Exception exception) {
-                if (exception instanceof RuntimeException) {
-                    throw (RuntimeException) exception;
-                }
-                if (exception instanceof InterruptedException) {
-                    Thread.currentThread().interrupt();
-                }
-                throw new RuntimeException(exception);
-            }
-        };
     }
 }

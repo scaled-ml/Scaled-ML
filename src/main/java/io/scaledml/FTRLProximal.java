@@ -1,15 +1,12 @@
 package io.scaledml;
 
 
-import it.unimi.dsi.fastutil.BigArrays;
 import it.unimi.dsi.fastutil.doubles.DoubleCollection;
 import it.unimi.dsi.fastutil.floats.FloatBigArrayBigList;
 import it.unimi.dsi.fastutil.floats.FloatBigList;
 import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
 import it.unimi.dsi.fastutil.longs.Long2DoubleOpenHashMap;
-
 import java.io.Serializable;
-import java.util.HashMap;
 
 public class FTRLProximal implements Serializable {
     private FloatBigList z;
@@ -42,7 +39,8 @@ public class FTRLProximal implements Serializable {
         double gradient = item.getLabel() - predict;
         for (long index : item.getIndexes()) {
             if (weights.containsKey(index)) {
-                double learning_rate = 1. / alfa * (Math.sqrt(n.get(index) + gradient * gradient) - Math.sqrt(n.get(index)));
+                double learning_rate = 1. / alfa * (Math.sqrt(n.get(index) + gradient * gradient) -
+                        Math.sqrt(n.get(index)));
                 z.set(index, (float) (z.getFloat(index) + gradient - weights.get(index) * learning_rate));
             } else {
                 z.set(index, (float) (z.getFloat(index) + gradient));

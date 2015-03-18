@@ -44,7 +44,8 @@ public class Main {
         }
     }
 
-    private static void applyModel(VowpalWabbitFormat format, FTRLProximal model, boolean testOnly, String data, String predictions) throws IOException {
+    private static void applyModel(VowpalWabbitFormat format, FTRLProximal model, boolean testOnly, String data,
+                                   String predictions) throws IOException {
         InputStream is;
         if (data == null) {
             is = System.in;
@@ -89,7 +90,9 @@ public class Main {
 
         }
     }
-    private static void applyModel(VowpalWabbitFormat format, ItemProcessor processor, InputStream is, PredictionConsumer consumer)
+
+    private static void applyModel(VowpalWabbitFormat format, ItemProcessor processor, InputStream is,
+                                   PredictionConsumer consumer)
             throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line;

@@ -1,18 +1,21 @@
 package io.scaledml;
 
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongList;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SparseItem implements Serializable {
-    private final List<Long> indexes = new ArrayList<>();
+    private final LongList indexes = new LongArrayList();
     private double label;
 
     public void addIndex(long index) {
         indexes.add(index);
     }
 
-    public List<Long> getIndexes() {
+    public LongList getIndexes() {
         return indexes;
     }
 
