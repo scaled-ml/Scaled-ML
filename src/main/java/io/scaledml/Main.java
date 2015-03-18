@@ -73,16 +73,16 @@ public class Main {
     }
 
     static class Statistics {
-        double lossSum = 0.;
+        double logLikelyhood = 0.;
         long itemNo = 0;
         long nextItemNoToPrint = 1;
 
         void consume(SparseItem item, double prediction) {
             itemNo++;
-            lossSum += Math.abs(item.getLabel() - prediction);
+            logLikelyhood += Math.log(item.getLabel() - 0. > 0.9 ?  prediction : 1 - prediction);
             if (itemNo == nextItemNoToPrint) {
                 nextItemNoToPrint *= 2;
-                System.out.println(lossSum / itemNo + "\t" + itemNo + "\t" +
+                System.out.println(-logLikelyhood / itemNo + "\t" + itemNo + "\t" +
                                 item.getLabel() + "\t" + prediction + "\t" +
                                 item.getIndexes().size());
             }
