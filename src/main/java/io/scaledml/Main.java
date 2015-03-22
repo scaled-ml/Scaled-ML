@@ -33,6 +33,7 @@ public class Main {
                     ftrlOptions.alfa(), ftrlOptions.beta()
                     );
         }
+        model.initTransientFields();
         VowpalWabbitFormat format = new VowpalWabbitFormat(model.featuresNum());
         applyModel(format, model, ftrlOptions.testOnly(), ftrlOptions.data(), ftrlOptions.predictions());
 
