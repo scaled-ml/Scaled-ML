@@ -2,6 +2,7 @@ package io.scaledml;
 
 import com.google.common.base.Charsets;
 import io.scaledml.io.LineBytesBuffer;
+import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.junit.Test;
 
@@ -19,7 +20,7 @@ public class VowpalWabbitFormatTest {
                 "|C19 175 |C20 100075";
         VowpalWabbitFormat format = new VowpalWabbitFormat(500);
         LineBytesBuffer line = new LineBytesBuffer();
-        line.readLineFrom(new ReaderInputStream(new StringReader(line1), Charsets.US_ASCII));
+        line.readLineFrom(new FastBufferedInputStream(new ReaderInputStream(new StringReader(line1), Charsets.US_ASCII)));
         SparseItem item = format.parse(line);
         assertNotNull(item);
         assertEquals(0., item.getLabel(), 0.000001);

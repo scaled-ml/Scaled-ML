@@ -1,7 +1,6 @@
 package io.scaledml;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import io.scaledml.io.LineBytesBuffer;
@@ -30,7 +29,7 @@ public class VowpalWabbitFormat {
         buffer.clear();
         namespace.clear();
         State state = State.BEFORE_LABEL;
-        for (int i = 0; i < line.getLineLength(); i++) {
+        for (int i = 0; i < line.getSize(); i++) {
             byte b = line.get(i);
             char c = (char) b;
             switch (state) {
@@ -64,9 +63,8 @@ public class VowpalWabbitFormat {
                     if (NAME_MATCHER.matches(c)) {
                         buffer.append(b);
                     } else {
-                        buffer.newLine();
-                        buffer.drainLineTo(namespace);
-                        assert buffer.getLineLength() == 0;
+                        buffer.drainTo(namespace);
+                        assert buffer.getSize() == 0;
                         state = State.BEFORE_FEATURE;
                     }
                     break;
@@ -102,8 +100,8 @@ public class VowpalWabbitFormat {
 
     private void addIndex(SparseItem item) {
         item.addIndex(Math.abs(murmur.newHasher()
-                        .putBytes(namespace.bytes(), 0, namespace.getLineLength())
-                        .putBytes(buffer.bytes(), 0, buffer.getLineLength()).hash().asLong()) % featuresNumber);
+                        .putBytes(namespace.bytes(), 0, namespace.getSize())
+                        .putBytes(buffer.bytes(), 0, buffer.getSize()).hash().asLong()) % featuresNumber);
         buffer.clear();
     }
 }

@@ -9,13 +9,15 @@ import it.unimi.dsi.fastutil.longs.LongList;
 import java.io.Serializable;
 
 public class FtrlProximalState implements Serializable {
-    public void initTransientFields() {
+    void initTransientFields(int size) {
         increment = new Increment();
+        increment.incrementOfN = FTRLProximal.createMap(size);
+        increment.incrementOfZ = FTRLProximal.createMap(size);
     }
 
     static class Increment {
-        private Long2DoubleMap incrementOfN = new Long2DoubleOpenHashMap();
-        private Long2DoubleMap incrementOfZ = new Long2DoubleOpenHashMap();
+        private Long2DoubleMap incrementOfN;
+        private Long2DoubleMap incrementOfZ;
 
         public void incrementN(long index, double increment) {
             incrementOfN.put(index, increment);

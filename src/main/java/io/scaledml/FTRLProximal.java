@@ -1,9 +1,10 @@
 package io.scaledml;
 
 
+import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.doubles.DoubleCollection;
-import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
-import it.unimi.dsi.fastutil.longs.Long2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.longs.*;
+
 import java.io.Serializable;
 
 public class FTRLProximal implements Serializable {
@@ -31,14 +32,32 @@ public class FTRLProximal implements Serializable {
     public FTRLProximal() {
 
     }
-    public void initTransientFields() {
-        currentN = new Long2DoubleOpenHashMap();
-        currentZ = new Long2DoubleOpenHashMap();
-        currentWeights = new Long2DoubleOpenHashMap();
-        this.state.initTransientFields();
+
+    private void initTransientFields(int size) {
+        currentN = createMap(size);
+        currentZ = createMap(size);
+        currentWeights = createMap(size);
+        this.state.initTransientFields(size);
+    }
+
+    public static Long2DoubleMap createMap(int size) {
+        return new Long2DoubleOpenCustomHashMap(size * 2, Hash.VERY_FAST_LOAD_FACTOR, new LongHash.Strategy() {
+            @Override
+            public int hashCode(long l) {
+                return (int) (l * 3571 + 3559);
+            }
+
+            @Override
+            public boolean equals(long l, long l1) {
+                return l == l1;
+            }
+        });
     }
 
     public double train(SparseItem item) {
+        if (currentN == null) {
+            initTransientFields(item.getIndexes().size());
+        }
         state.readVectors(item.getIndexes(), currentN, currentZ);
         calculateWeights(item);
         double predict = predict();
@@ -85,6 +104,9 @@ public class FTRLProximal implements Serializable {
     }
 
     public double test(SparseItem item) {
+        if (currentN == null) {
+            initTransientFields(item.getIndexes().size());
+        }
         state.readVectors(item.getIndexes(), currentN, currentZ);
         calculateWeights(item);
         return predict();

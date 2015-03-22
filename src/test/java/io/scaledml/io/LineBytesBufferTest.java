@@ -2,6 +2,7 @@ package io.scaledml.io;
 
 
 import com.google.common.base.Charsets;
+import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -10,7 +11,6 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,18 +46,18 @@ public class LineBytesBufferTest {
             }
         }
         Path fileActual = Paths.get(tempDirectory.toString(), "actual");
-        try (InputStream stream = Files.newInputStream(fileExpected)) {
+        try (FastBufferedInputStream stream = new FastBufferedInputStream(Files.newInputStream(fileExpected))) {
             try (BufferedWriter writer = Files.newBufferedWriter(fileActual, Charsets.US_ASCII)) {
                 LineBytesBuffer buffer = new LineBytesBuffer();
                 LineBytesBuffer line = new LineBytesBuffer();
                 while (buffer.readLineFrom(stream)) {
-                    buffer.drainLineTo(line);
+                    buffer.drainTo(line);
                     writer.write(line.toAsciiString());
                     writer.newLine();
                 }
             }
         }
-        assertEquals(Files.readAllLines(fileExpected, Charsets.US_ASCII), Files.readAllLines(fileActual, Charsets.US_ASCII));
+        assertTrue(Files.readAllLines(fileExpected, Charsets.US_ASCII).equals(Files.readAllLines(fileActual, Charsets.US_ASCII)));
     }
 
     @After

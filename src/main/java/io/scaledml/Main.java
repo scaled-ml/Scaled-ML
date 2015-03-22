@@ -3,6 +3,8 @@ package io.scaledml;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.CliFactory;
 import io.scaledml.io.LineBytesBuffer;
+import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -33,7 +35,6 @@ public class Main {
                     ftrlOptions.alfa(), ftrlOptions.beta()
                     );
         }
-        model.initTransientFields();
         VowpalWabbitFormat format = new VowpalWabbitFormat(model.featuresNum());
         applyModel(format, model, ftrlOptions.testOnly(), ftrlOptions.data(), ftrlOptions.predictions());
 
@@ -95,13 +96,12 @@ public class Main {
     private static void applyModel(VowpalWabbitFormat format, ItemProcessor processor, InputStream is,
                                    PredictionConsumer consumer)
             throws IOException {
-        try (InputStream stream = is) {
+        try (FastBufferedInputStream stream = new FastBufferedInputStream(is)) {
             Statistics outputStatistics = new Statistics();
             LineBytesBuffer readBuffer = new LineBytesBuffer();
-            LineBytesBuffer line = new LineBytesBuffer();
             while (readBuffer.readLineFrom(stream)) {
-                readBuffer.drainLineTo(line);
-                SparseItem item = format.parse(line);
+                SparseItem item = format.parse(readBuffer);
+                readBuffer.clear();
                 double prediction = processor.apply(item);
                 outputStatistics.consume(item, prediction);
                 consumer.consume(prediction + "\n");
