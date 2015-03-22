@@ -4,11 +4,14 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+import io.scaledml.io.LineBytesBuffer;
 
 public class VowpalWabbitFormat {
     private static HashFunction murmur =  Hashing.murmur3_128(42);
 
     private final long featuresNumber;
+    private final LineBytesBuffer buffer = new LineBytesBuffer();
+    private final LineBytesBuffer namespace = new LineBytesBuffer();
 
     public VowpalWabbitFormat(long featuresNumber) {
         this.featuresNumber = featuresNumber;
@@ -22,26 +25,27 @@ public class VowpalWabbitFormat {
     private CharMatcher NAME_MATCHER = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.anyOf("_")).precomputed();
     private CharMatcher PIPE_MATCHER = CharMatcher.anyOf("|").precomputed();
 
-    public SparseItem parse(String line) {
+    public SparseItem parse(LineBytesBuffer line) {
         SparseItem item = new SparseItem();
-        StringBuilder sb = new StringBuilder();
-        String namespace = null;
+        buffer.clear();
+        namespace.clear();
         State state = State.BEFORE_LABEL;
-        for (int i = 0; i < line.length(); i++) {
-            char c = line.charAt(i);
+        for (int i = 0; i < line.getLineLength(); i++) {
+            byte b = line.get(i);
+            char c = (char) b;
             switch (state) {
                 case BEFORE_LABEL:
                     if (NUMBER_MATCHER.matches(c)) {
-                        sb.append(c);
+                        buffer.append(b);
                         state = State.LABEL;
                     }
                     break;
                 case LABEL:
                     if (NUMBER_MATCHER.matches(c)) {
-                        sb.append(c);
+                        buffer.append(b);
                     } else {
-                        item.setLabel(Double.parseDouble(sb.toString()) > 0. ? 1. : 0.);
-                        sb.setLength(0);
+                        item.setLabel(Double.parseDouble(buffer.toAsciiString()) > 0. ? 1. : 0.);
+                        buffer.clear();
                         state = State.AFTER_LABEL;
                     }
                     break;
@@ -52,39 +56,37 @@ public class VowpalWabbitFormat {
                     break;
                 case BEFORE_NAMESPACE:
                     if (NAME_MATCHER.matches(c)) {
-                        sb.append(c);
+                        buffer.append(b);
                         state = State.NAMESPACE;
                     }
                     break;
                 case NAMESPACE:
                     if (NAME_MATCHER.matches(c)) {
-                        sb.append(c);
+                        buffer.append(b);
                     } else {
-                        namespace = sb.toString();
-                        sb.setLength(0);
+                        buffer.newLine();
+                        buffer.drainLineTo(namespace);
+                        assert buffer.getLineLength() == 0;
                         state = State.BEFORE_FEATURE;
                     }
                     break;
                 case BEFORE_FEATURE:
                     if (NAME_MATCHER.matches(c)) {
-                        sb.append(c);
+                        buffer.append(b);
                         state = State.FEATURE;
                     } else if (PIPE_MATCHER.matches(c)) {
                         state = State.BEFORE_NAMESPACE;
-                        namespace = null;
+                        namespace.clear();
                     }
                     break;
                 case FEATURE:
                     if (NAME_MATCHER.matches(c)) {
-                        sb.append(c);
+                        buffer.append(b);
                     } else {
-                        item.addIndex(Math.abs(murmur.newHasher()
-                                        .putString(namespace, Charsets.US_ASCII)
-                                       .putString(sb, Charsets.US_ASCII).hash().asLong()) % featuresNumber);
-                        sb.setLength(0);
+                        addIndex(item);
                         if (PIPE_MATCHER.matches(c)) {
                             state = State.BEFORE_NAMESPACE;
-                            namespace = null;
+                            namespace.clear();
                         } else {
                             state = State.BEFORE_FEATURE;
                         }
@@ -93,10 +95,15 @@ public class VowpalWabbitFormat {
             }
         }
         if (state == State.FEATURE) {
-            item.addIndex(Math.abs(murmur.newHasher()
-                    .putString(namespace, Charsets.US_ASCII)
-                    .putString(sb, Charsets.US_ASCII).hash().asLong()) % featuresNumber);
+            addIndex(item);
         }
         return item;
+    }
+
+    private void addIndex(SparseItem item) {
+        item.addIndex(Math.abs(murmur.newHasher()
+                        .putBytes(namespace.bytes(), 0, namespace.getLineLength())
+                        .putBytes(buffer.bytes(), 0, buffer.getLineLength()).hash().asLong()) % featuresNumber);
+        buffer.clear();
     }
 }

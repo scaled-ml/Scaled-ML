@@ -1,6 +1,11 @@
 package io.scaledml;
 
+import com.google.common.base.Charsets;
+import io.scaledml.io.LineBytesBuffer;
+import org.apache.commons.io.input.ReaderInputStream;
 import org.junit.Test;
+
+import java.io.StringReader;
 
 import static org.junit.Assert.*;
 
@@ -13,7 +18,9 @@ public class VowpalWabbitFormatTest {
                 "|device_model 76dc4769 |device_type 1 |device_conn_type 0 |C14 8330 |C15 320 |C16 50 |C17 761 |C18 3 " +
                 "|C19 175 |C20 100075";
         VowpalWabbitFormat format = new VowpalWabbitFormat(500);
-        SparseItem item = format.parse(line1);
+        LineBytesBuffer line = new LineBytesBuffer();
+        line.readLineFrom(new ReaderInputStream(new StringReader(line1), Charsets.US_ASCII));
+        SparseItem item = format.parse(line);
         assertNotNull(item);
         assertEquals(0., item.getLabel(), 0.000001);
         assertEquals(20, item.getIndexes().size());

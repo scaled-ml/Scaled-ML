@@ -2,7 +2,7 @@ package io.scaledml;
 
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.CliFactory;
-
+import io.scaledml.io.LineBytesBuffer;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -95,10 +95,12 @@ public class Main {
     private static void applyModel(VowpalWabbitFormat format, ItemProcessor processor, InputStream is,
                                    PredictionConsumer consumer)
             throws IOException {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-            String line;
+        try (InputStream stream = is) {
             Statistics outputStatistics = new Statistics();
-            while ((line = reader.readLine()) != null) {
+            LineBytesBuffer readBuffer = new LineBytesBuffer();
+            LineBytesBuffer line = new LineBytesBuffer();
+            while (readBuffer.readLineFrom(stream)) {
+                readBuffer.drainLineTo(line);
                 SparseItem item = format.parse(line);
                 double prediction = processor.apply(item);
                 outputStatistics.consume(item, prediction);
