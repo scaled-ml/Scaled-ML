@@ -41,17 +41,7 @@ public class FTRLProximal implements Serializable {
     }
 
     public static Long2DoubleMap createMap(int size) {
-        return new Long2DoubleOpenCustomHashMap(size * 2, Hash.VERY_FAST_LOAD_FACTOR, new LongHash.Strategy() {
-            @Override
-            public int hashCode(long l) {
-                return (int) (l * 3571 + 3559);
-            }
-
-            @Override
-            public boolean equals(long l, long l1) {
-                return l == l1;
-            }
-        });
+        return new Long2DoubleOpenHashMap(size * 2, Hash.FAST_LOAD_FACTOR);
     }
 
     public double train(SparseItem item) {
