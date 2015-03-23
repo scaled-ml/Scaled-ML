@@ -30,7 +30,7 @@ public class VowpalWabbitFormat {
         buffer.clear();
         namespace.clear();
         State state = State.BEFORE_LABEL;
-        for (int i = 0; i < line.getSize(); i++) {
+        for (int i = 0; i < line.size(); i++) {
             byte b = line.get(i);
             char c = (char) b;
             switch (state) {
@@ -65,7 +65,7 @@ public class VowpalWabbitFormat {
                         buffer.append(b);
                     } else {
                         buffer.drainTo(namespace);
-                        assert buffer.getSize() == 0;
+                        assert buffer.size() == 0;
                         state = State.BEFORE_FEATURE;
                     }
                     break;
@@ -101,8 +101,8 @@ public class VowpalWabbitFormat {
 
     private void addIndex(SparseItem item) {
         item.addIndex(Math.abs(murmur.newHasher()
-                        .putBytes(namespace.bytes(), 0, namespace.getSize())
-                        .putBytes(buffer.bytes(), 0, buffer.getSize()).hash().asLong()) % featuresNumber);
+                        .putBytes(namespace.bytes(), 0, namespace.size())
+                        .putBytes(buffer.bytes(), 0, buffer.size()).hash().asLong()) % featuresNumber);
         buffer.clear();
     }
 }

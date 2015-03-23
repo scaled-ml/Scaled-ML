@@ -23,7 +23,7 @@ public class LineBytesBuffer {
         size = 0;
     }
 
-    public int getSize() {
+    public int size() {
         return size;
     }
 
