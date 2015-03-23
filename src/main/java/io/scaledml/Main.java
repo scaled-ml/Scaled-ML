@@ -23,14 +23,14 @@ public class Main {
     }
 
     public static void runFtrlProximal(FtrlOptions ftrlOptions) throws Exception {
-        FTRLProximal model;
+        FTRLProximalAlgorithm model;
         if (ftrlOptions.initialRegressor() != null) {
             try (ObjectInputStream is = new ObjectInputStream(
                     Files.newInputStream(Paths.get(ftrlOptions.initialRegressor())))) {
-                model = (FTRLProximal) is.readObject();
+                model = (FTRLProximalAlgorithm) is.readObject();
             }
         } else {
-            model = new FTRLProximal(ftrlOptions.hashcodeBits(),
+            model = new FTRLProximalAlgorithm(ftrlOptions.hashcodeBits(),
                     ftrlOptions.l1(), ftrlOptions.l2(),
                     ftrlOptions.alfa(), ftrlOptions.beta()
                     );
@@ -46,7 +46,7 @@ public class Main {
         }
     }
 
-    private static void applyModel(VowpalWabbitFormat format, FTRLProximal model, boolean testOnly, String data,
+    private static void applyModel(VowpalWabbitFormat format, FTRLProximalAlgorithm model, boolean testOnly, String data,
                                    String predictions) throws IOException {
         InputStream is;
         if (data == null) {

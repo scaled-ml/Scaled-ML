@@ -3,17 +3,11 @@ package io.scaledml;
 import it.unimi.dsi.fastutil.floats.FloatBigArrayBigList;
 import it.unimi.dsi.fastutil.floats.FloatBigList;
 import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
-import it.unimi.dsi.fastutil.longs.Long2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongList;
 
 import java.io.Serializable;
 
 public class FtrlProximalState implements Serializable {
-    void initTransientFields(int size) {
-        increment = new Increment();
-        increment.incrementOfN = FTRLProximal.createMap(size);
-        increment.incrementOfZ = FTRLProximal.createMap(size);
-    }
 
     static class Increment {
         private Long2DoubleMap incrementOfN;
@@ -69,5 +63,11 @@ public class FtrlProximalState implements Serializable {
         for (long index : increment.incrementOfZ.keySet()) {
             z.set(index, (float) (z.getFloat(index) + increment.incrementOfZ.get(index)));
         }
+    }
+
+    void initTransientFields(int size) {
+        increment = new Increment();
+        increment.incrementOfN = FTRLProximalAlgorithm.createMap(size);
+        increment.incrementOfZ = FTRLProximalAlgorithm.createMap(size);
     }
 }

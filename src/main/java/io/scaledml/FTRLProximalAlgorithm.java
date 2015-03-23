@@ -7,18 +7,18 @@ import it.unimi.dsi.fastutil.longs.*;
 
 import java.io.Serializable;
 
-public class FTRLProximal implements Serializable {
+public class FTRLProximalAlgorithm implements Serializable {
 
     private FtrlProximalState state;
     private double lambda1;
     private double lambda2;
     private double alfa;
     private double beta;
-    private transient Long2DoubleMap currentN;
-    private transient Long2DoubleMap currentZ;
-    private transient Long2DoubleMap currentWeights;
+    private transient Long2DoubleMap notZeroN;
+    private transient Long2DoubleMap notZeroZ;
+    private transient Long2DoubleMap notZeroWeights;
 
-    public FTRLProximal(long b, double lambda1, double lambda2, double alfa, double beta) {
+    public FTRLProximalAlgorithm(long b, double lambda1, double lambda2, double alfa, double beta) {
         this();
         assert b < 64;
         long size = 1L << b;
@@ -29,14 +29,14 @@ public class FTRLProximal implements Serializable {
         this.lambda2 = lambda2;
     }
 
-    public FTRLProximal() {
+    public FTRLProximalAlgorithm() {
 
     }
 
     private void initTransientFields(int size) {
-        currentN = createMap(size);
-        currentZ = createMap(size);
-        currentWeights = createMap(size);
+        notZeroN = createMap(size);
+        notZeroZ = createMap(size);
+        notZeroWeights = createMap(size);
         this.state.initTransientFields(size);
     }
 
@@ -45,21 +45,21 @@ public class FTRLProximal implements Serializable {
     }
 
     public double train(SparseItem item) {
-        if (currentN == null) {
+        if (notZeroN == null) {
             initTransientFields(item.getIndexes().size());
         }
-        state.readVectors(item.getIndexes(), currentN, currentZ);
+        state.readVectors(item.getIndexes(), notZeroN, notZeroZ);
         calculateWeights(item);
         double predict = predict();
         double gradient = item.getLabel() - predict;
 
         FtrlProximalState.Increment increment = state.getIncrement();
         for (long index : item.getIndexes()) {
-            double n = currentN.get(index);
-            if (currentWeights.containsKey(index)) {
+            double n = notZeroN.get(index);
+            if (notZeroWeights.containsKey(index)) {
                 double learning_rate = 1. / alfa * (Math.sqrt(n + gradient * gradient) -
                         Math.sqrt(n));
-                increment.incrementZ(index, gradient - currentWeights.get(index) * learning_rate);
+                increment.incrementZ(index, gradient - notZeroWeights.get(index) * learning_rate);
             } else {
                 increment.incrementZ(index, gradient);
             }
@@ -70,7 +70,7 @@ public class FTRLProximal implements Serializable {
     }
 
     private double predict() {
-        return 1. / (1. + Math.exp(sum(currentWeights.values())));
+        return 1. / (1. + Math.exp(sum(notZeroWeights.values())));
     }
 
     private double sum(DoubleCollection values) {
@@ -82,22 +82,22 @@ public class FTRLProximal implements Serializable {
     }
 
     private void calculateWeights(SparseItem item) {
-        currentWeights.clear();
+        notZeroWeights.clear();
         for (long index : item.getIndexes()) {
-            double z = currentZ.get(index);
-            double n = currentN.get(index);
+            double z = notZeroZ.get(index);
+            double n = notZeroN.get(index);
             if (Math.abs(z) > lambda1) {
-                currentWeights.put(index, -1. / ((beta + Math.sqrt(n)) / alfa + lambda2) * (z -
+                notZeroWeights.put(index, -1. / ((beta + Math.sqrt(n)) / alfa + lambda2) * (z -
                         Math.signum(z) * lambda1));
             }
         }
     }
 
     public double test(SparseItem item) {
-        if (currentN == null) {
+        if (notZeroN == null) {
             initTransientFields(item.getIndexes().size());
         }
-        state.readVectors(item.getIndexes(), currentN, currentZ);
+        state.readVectors(item.getIndexes(), notZeroN, notZeroZ);
         calculateWeights(item);
         return predict();
     }

@@ -11,6 +11,7 @@ public class VowpalWabbitFormat {
     private final long featuresNumber;
     private final LineBytesBuffer buffer = new LineBytesBuffer();
     private final LineBytesBuffer namespace = new LineBytesBuffer();
+    private final SparseItem item = new SparseItem();
 
     public VowpalWabbitFormat(long featuresNumber) {
         this.featuresNumber = featuresNumber;
@@ -25,7 +26,7 @@ public class VowpalWabbitFormat {
     private CharMatcher PIPE_MATCHER = CharMatcher.anyOf("|").precomputed();
 
     public SparseItem parse(LineBytesBuffer line) {
-        SparseItem item = new SparseItem();
+        item.clear();
         buffer.clear();
         namespace.clear();
         State state = State.BEFORE_LABEL;
