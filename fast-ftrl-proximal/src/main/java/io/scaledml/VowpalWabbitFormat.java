@@ -5,7 +5,7 @@ import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import io.scaledml.io.LineBytesBuffer;
 
-public class VowpalWabbitFormat {
+public class VowpalWabbitFormat implements InputFormat {
     private static HashFunction murmur =  Hashing.murmur3_128(42);
 
     private final long featuresNumber;
@@ -25,6 +25,7 @@ public class VowpalWabbitFormat {
     private CharMatcher NAME_MATCHER = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.anyOf("_")).precomputed();
     private CharMatcher PIPE_MATCHER = CharMatcher.anyOf("|").precomputed();
 
+    @Override
     public SparseItem parse(LineBytesBuffer line) {
         item.clear();
         buffer.clear();
@@ -44,7 +45,7 @@ public class VowpalWabbitFormat {
                     if (NUMBER_MATCHER.matches(c)) {
                         buffer.append(b);
                     } else {
-                        item.setLabel(Double.parseDouble(buffer.toAsciiString()) > 0. ? 1. : 0.);
+                        item.setLabel(Double.parseDouble(buffer.toAsciiString()) > 0.0001 ? 1. : 0.);
                         buffer.clear();
                         state = State.AFTER_LABEL;
                     }

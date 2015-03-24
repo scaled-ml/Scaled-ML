@@ -22,7 +22,7 @@ public class FTRLProximalAlgorithm implements Serializable {
         this();
         assert b < 64;
         long size = 1L << b;
-        state = new FtrlProximalState(size);
+        state = new LocalFtrlProximalState(size);
         this.alfa = alfa;
         this.beta = beta;
         this.lambda1 = lambda1;
@@ -32,12 +32,12 @@ public class FTRLProximalAlgorithm implements Serializable {
     public FTRLProximalAlgorithm() {
     }
 
-    private void tryInitTransientFields(int size) {
+    private void tryInitTransientFields(int featuresNum) {
         if (notZeroN == null) {
-            notZeroN = createMap(size);
-            notZeroZ = createMap(size);
-            notZeroWeights = createMap(size);
-            this.state.initTransientFields(size);
+            notZeroN = createMap(featuresNum);
+            notZeroZ = createMap(featuresNum);
+            notZeroWeights = createMap(featuresNum);
+            this.state.initTransientFields(featuresNum);
         }
     }
 

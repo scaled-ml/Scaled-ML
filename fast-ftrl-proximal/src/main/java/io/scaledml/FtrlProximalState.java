@@ -1,17 +1,25 @@
 package io.scaledml;
 
-import it.unimi.dsi.fastutil.floats.FloatBigArrayBigList;
-import it.unimi.dsi.fastutil.floats.FloatBigList;
 import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
 import it.unimi.dsi.fastutil.longs.LongList;
 
-import java.io.Serializable;
+/**
+ * Created by aonuchin on 24.03.15.
+ */
+public interface FtrlProximalState {
+    long size();
 
-public class FtrlProximalState implements Serializable {
+    void readVectors(LongList indexes, Long2DoubleMap currentN, Long2DoubleMap currentZ);
 
-    static class Increment {
-        private Long2DoubleMap incrementOfN;
-        private Long2DoubleMap incrementOfZ;
+    Increment getIncrement();
+
+    void writeIncrement();
+
+    void initTransientFields(int featuresNum);
+
+    public static class Increment {
+        Long2DoubleMap incrementOfN;
+        Long2DoubleMap incrementOfZ;
 
         public void incrementN(long index, double increment) {
             incrementOfN.put(index, increment);
@@ -25,49 +33,5 @@ public class FtrlProximalState implements Serializable {
             incrementOfN.clear();
             incrementOfZ.clear();
         }
-    }
-
-    private FloatBigList n;
-    private FloatBigList z;
-    private transient Increment increment;
-
-    public FtrlProximalState(long size) {
-        z = new FloatBigArrayBigList(size);
-        z.size(size);
-        n = new FloatBigArrayBigList(size);
-        n.size(size);
-    }
-
-    public long size() {
-        return n.size64();
-    }
-
-    public void readVectors(LongList indexes, Long2DoubleMap currentN, Long2DoubleMap currentZ) {
-        currentN.clear();
-        currentZ.clear();
-        for (long index : indexes) {
-            currentN.put(index, n.getFloat(index));
-            currentZ.put(index, z.getFloat(index));
-        }
-    }
-
-    public Increment getIncrement() {
-        increment.clear();
-        return increment;
-    }
-
-    public void writeIncrement() {
-        for (long index : increment.incrementOfN.keySet()) {
-            n.set(index, (float) (n.getFloat(index) + increment.incrementOfN.get(index)));
-        }
-        for (long index : increment.incrementOfZ.keySet()) {
-            z.set(index, (float) (z.getFloat(index) + increment.incrementOfZ.get(index)));
-        }
-    }
-
-    void initTransientFields(int size) {
-        increment = new Increment();
-        increment.incrementOfN = FTRLProximalAlgorithm.createMap(size);
-        increment.incrementOfZ = FTRLProximalAlgorithm.createMap(size);
     }
 }

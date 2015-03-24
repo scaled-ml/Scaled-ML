@@ -35,7 +35,7 @@ public class Main {
                     ftrlOptions.alfa(), ftrlOptions.beta()
                     );
         }
-        VowpalWabbitFormat format = new VowpalWabbitFormat(model.featuresNum());
+        InputFormat format = new VowpalWabbitFormat(model.featuresNum());
         applyModel(format, model, ftrlOptions.testOnly(), ftrlOptions.data(), ftrlOptions.predictions());
 
         if (ftrlOptions.finalRegressor() != null) {
@@ -46,7 +46,7 @@ public class Main {
         }
     }
 
-    private static void applyModel(VowpalWabbitFormat format, FTRLProximalAlgorithm model, boolean testOnly, String data,
+    private static void applyModel(InputFormat format, FTRLProximalAlgorithm model, boolean testOnly, String data,
                                    String predictions) throws IOException {
         InputStream is;
         if (data == null) {
@@ -93,7 +93,7 @@ public class Main {
         }
     }
 
-    private static void applyModel(VowpalWabbitFormat format, ItemProcessor processor, InputStream is,
+    private static void applyModel(InputFormat format, ItemProcessor processor, InputStream is,
                                    PredictionConsumer consumer)
             throws IOException {
         try (FastBufferedInputStream stream = new FastBufferedInputStream(is)) {
