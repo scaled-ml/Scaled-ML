@@ -11,15 +11,17 @@ To build a project [JDK8](http://www.oracle.com/technetwork/java/javase/download
 
 Build command:
 ```
+$ cd fast-ftrl-proximal
 $ mvn clean install
 ```
 
-Runnable jar ftrl-proximal.jar will be found in target/ directory.
+Runnable jar ftrl-proximal.jar will be found in fast-ftrl-proximal/target/ directory.
 
 Input format
 ------------
 Input format is similar to [vowpal wabbit's one](http://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format) except that example's weight nor feature's weight are not supported.
 
+Only ascii symbols are supported yet.
 Run
 ---
 Train:
