@@ -30,14 +30,15 @@ public class FTRLProximalAlgorithm implements Serializable {
     }
 
     public FTRLProximalAlgorithm() {
-
     }
 
-    private void initTransientFields(int size) {
-        notZeroN = createMap(size);
-        notZeroZ = createMap(size);
-        notZeroWeights = createMap(size);
-        this.state.initTransientFields(size);
+    private void tryInitTransientFields(int size) {
+        if (notZeroN == null) {
+            notZeroN = createMap(size);
+            notZeroZ = createMap(size);
+            notZeroWeights = createMap(size);
+            this.state.initTransientFields(size);
+        }
     }
 
     public static Long2DoubleMap createMap(int size) {
@@ -45,10 +46,7 @@ public class FTRLProximalAlgorithm implements Serializable {
     }
 
     public double train(SparseItem item) {
-        if (notZeroN == null) {
-            initTransientFields(item.getIndexes().size());
-        }
-        state.readVectors(item.getIndexes(), notZeroN, notZeroZ);
+        tryInitTransientFields(item.getIndexes().size());
         calculateWeights(item);
         double predict = predict();
         double gradient = item.getLabel() - predict;
@@ -69,6 +67,12 @@ public class FTRLProximalAlgorithm implements Serializable {
         return predict;
     }
 
+    public double test(SparseItem item) {
+        tryInitTransientFields(item.getIndexes().size());
+        calculateWeights(item);
+        return predict();
+    }
+
     private double predict() {
         return 1. / (1. + Math.exp(sum(notZeroWeights.values())));
     }
@@ -82,6 +86,7 @@ public class FTRLProximalAlgorithm implements Serializable {
     }
 
     private void calculateWeights(SparseItem item) {
+        state.readVectors(item.getIndexes(), notZeroN, notZeroZ);
         notZeroWeights.clear();
         for (long index : item.getIndexes()) {
             double z = notZeroZ.get(index);
@@ -91,15 +96,6 @@ public class FTRLProximalAlgorithm implements Serializable {
                         Math.signum(z) * lambda1));
             }
         }
-    }
-
-    public double test(SparseItem item) {
-        if (notZeroN == null) {
-            initTransientFields(item.getIndexes().size());
-        }
-        state.readVectors(item.getIndexes(), notZeroN, notZeroZ);
-        calculateWeights(item);
-        return predict();
     }
 
     public long featuresNum() {
