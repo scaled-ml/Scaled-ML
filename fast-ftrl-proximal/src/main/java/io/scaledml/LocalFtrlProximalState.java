@@ -51,7 +51,7 @@ public class LocalFtrlProximalState implements Serializable, FtrlProximalState {
         }
     }
 
-    void initTransientFields(int size) {
+    public void initTransientFields(int size) {
         increment = new Increment();
         increment.incrementOfN = FTRLProximalAlgorithm.createMap(size);
         increment.incrementOfZ = FTRLProximalAlgorithm.createMap(size);

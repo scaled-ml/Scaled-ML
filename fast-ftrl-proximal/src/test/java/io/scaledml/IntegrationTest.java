@@ -8,6 +8,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.Arrays;
 
 public class IntegrationTest {
     private Path tempDirectory;
@@ -31,6 +32,7 @@ public class IntegrationTest {
                 .stream().mapToDouble(Double::parseDouble).toArray();
         int predictionsNum = predictions.length;
         assertEquals(predictionsNum, 100);
+        assertTrue(Arrays.stream(predictions).allMatch(p -> p < 0.5));
     }
 
     @After
