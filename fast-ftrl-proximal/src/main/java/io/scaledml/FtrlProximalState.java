@@ -1,7 +1,12 @@
 package io.scaledml;
 
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+
+import java.io.Serializable;
 
 /**
  * Created by aonuchin on 24.03.15.
@@ -9,27 +14,25 @@ import it.unimi.dsi.fastutil.longs.LongList;
 public interface FtrlProximalState {
     long size();
 
-    void readVectors(LongList indexes, Long2DoubleMap currentN, Long2DoubleMap currentZ);
+    void readVectors(LongList indexes, DoubleList currentN, DoubleList currentZ);
 
     Increment getIncrement();
 
     void writeIncrement();
 
-    void initTransientFields(int featuresNum);
+    public static class Increment implements Serializable {
+        LongList indexes = new LongArrayList();
+        DoubleList incrementOfN = new DoubleArrayList();
+        DoubleList incrementOfZ = new DoubleArrayList();
 
-    public static class Increment {
-        Long2DoubleMap incrementOfN;
-        Long2DoubleMap incrementOfZ;
-
-        public void incrementN(long index, double increment) {
-            incrementOfN.put(index, increment);
-        }
-
-        public void incrementZ(long index, double increment) {
-            incrementOfZ.put(index, increment);
+        public void addIncrement(long index, double nDelta, double zDelta) {
+            indexes.add(index);
+            incrementOfN.add(nDelta);
+            incrementOfZ.add(zDelta);
         }
 
         public void clear() {
+            indexes.clear();
             incrementOfN.clear();
             incrementOfZ.clear();
         }
