@@ -1,11 +1,7 @@
-package io.scaledml;
+package io.scaledml.ftrl;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SparseItem {
     private final LongList indexes = new LongArrayList();
@@ -15,15 +11,16 @@ public class SparseItem {
         indexes.add(index);
     }
 
-    public LongList getIndexes() {
+    public LongList indexes() {
         return indexes;
     }
 
-    public void setLabel(double label) {
+    public SparseItem label(double label) {
         this.label = label;
+        return this;
     }
 
-    public double getLabel() {
+    public double label() {
         return label;
     }
 

@@ -1,4 +1,4 @@
-package io.scaledml.io;
+package io.scaledml.ftrl.io;
 
 import com.google.common.base.Charsets;
 import it.unimi.dsi.fastutil.bytes.ByteArrays;

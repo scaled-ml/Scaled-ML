@@ -1,4 +1,4 @@
-package io.scaledml;
+package io.scaledml.ftrl;
 
 
 public class FtrlOptionsObject implements FtrlOptions {
@@ -12,6 +12,7 @@ public class FtrlOptionsObject implements FtrlOptions {
     private String finalRegressor;
     private String initialRegressor;
     private boolean testOnly = false;
+    private int threads = 1;
 
     @Override
     public int hashcodeBits() {
@@ -68,6 +69,11 @@ public class FtrlOptionsObject implements FtrlOptions {
         return false;
     }
 
+    @Override
+    public int threads() {
+        return threads;
+    }
+
     public FtrlOptionsObject hashcodeBits(int hashcodeBits) {
         this.hashcodeBits = hashcodeBits;
         return this;
@@ -115,6 +121,11 @@ public class FtrlOptionsObject implements FtrlOptions {
 
     public FtrlOptionsObject predictions(String predictions) {
         this.predictions = predictions;
+        return this;
+    }
+
+    public FtrlOptionsObject threads(int threads) {
+        this.threads = threads;
         return this;
     }
 }
