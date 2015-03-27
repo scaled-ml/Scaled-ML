@@ -1,4 +1,4 @@
-package io.scaledml.semiparallel;
+package io.scaledml.ftrl.semiparallel;
 
 
 import com.google.inject.AbstractModule;
@@ -11,17 +11,16 @@ import com.google.inject.throwingproviders.ThrowingProviderBinder;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.SleepingWaitStrategy;
-import com.lmax.disruptor.WorkHandler;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
-import io.scaledml.*;
-import io.scaledml.inputformats.VowpalWabbitFormat;
-import io.scaledml.io.LineBytesBuffer;
-import io.scaledml.outputformats.CollectStatisticsOutputFormat;
-import io.scaledml.outputformats.NullOutputFormat;
-import io.scaledml.outputformats.OutputFormat;
-import io.scaledml.outputformats.PrintStreamOutputFormat;
+import io.scaledml.ftrl.*;
+import io.scaledml.ftrl.inputformats.VowpalWabbitFormat;
+import io.scaledml.ftrl.outputformats.CollectStatisticsOutputFormat;
+import io.scaledml.ftrl.outputformats.NullOutputFormat;
+import io.scaledml.ftrl.outputformats.OutputFormat;
+import io.scaledml.ftrl.io.LineBytesBuffer;
+import io.scaledml.ftrl.outputformats.PrintStreamOutputFormat;
 import it.unimi.dsi.fastutil.io.FastBufferedOutputStream;
 
 import java.io.IOException;

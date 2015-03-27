@@ -1,10 +1,10 @@
-package io.scaledml.semiparallel;
+package io.scaledml.ftrl.semiparallel;
 
 import com.google.inject.Inject;
 import com.lmax.disruptor.EventHandler;
-import io.scaledml.FTRLProximalAlgorithm;
-import io.scaledml.outputformats.OutputFormat;
-import io.scaledml.SparseItem;
+import io.scaledml.ftrl.FTRLProximalAlgorithm;
+import io.scaledml.ftrl.SparseItem;
+import io.scaledml.ftrl.outputformats.OutputFormat;
 
 public class LearnEventHandler implements EventHandler<SparseItem> {
     OutputFormat outputFormat;

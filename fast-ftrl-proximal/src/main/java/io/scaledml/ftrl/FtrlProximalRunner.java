@@ -1,12 +1,12 @@
-package io.scaledml;
+package io.scaledml.ftrl;
 
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.Disruptor;
-import io.scaledml.io.LineBytesBuffer;
-import io.scaledml.outputformats.OutputFormat;
+import io.scaledml.ftrl.outputformats.OutputFormat;
+import io.scaledml.ftrl.io.LineBytesBuffer;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 
 import java.io.IOException;

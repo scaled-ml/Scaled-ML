@@ -1,9 +1,9 @@
-package io.scaledml.semiparallel;
+package io.scaledml.ftrl.semiparallel;
 
 
 import com.google.inject.Inject;
-import io.scaledml.FtrlProximalModel;
-import io.scaledml.FtrlProximalModelUpdater;
+import io.scaledml.ftrl.FtrlProximalModel;
+import io.scaledml.ftrl.FtrlProximalModelUpdater;
 
 public class LocalFtrlProximalModelUpdater implements FtrlProximalModelUpdater {
     private final Increment increment = new Increment();

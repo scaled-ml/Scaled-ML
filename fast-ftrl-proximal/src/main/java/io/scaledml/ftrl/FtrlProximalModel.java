@@ -1,6 +1,5 @@
-package io.scaledml;
+package io.scaledml.ftrl;
 
-import com.google.inject.Inject;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.floats.FloatBigArrayBigList;
 import it.unimi.dsi.fastutil.floats.FloatBigList;

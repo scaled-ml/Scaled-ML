@@ -23,7 +23,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>io.scaledml.Main</mainClass>
+                            <mainClass>io.scaledml.ftrl.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

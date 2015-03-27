@@ -1,4 +1,4 @@
-package io.scaledml;
+package io.scaledml.ftrl;
 
 import com.lexicalscope.jewel.cli.Option;
 

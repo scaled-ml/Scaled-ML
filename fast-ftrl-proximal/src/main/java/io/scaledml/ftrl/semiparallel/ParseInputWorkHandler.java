@@ -1,12 +1,12 @@
-package io.scaledml.semiparallel;
+package io.scaledml.ftrl.semiparallel;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.lmax.disruptor.WorkHandler;
 import com.lmax.disruptor.dsl.Disruptor;
-import io.scaledml.inputformats.InputFormat;
-import io.scaledml.SparseItem;
-import io.scaledml.io.LineBytesBuffer;
+import io.scaledml.ftrl.inputformats.InputFormat;
+import io.scaledml.ftrl.SparseItem;
+import io.scaledml.ftrl.io.LineBytesBuffer;
 
 
 public class ParseInputWorkHandler implements WorkHandler<LineBytesBuffer> {

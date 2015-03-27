@@ -1,9 +1,8 @@
-package io.scaledml.outputformats;
+package io.scaledml.ftrl.outputformats;
 
-import io.scaledml.SparseItem;
+import io.scaledml.ftrl.SparseItem;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 
 public class PrintStreamOutputFormat implements OutputFormat {

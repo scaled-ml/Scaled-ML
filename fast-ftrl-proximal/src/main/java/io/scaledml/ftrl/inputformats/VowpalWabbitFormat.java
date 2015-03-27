@@ -1,10 +1,10 @@
-package io.scaledml.inputformats;
+package io.scaledml.ftrl.inputformats;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
-import io.scaledml.SparseItem;
-import io.scaledml.io.LineBytesBuffer;
+import io.scaledml.ftrl.SparseItem;
+import io.scaledml.ftrl.io.LineBytesBuffer;
 
 public class VowpalWabbitFormat implements InputFormat {
     private final static HashFunction murmur =  Hashing.murmur3_128(42);

@@ -1,4 +1,4 @@
-package io.scaledml;
+package io.scaledml.ftrl;
 
 
 public class FtrlOptionsObject implements FtrlOptions {

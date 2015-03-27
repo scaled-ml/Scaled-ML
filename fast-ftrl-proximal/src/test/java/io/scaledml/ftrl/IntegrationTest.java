@@ -1,4 +1,4 @@
-package io.scaledml;
+package io.scaledml.ftrl;
 
 
 import org.apache.commons.io.FileUtils;

@@ -1,4 +1,4 @@
-package io.scaledml;
+package io.scaledml.ftrl;
 
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleList;

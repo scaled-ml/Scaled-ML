@@ -1,16 +1,10 @@
-package io.scaledml;
+package io.scaledml.ftrl;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.CliFactory;
-import io.scaledml.io.LineBytesBuffer;
-import io.scaledml.semiparallel.SemiParallelModule;
-import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import io.scaledml.ftrl.semiparallel.SemiParallelModule;
 
 public class Main {
 
