@@ -139,7 +139,7 @@ public class SemiParallelModule extends AbstractModule {
     }
 
     private long featuresNumber() {
-        return 1L << (options.hashcodeBits() - 1);
+        return 1L << options.hashcodeBits();
     }
 
     @Provides
