@@ -94,4 +94,8 @@ public class FtrlProximalModel implements Serializable {
             return (FtrlProximalModel) is.readObject();
         }
     }
+
+    public long featuresNumber() {
+        return n.size64();
+    }
 }

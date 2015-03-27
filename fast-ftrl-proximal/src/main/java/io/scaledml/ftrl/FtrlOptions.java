@@ -46,6 +46,10 @@ public interface FtrlOptions {
     String predictions();
 
     @Option(shortName = "h", longName = "help", helpRequest = true,
-            description = "show this help")
+            description = "Show this help")
     boolean help();
+
+    @Option(longName = "threads", defaultValue = "1",
+            description = "Parallelization level")
+    int threads();
 }

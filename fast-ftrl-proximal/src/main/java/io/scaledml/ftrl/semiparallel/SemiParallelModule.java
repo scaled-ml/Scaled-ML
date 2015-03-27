@@ -1,20 +1,19 @@
 package io.scaledml.ftrl.semiparallel;
 
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
+import com.google.inject.*;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import com.google.inject.throwingproviders.ThrowingProviderBinder;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.SleepingWaitStrategy;
+import com.lmax.disruptor.WorkHandler;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.scaledml.ftrl.*;
+import io.scaledml.ftrl.inputformats.InputFormat;
 import io.scaledml.ftrl.inputformats.VowpalWabbitFormat;
 import io.scaledml.ftrl.outputformats.CollectStatisticsOutputFormat;
 import io.scaledml.ftrl.outputformats.NullOutputFormat;
@@ -22,7 +21,6 @@ import io.scaledml.ftrl.outputformats.OutputFormat;
 import io.scaledml.ftrl.io.LineBytesBuffer;
 import io.scaledml.ftrl.outputformats.PrintStreamOutputFormat;
 import it.unimi.dsi.fastutil.io.FastBufferedOutputStream;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -46,6 +44,8 @@ public class SemiParallelModule extends AbstractModule {
         bind(new TypeLiteral<EventHandler<SparseItem>>(){}).to(LearnEventHandler.class).asEagerSingleton();
         bind(FtrlProximalModelUpdater.class).to(LocalFtrlProximalModelUpdater.class).asEagerSingleton();
         bind(FtrlProximalRunner.class).asEagerSingleton();
+        bind(InputFormat.class).to(VowpalWabbitFormat.class);
+        bind(new TypeLiteral<WorkHandler<LineBytesBuffer>>() {}).to(ParseInputWorkHandler.class);
     }
 
     @Provides
@@ -59,8 +59,9 @@ public class SemiParallelModule extends AbstractModule {
                 .beta(options.beta())
                 .lambda1(options.l1())
                 .lambda2(options.l2())
-                .featuresNumber(featuresNumber());
+                .featuresNumber(1L << options.hashcodeBits());
     }
+
 
     @Provides
     @Singleton
@@ -87,12 +88,10 @@ public class SemiParallelModule extends AbstractModule {
         return Files.newInputStream(Paths.get(options.data()));
     }
 
-
-
     @Provides
     @Singleton
     @Named("inputDisruptor")
-    Disruptor<LineBytesBuffer> inputDisruptor(@Named("secondDisruptor") Disruptor<SparseItem> itemDisruptor) {
+    Disruptor<LineBytesBuffer> inputDisruptor(Provider<WorkHandler<LineBytesBuffer>> handlerProvider) {
         Disruptor<LineBytesBuffer> disruptor = new Disruptor<>(
                 new EventFactory<LineBytesBuffer>() {
                     @Override
@@ -102,16 +101,12 @@ public class SemiParallelModule extends AbstractModule {
                 },
                 2048, Executors.newCachedThreadPool(DaemonThreadFactory.INSTANCE),
                 ProducerType.SINGLE, new SleepingWaitStrategy());
-        disruptor.handleEventsWith(
-                newParseWorker(itemDisruptor));
+        WorkHandler<LineBytesBuffer>[] parsers = new WorkHandler[options.threads()];
+        for (int i = 0; i < options.threads(); i++) {
+            parsers[i] = handlerProvider.get();
+        }
+        disruptor.handleEventsWithWorkerPool(parsers);
         return disruptor;
-    }
-
-    private ParseInputWorkHandler newParseWorker(Disruptor<SparseItem> itemDisruptor) {
-        return new ParseInputWorkHandler()
-                .inputFormat(new VowpalWabbitFormat()
-                        .featuresNumber(featuresNumber()))
-                .itemDisruptor(itemDisruptor);
     }
 
     @Provides
@@ -133,13 +128,15 @@ public class SemiParallelModule extends AbstractModule {
                     }
                 },
                 2048, Executors.newCachedThreadPool(DaemonThreadFactory.INSTANCE),
-                ProducerType.SINGLE, new SleepingWaitStrategy());
+                ProducerType.MULTI, new SleepingWaitStrategy());
         disruptor.handleEventsWith(learnHandler);
         return disruptor;
     }
 
-    private long featuresNumber() {
-        return 1L << options.hashcodeBits();
+    @Provides
+    @Named("featuresNumber")
+    public long featuresNumber(FtrlProximalModel model) {
+        return model.featuresNumber();
     }
 
     @Provides

@@ -3,6 +3,8 @@ package io.scaledml.ftrl.inputformats;
 import com.google.common.base.CharMatcher;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import io.scaledml.ftrl.SparseItem;
 import io.scaledml.ftrl.io.LineBytesBuffer;
 
@@ -101,7 +103,8 @@ public class VowpalWabbitFormat implements InputFormat {
         buffer.clear();
     }
 
-    public VowpalWabbitFormat featuresNumber(long featuresNumber) {
+    @Inject
+    public VowpalWabbitFormat featuresNumber(@Named("featuresNumber") long featuresNumber) {
         this.featuresNumber = featuresNumber;
         return this;
     }

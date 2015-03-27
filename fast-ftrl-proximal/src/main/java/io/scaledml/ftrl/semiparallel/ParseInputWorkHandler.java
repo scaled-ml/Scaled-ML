@@ -10,12 +10,12 @@ import io.scaledml.ftrl.SparseItem;
 import io.scaledml.ftrl.io.LineBytesBuffer;
 
 
-public class ParseInputWorkHandler implements EventHandler<LineBytesBuffer> {
+public class ParseInputWorkHandler implements WorkHandler<LineBytesBuffer> {
     InputFormat inputFormat;
     Disruptor<SparseItem> itemDisruptor;
 
     @Override
-    public void onEvent(LineBytesBuffer event, long sequence, boolean endOfBatch) throws Exception {
+    public void onEvent(LineBytesBuffer event) throws Exception {
         long cursor = itemDisruptor.getRingBuffer().next();
         SparseItem item = itemDisruptor.get(cursor);
         inputFormat.parse(event, item);
