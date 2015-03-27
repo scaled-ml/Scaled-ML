@@ -14,7 +14,7 @@ import com.lmax.disruptor.SleepingWaitStrategy;
 import com.lmax.disruptor.WorkHandler;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import com.sun.istack.internal.Nullable;
+import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.scaledml.*;
 import io.scaledml.inputformats.VowpalWabbitFormat;
 import io.scaledml.io.LineBytesBuffer;
@@ -22,6 +22,7 @@ import io.scaledml.outputformats.CollectStatisticsOutputFormat;
 import io.scaledml.outputformats.NullOutputFormat;
 import io.scaledml.outputformats.OutputFormat;
 import io.scaledml.outputformats.PrintStreamOutputFormat;
+import it.unimi.dsi.fastutil.io.FastBufferedOutputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,7 +73,8 @@ public class SemiParallelModule extends AbstractModule {
             format.delegate(new PrintStreamOutputFormat().outputStream(System.out));
         } else {
             format.delegate(new PrintStreamOutputFormat()
-                    .outputStream(new PrintStream(Files.newOutputStream(Paths.get(options.predictions())))));
+                    .outputStream(new PrintStream(new FastBufferedOutputStream(
+                            Files.newOutputStream(Paths.get(options.predictions()))))));
         }
         return format;
     }
@@ -99,7 +101,7 @@ public class SemiParallelModule extends AbstractModule {
                         return new LineBytesBuffer();
                     }
                 },
-                512, Executors.newCachedThreadPool(),
+                512, Executors.newCachedThreadPool(DaemonThreadFactory.INSTANCE),
                 ProducerType.SINGLE, new SleepingWaitStrategy());
         disruptor.handleEventsWithWorkerPool(
                 newParseWorker(itemDisruptor),
@@ -133,7 +135,8 @@ public class SemiParallelModule extends AbstractModule {
                         return new SparseItem();
                     }
                 },
-                512, Executors.newCachedThreadPool());
+                1024, Executors.newCachedThreadPool(DaemonThreadFactory.INSTANCE),
+                ProducerType.MULTI, new SleepingWaitStrategy());
         disruptor.handleEventsWith(learnHandler);
         return disruptor;
     }

@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.floats.FloatBigArrayBigList;
 import it.unimi.dsi.fastutil.floats.FloatBigList;
+import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
+import it.unimi.dsi.fastutil.io.FastBufferedOutputStream;
 import it.unimi.dsi.fastutil.longs.LongList;
 
 import java.io.IOException;
@@ -83,13 +85,13 @@ public class FtrlProximalModel implements Serializable {
     }
 
     public static void saveModel(FtrlProximalModel model, Path output) throws IOException {
-        try (ObjectOutputStream os = new ObjectOutputStream(Files.newOutputStream(output))) {
+        try (ObjectOutputStream os = new ObjectOutputStream(new FastBufferedOutputStream(Files.newOutputStream(output)))) {
             os.writeObject(model);
         }
     }
 
     public static FtrlProximalModel loadModel(Path input) throws Exception {
-        try (ObjectInputStream is = new ObjectInputStream(Files.newInputStream(input))) {
+        try (ObjectInputStream is = new ObjectInputStream(new FastBufferedInputStream(Files.newInputStream(input)))) {
             return (FtrlProximalModel) is.readObject();
         }
     }

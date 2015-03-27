@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.Disruptor;
-import com.sun.istack.internal.Nullable;
 import io.scaledml.io.LineBytesBuffer;
 import io.scaledml.outputformats.OutputFormat;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
