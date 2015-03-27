@@ -52,14 +52,15 @@ The options available are:
 	[--ftrl_alpha value] : ftrl alpha parameter (option in ftrl)
 	[--ftrl_beta value] : ftrl beta patameter (option in ftrl)
 	[--data -d value] : Example Set
-	[--final_regressor -f value] : Final regressor to save (arg is filename)
+	[--final_regressor -f value] : Final regressor to save (arg inputStream filename)
 	[--bit_precision -b value] : number of bits in the feature table
-	[--help -h] : show this help
-	[--initial_regressor -i value] : Initial regressor(s) to load into memory (arg is filename)
+	[--help -h] : Show this help
+	[--initial_regressor -i value] : Initial regressor(s) to load into memory (arg inputStream filename)
 	[--l1 value] : l_1 lambda (L1 regularization)
 	[--l2 value] : l_2 lambda (L2 regularization)
 	[--predictions -p value] : File to output predictions to
 	[--testonly -t] : Ignore label information and just test
+	[--threads value] : Parallelization level
 ```
 
 References
