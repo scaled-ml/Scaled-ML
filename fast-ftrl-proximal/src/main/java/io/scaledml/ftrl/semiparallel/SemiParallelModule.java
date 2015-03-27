@@ -100,11 +100,9 @@ public class SemiParallelModule extends AbstractModule {
                         return new LineBytesBuffer();
                     }
                 },
-                512, Executors.newCachedThreadPool(DaemonThreadFactory.INSTANCE),
+                2048, Executors.newCachedThreadPool(DaemonThreadFactory.INSTANCE),
                 ProducerType.SINGLE, new SleepingWaitStrategy());
-        disruptor.handleEventsWithWorkerPool(
-                newParseWorker(itemDisruptor),
-                newParseWorker(itemDisruptor),
+        disruptor.handleEventsWith(
                 newParseWorker(itemDisruptor));
         return disruptor;
     }
@@ -134,8 +132,8 @@ public class SemiParallelModule extends AbstractModule {
                         return new SparseItem();
                     }
                 },
-                1024, Executors.newCachedThreadPool(DaemonThreadFactory.INSTANCE),
-                ProducerType.MULTI, new SleepingWaitStrategy());
+                2048, Executors.newCachedThreadPool(DaemonThreadFactory.INSTANCE),
+                ProducerType.SINGLE, new SleepingWaitStrategy());
         disruptor.handleEventsWith(learnHandler);
         return disruptor;
     }
