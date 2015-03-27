@@ -1,59 +1,36 @@
 package io.scaledml;
 
 
+import com.google.inject.Inject;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import it.unimi.dsi.fastutil.doubles.DoubleList;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
+import com.google.inject.name.Named;
 
-import java.io.Serializable;
+public class FTRLProximalAlgorithm {
+    private FtrlProximalModel model;
+    private FtrlProximalModelUpdater modelUpdater;
+    private boolean testOnly;
+    private final DoubleArrayList currentN = new DoubleArrayList();
+    private final DoubleArrayList currentZ = new DoubleArrayList();
+    private final DoubleArrayList currentWeights = new DoubleArrayList();
 
-public class FTRLProximalAlgorithm implements Serializable {
-
-    private FtrlProximalState state;
-    private double lambda1;
-    private double lambda2;
-    private double alfa;
-    private double beta;
-    private DoubleArrayList currentN = new DoubleArrayList();
-    private DoubleArrayList currentZ = new DoubleArrayList();
-    private DoubleArrayList currentWeights = new DoubleArrayList();
-
-    public FTRLProximalAlgorithm(long b, double lambda1, double lambda2, double alfa, double beta) {
-        this();
-        assert b < 64;
-        long size = 1L << b;
-        state = new LocalFtrlProximalState(size);
-        this.alfa = alfa;
-        this.beta = beta;
-        this.lambda1 = lambda1;
-        this.lambda2 = lambda2;
-    }
-
-    public FTRLProximalAlgorithm() {
-    }
-
-    public double train(SparseItem item) {
+    public double learn(SparseItem item) {
         calculateWeights(item);
         double predict = predict();
-        double gradient = item.getLabel() - predict;
-
-        FtrlProximalState.Increment increment = state.getIncrement();
-        for (int i = 0; i < item.getIndexes().size(); i++) {
-            long index = item.getIndexes().getLong(i);
-            double nDelta = gradient * gradient;
-            double n = currentN.getDouble(i);
-            double w = currentWeights.getDouble(i);
-            double learning_rate = 1. / alfa * (Math.sqrt(n + gradient * gradient) - Math.sqrt(n));
-            double zDelta = gradient - w * learning_rate;
-            increment.addIncrement(index, nDelta, zDelta);
+        double gradient = item.label() - predict;
+        if (!testOnly) {
+            FtrlProximalModelUpdater.Increment increment = modelUpdater.getIncrement();
+            for (int i = 0; i < item.indexes().size(); i++) {
+                long index = item.indexes().getLong(i);
+                double nDelta = gradient * gradient;
+                double n = currentN.getDouble(i);
+                double w = currentWeights.getDouble(i);
+                double learning_rate = 1. / model.alfa() * (Math.sqrt(n + gradient * gradient) - Math.sqrt(n));
+                double zDelta = gradient - w * learning_rate;
+                increment.addIncrement(index, nDelta, zDelta);
+            }
+            modelUpdater.writeIncrement();
         }
-        state.writeIncrement();
         return predict;
-    }
-
-    public double test(SparseItem item) {
-        calculateWeights(item);
-        return predict();
     }
 
     private double predict() {
@@ -66,21 +43,32 @@ public class FTRLProximalAlgorithm implements Serializable {
 
     private void calculateWeights(SparseItem item) {
         currentWeights.clear();
-        state.readVectors(item.getIndexes(), currentN, currentZ);
-        for (int i = 0; i < item.getIndexes().size(); i++) {
+        model.readVectors(item.indexes(), currentN, currentZ);
+        for (int i = 0; i < item.indexes().size(); i++) {
             double z = currentZ.getDouble(i);
             double n = currentN.getDouble(i);
-            if (Math.abs(z) > lambda1) {
-                currentWeights.add(-1. / ((beta + Math.sqrt(n)) / alfa + lambda2) * (z -
-                        Math.signum(z) * lambda1));
+            if (Math.abs(z) > model.lambda1()) {
+                currentWeights.add(-1. / ((model.beta() + Math.sqrt(n)) / model.alfa() + model.lambda2()) * (z -
+                        Math.signum(z) * model.lambda1()));
             } else {
                 currentWeights.add(0.);
             }
         }
     }
 
-
-    public long featuresNum() {
-        return state.size();
+    @Inject
+    public FTRLProximalAlgorithm modelUpdater(FtrlProximalModelUpdater modelUpdater) {
+        this.modelUpdater = modelUpdater;
+        return this;
+    }
+    @Inject
+    public FTRLProximalAlgorithm model(FtrlProximalModel model) {
+        this.model = model;
+        return this;
+    }
+    @Inject
+    public FTRLProximalAlgorithm testOnly(@Named("testOnly") boolean testOnly) {
+        this.testOnly = testOnly;
+        return this;
     }
 }

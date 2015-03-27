@@ -1,32 +1,27 @@
-package io.scaledml;
+package io.scaledml.inputformats;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+import io.scaledml.SparseItem;
 import io.scaledml.io.LineBytesBuffer;
 
 public class VowpalWabbitFormat implements InputFormat {
-    private static HashFunction murmur =  Hashing.murmur3_128(42);
-
-    private final long featuresNumber;
+    private final static HashFunction murmur =  Hashing.murmur3_128(42);
+    private long featuresNumber;
     private final LineBytesBuffer buffer = new LineBytesBuffer();
     private final LineBytesBuffer namespace = new LineBytesBuffer();
-    private final SparseItem item = new SparseItem();
-
-    public VowpalWabbitFormat(long featuresNumber) {
-        this.featuresNumber = featuresNumber;
-    }
 
     private enum State {
         BEFORE_LABEL, LABEL, AFTER_LABEL, BEFORE_NAMESPACE, NAMESPACE, BEFORE_FEATURE, FEATURE;
     }
 
-    private CharMatcher NUMBER_MATCHER = CharMatcher.DIGIT.or(CharMatcher.anyOf(".-")).precomputed();
-    private CharMatcher NAME_MATCHER = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.anyOf("_")).precomputed();
-    private CharMatcher PIPE_MATCHER = CharMatcher.anyOf("|").precomputed();
+    private final CharMatcher NUMBER_MATCHER = CharMatcher.DIGIT.or(CharMatcher.anyOf(".-")).precomputed();
+    private final CharMatcher NAME_MATCHER = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.anyOf("_")).precomputed();
+    private final CharMatcher PIPE_MATCHER = CharMatcher.anyOf("|").precomputed();
 
     @Override
-    public SparseItem parse(LineBytesBuffer line) {
+    public void parse(LineBytesBuffer line, SparseItem item) {
         item.clear();
         buffer.clear();
         namespace.clear();
@@ -45,7 +40,7 @@ public class VowpalWabbitFormat implements InputFormat {
                     if (NUMBER_MATCHER.matches(c)) {
                         buffer.append(b);
                     } else {
-                        item.setLabel(Double.parseDouble(buffer.toAsciiString()) > 0.0001 ? 1. : 0.);
+                        item.label(Double.parseDouble(buffer.toAsciiString()) > 0.0001 ? 1. : 0.);
                         buffer.clear();
                         state = State.AFTER_LABEL;
                     }
@@ -97,7 +92,6 @@ public class VowpalWabbitFormat implements InputFormat {
         if (state == State.FEATURE) {
             addIndex(item);
         }
-        return item;
     }
 
     private void addIndex(SparseItem item) {
@@ -105,5 +99,10 @@ public class VowpalWabbitFormat implements InputFormat {
                         .putBytes(namespace.bytes(), 0, namespace.size())
                         .putBytes(buffer.bytes(), 0, buffer.size()).hash().asLong()) % featuresNumber);
         buffer.clear();
+    }
+
+    public VowpalWabbitFormat featuresNumber(long featuresNumber) {
+        this.featuresNumber = featuresNumber;
+        return this;
     }
 }

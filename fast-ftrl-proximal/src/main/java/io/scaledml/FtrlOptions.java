@@ -2,10 +2,7 @@ package io.scaledml;
 
 import com.lexicalscope.jewel.cli.Option;
 
-/**
-* Created by aonuchin on 15.03.15.
-*/
-interface FtrlOptions {
+public interface FtrlOptions {
 
     @Option(shortName = "b", longName = "bit_precision", defaultValue = "18",
             maximum = 34, minimum = 1,
@@ -29,11 +26,11 @@ interface FtrlOptions {
     double l2();
 
     @Option(shortName = "f", longName = "final_regressor", defaultToNull = true,
-            description = "Final regressor to save (arg is filename)")
+            description = "Final regressor to save (arg inputStream filename)")
     String finalRegressor();
 
     @Option(shortName = "i", longName = "initial_regressor", defaultToNull = true,
-            description = "Initial regressor(s) to load into memory (arg is filename)")
+            description = "Initial regressor(s) to load into memory (arg inputStream filename)")
     String initialRegressor();
 
     @Option(shortName = "t", longName = "testonly",

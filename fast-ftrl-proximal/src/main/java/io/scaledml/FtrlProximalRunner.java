@@ -1,94 +1,83 @@
 package io.scaledml;
 
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.Disruptor;
-import com.lmax.disruptor.dsl.ProducerType;
+import com.sun.istack.internal.Nullable;
 import io.scaledml.io.LineBytesBuffer;
-import it.unimi.dsi.fastutil.doubles.DoubleList;
-import it.unimi.dsi.fastutil.floats.FloatBigList;
+import io.scaledml.outputformats.OutputFormat;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
-import it.unimi.dsi.fastutil.longs.LongList;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.Executors;
+import java.nio.file.Path;
+import java.util.Optional;
 
 public class FtrlProximalRunner {
-    Disruptor<LineBytesBuffer> inputDisruptor = new Disruptor<LineBytesBuffer>(
-            LineBytesBuffer::new,
-            512,
-            Executors.newCachedThreadPool(),
-            ProducerType.SINGLE,
-            new SleepingWaitStrategy());
-    Disruptor<FtrlProximalState.Increment> incrementDisruptor = new Disruptor<FtrlProximalState.Increment>(
-            FtrlProximalState.Increment::new,
-            8,
-            Executors.newCachedThreadPool());
-    private FloatBigList n;
-    private FloatBigList z;
+    private Disruptor<LineBytesBuffer> inputDisruptor;
+    private Disruptor<?> secondDisruptor;
+    private InputStream inputStream;
+    private FtrlProximalModel model;
+    private Path outputForModelPath;
+    private OutputFormat outputFormat;
 
-    static class TrainEventProcessor implements EventHandler<LineBytesBuffer> {
-        int id;
-        InputFormat format;
-        FTRLProximalAlgorithm algorithm;
-        RunStatistics statistics;
-
-        @Override
-        public void onEvent(LineBytesBuffer event, long sequence, boolean endOfBatch) throws Exception {
-            if (sequence % id != 0) {
-                return;
-            }
-            SparseItem parse = format.parse(event);
-            double train = algorithm.train(parse);
-            statistics.collectStatistics(parse, train);
-        }
-    }
-
-    class TrainFrtrlPriximalState implements FtrlProximalState {
-        long currentIncrementCursor;
-        @Override
-        public long size() {
-            return n.size64();
-        }
-
-        @Override
-        public void readVectors(LongList indexes, DoubleList currentN, DoubleList currentZ) {
-            currentN.clear();
-            currentZ.clear();
-            for (long index : indexes) {
-                currentN.add(n.getFloat(index));
-                currentZ.add(z.getFloat(index));
-            }
-        }
-
-        @Override
-        public Increment getIncrement() {
-            currentIncrementCursor = incrementDisruptor.getCursor();
-            Increment increment = incrementDisruptor.get(currentIncrementCursor);
-            increment.clear();
-            return increment;
-        }
-
-        @Override
-        public void writeIncrement() {
-            incrementDisruptor.getRingBuffer().publish(currentIncrementCursor);
-        }
-    }
-
-    public void process(InputStream is) throws IOException {
-        try (FastBufferedInputStream stream = new FastBufferedInputStream(is)) {
+    public void process() throws IOException {
+        try (FastBufferedInputStream stream = new FastBufferedInputStream(inputStream)) {
             inputDisruptor.start();
+            secondDisruptor.start();
             RingBuffer<LineBytesBuffer> ringBuffer = inputDisruptor.getRingBuffer();
-            long cursor = ringBuffer.getCursor();
+            long cursor = ringBuffer.next();
             LineBytesBuffer buffer = ringBuffer.get(cursor);
             while (buffer.readLineFrom(stream)) {
                 ringBuffer.publish(cursor);
-                cursor = ringBuffer.getCursor();
+                cursor = ringBuffer.next();
                 buffer = ringBuffer.get(cursor);
             }
-        } finally {
             inputDisruptor.shutdown();
+            secondDisruptor.shutdown();
+
+        } finally {
+            try (OutputFormat of = outputFormat) {}
         }
+        if (outputForModelPath != null) {
+            FtrlProximalModel.saveModel(model, outputForModelPath);
+        }
+    }
+
+    @Inject
+    public FtrlProximalRunner inputDisruptor(@Named("inputDisruptor") Disruptor<LineBytesBuffer> inputDisruptor) {
+        this.inputDisruptor = inputDisruptor;
+        return this;
+    }
+    @Inject
+    public FtrlProximalRunner secondDisruptor(@Named("secondDisruptor") Disruptor<?> secondDisruptor) {
+        this.secondDisruptor = secondDisruptor;
+        return this;
+    }
+    @Inject
+    public FtrlProximalRunner inputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+        return this;
+    }
+    @Inject
+    public FtrlProximalRunner model(FtrlProximalModel model) {
+        this.model = model;
+        return this;
+    }
+    @Inject
+    public FtrlProximalRunner outputFormat(OutputFormat outputFormat) {
+        this.outputFormat = outputFormat;
+        return this;
+    }
+    @Inject
+    public FtrlProximalRunner outputForModelPath(Optional<Path> outputForModelPath) {
+        return outputForModelPath(outputForModelPath.orElse(null));
+    }
+
+    public FtrlProximalRunner outputForModelPath(Path outputForModelPath) {
+        this.outputForModelPath = outputForModelPath;
+        return this;
     }
 }

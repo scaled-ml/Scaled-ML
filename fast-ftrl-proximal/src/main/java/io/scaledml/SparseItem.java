@@ -15,15 +15,16 @@ public class SparseItem {
         indexes.add(index);
     }
 
-    public LongList getIndexes() {
+    public LongList indexes() {
         return indexes;
     }
 
-    public void setLabel(double label) {
+    public SparseItem label(double label) {
         this.label = label;
+        return this;
     }
 
-    public double getLabel() {
+    public double label() {
         return label;
     }
 
