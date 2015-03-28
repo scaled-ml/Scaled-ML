@@ -22,6 +22,7 @@ public class IntegrationTest {
     public void testRunFtrlProximal() throws Exception {
         Main.runFtrlProximal(new FtrlOptionsObject()
                 .finalRegressor(tempDirectory + "/model")
+                .threads(3)
                 .data(getClass().getResource("/train-small.vw").getPath()));
         Main.runFtrlProximal(new FtrlOptionsObject()
                 .initialRegressor(tempDirectory + "/model")
@@ -33,8 +34,8 @@ public class IntegrationTest {
         int predictionsNum = predictions.length;
         assertEquals(predictionsNum, 100);
         assertTrue(Arrays.stream(predictions).allMatch(p -> p < 0.5));
-        assertEquals(0.2355821069092084, predictions[0], 0.00001);
-        assertEquals(0.2495902538274775, predictions[63], 0.00001);
+        assertEquals(0.2355821069092084, predictions[0], 0.001);
+        assertEquals(0.2495902538274775, predictions[63], 0.001);
     }
 
     @After

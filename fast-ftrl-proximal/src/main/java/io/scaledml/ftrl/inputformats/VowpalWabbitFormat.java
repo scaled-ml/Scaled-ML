@@ -10,6 +10,7 @@ import io.scaledml.ftrl.io.LineBytesBuffer;
 
 public class VowpalWabbitFormat implements InputFormat {
     private final static HashFunction murmur =  Hashing.murmur3_128(42);
+    private static final char NAME_CHAR = 'z';
     private long featuresNumber;
     private final LineBytesBuffer buffer = new LineBytesBuffer();
     private final LineBytesBuffer namespace = new LineBytesBuffer();
@@ -30,7 +31,7 @@ public class VowpalWabbitFormat implements InputFormat {
         State state = State.BEFORE_LABEL;
         for (int i = 0; i < line.size(); i++) {
             byte b = line.get(i);
-            char c = (char) b;
+            char c = b > 0 ? (char) b : NAME_CHAR;
             switch (state) {
                 case BEFORE_LABEL:
                     if (NUMBER_MATCHER.matches(c)) {

@@ -30,4 +30,18 @@ public class VowpalWabbitFormatTest {
         assertEquals(0., item.label(), 0.000001);
         assertEquals(20, item.indexes().size());
     }
+
+    @Test
+    public void testParseUtf8() throws Exception {
+        String line1 = "1 |КАТ1 ФИЧА1 |кат2 фича2 фича3 |запрос у попа была собака он ее любил ";
+        InputFormat format = new VowpalWabbitFormat()
+                .featuresNumber(500);
+        LineBytesBuffer line = new LineBytesBuffer();
+        line.readLineFrom(new FastBufferedInputStream(new ReaderInputStream(new StringReader(line1), Charsets.UTF_8)));
+        SparseItem item = new SparseItem();
+        format.parse(line, item);
+        assertNotNull(item);
+        assertEquals(1., item.label(), 0.000001);
+        assertEquals(10, item.indexes().size());
+    }
 }
