@@ -54,12 +54,10 @@ public interface FtrlOptions {
     int threads();
 
     @Option(longName = "scalable",
-            description = "Make algorithm more scalable may be in cost of some quality loss")
+            description = "Make algorithm more scalable may be in cost of some quality loss. " +
+                    "You should not use that property with threads < 8")
     boolean scalable();
 
-    @Option(longName = "input-ring-size", defaultValue = "0", hidden = true)
-    int inputRingSize();
-
-    @Option(longName = "second-ring-size", defaultValue = "0", hidden = true)
-    int secondRingSize();
+    @Option(longName = "ring-size", defaultValue = "0", hidden = true)
+    int ringSize();
 }

@@ -141,12 +141,7 @@ public class FtrlOptionsObject implements FtrlOptions {
     }
 
     @Override
-    public int inputRingSize() {
-        return 0;
-    }
-
-    @Override
-    public int secondRingSize() {
+    public int ringSize() {
         return 0;
     }
 }

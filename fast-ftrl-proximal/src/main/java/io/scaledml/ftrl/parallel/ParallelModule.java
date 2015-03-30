@@ -20,7 +20,7 @@ public class ParallelModule extends AbstractParallelModule<Increment> {
 
     @Override
     protected void configure() {
-        confgureCommonBeans();
+        configureCommonBeans();
         bindConstant().annotatedWith(Names.named("statsCollectors")).to(options.threads());
         bind(new TypeLiteral<EventHandler<TwoPhaseEvent<Increment>>>() {}).to(WriteUpdatesEventHandler.class).asEagerSingleton();
         bind(new TypeLiteral<WorkHandler<TwoPhaseEvent<Increment>>>() {}).to(LearnWorkHandler.class);

@@ -115,7 +115,7 @@ public abstract class AbstractParallelModule<T extends Object> extends AbstractM
     protected abstract EventFactory<T> outputEventFactory();
 
 
-    protected void confgureCommonBeans() {
+    protected void configureCommonBeans() {
         ThrowingProviderBinder.forModule(this);
         bindConstant().annotatedWith(Names.named("testOnly")).to(options.testOnly());
         bind(InputFormat.class).to(VowpalWabbitFormat.class);
@@ -124,6 +124,6 @@ public abstract class AbstractParallelModule<T extends Object> extends AbstractM
     }
 
     protected int ringBufferSize() {
-        return options.inputRingSize() > 0 ? options.inputRingSize() : 2048;
+        return options.ringSize() > 0 ? options.ringSize() : 2048;
     }
 }

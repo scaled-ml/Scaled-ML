@@ -21,7 +21,7 @@ public class SemiParallelModule extends AbstractParallelModule<SparseItem> {
 
     @Override
     protected void configure() {
-        confgureCommonBeans();
+        configureCommonBeans();
         bindConstant().annotatedWith(Names.named("statsCollectors")).to(1);
         bind(new TypeLiteral<EventHandler<TwoPhaseEvent<SparseItem>>>() {}).to(LearnEventHandler.class).asEagerSingleton();
         bind(new TypeLiteral<WorkHandler<TwoPhaseEvent<SparseItem>>>() {}).to(ParseInputWorkHandler.class);
