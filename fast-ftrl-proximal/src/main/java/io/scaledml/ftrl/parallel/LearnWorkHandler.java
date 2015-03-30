@@ -1,6 +1,7 @@
 package io.scaledml.ftrl.parallel;
 
 import com.google.inject.Inject;
+import com.lmax.disruptor.LifecycleAware;
 import com.lmax.disruptor.WorkHandler;
 import io.scaledml.ftrl.FTRLProximalAlgorithm;
 import io.scaledml.ftrl.Increment;
@@ -8,8 +9,13 @@ import io.scaledml.ftrl.SparseItem;
 import io.scaledml.ftrl.conf.TwoPhaseEvent;
 import io.scaledml.ftrl.inputformats.InputFormat;
 import io.scaledml.ftrl.outputformats.OutputFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class LearnWorkHandler implements WorkHandler<TwoPhaseEvent<Increment>> {
+import java.io.IOException;
+
+public class LearnWorkHandler implements WorkHandler<TwoPhaseEvent<Increment>>, LifecycleAware {
+    private static final Logger logger = LoggerFactory.getLogger(LearnWorkHandler.class);
     private InputFormat inputFormat;
     private FTRLProximalAlgorithm algorithm;
     private OutputFormat outputFormat;
@@ -36,5 +42,18 @@ public class LearnWorkHandler implements WorkHandler<TwoPhaseEvent<Increment>> {
     public LearnWorkHandler outputFormat(OutputFormat outputFormat) {
         this.outputFormat = outputFormat;
         return this;
+    }
+
+    @Override
+    public void onStart() {
+    }
+
+    @Override
+    public void onShutdown() {
+        try {
+            outputFormat.close();
+        } catch (IOException e) {
+            logger.error("failed to close", e);
+        }
     }
 }

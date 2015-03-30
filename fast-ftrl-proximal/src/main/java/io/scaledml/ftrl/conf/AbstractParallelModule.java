@@ -57,6 +57,7 @@ public abstract class AbstractParallelModule<T extends Object> extends AbstractM
 
     @Provides
     @Named("delegate")
+    @Singleton
     OutputFormat delegateOutputFormat() throws IOException {
         if (options.predictions() == null) {
             return new NullOutputFormat();

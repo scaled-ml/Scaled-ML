@@ -53,6 +53,8 @@ public class IntegrationTest {
         Main.runFtrlProximal(new FtrlOptionsObject()
                 .initialRegressor(tempDirectory + "/model")
                 .testOnly(true)
+                .threads(3)
+                .scalable(true)
                 .predictions(tempDirectory + "/predictions")
                 .data(getClass().getResource("/test-small.vw").getPath()));
         double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))

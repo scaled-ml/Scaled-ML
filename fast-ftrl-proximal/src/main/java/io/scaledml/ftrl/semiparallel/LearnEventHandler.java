@@ -2,6 +2,7 @@ package io.scaledml.ftrl.semiparallel;
 
 import com.google.inject.Inject;
 import com.lmax.disruptor.EventHandler;
+import com.lmax.disruptor.LifecycleAware;
 import io.scaledml.ftrl.FTRLProximalAlgorithm;
 import io.scaledml.ftrl.FtrlProximalModel;
 import io.scaledml.ftrl.Increment;
@@ -11,7 +12,9 @@ import io.scaledml.ftrl.outputformats.OutputFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>> {
+import java.io.IOException;
+
+public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>>, LifecycleAware {
     private static final Logger logger = LoggerFactory.getLogger(LearnEventHandler.class);
     private OutputFormat outputFormat;
     private FTRLProximalAlgorithm algorithm;
@@ -39,5 +42,18 @@ public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>
     public LearnEventHandler model(FtrlProximalModel model) {
         this.model = model;
         return this;
+    }
+
+    @Override
+    public void onStart() {
+    }
+
+    @Override
+    public void onShutdown() {
+        try {
+            outputFormat.close();
+        } catch (IOException e) {
+            logger.error("Failed to close", e);
+        }
     }
 }

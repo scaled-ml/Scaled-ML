@@ -36,7 +36,7 @@ public class CollectStatisticsOutputFormat implements OutputFormat {
     @Override
     public void close() throws IOException {
         finishListener.finishedCollectingStatistics(this);
-        delegate.close();
+        // delegate can be shared among threads so it mus be closed separately
     }
 
     public double logLikelyhood() {

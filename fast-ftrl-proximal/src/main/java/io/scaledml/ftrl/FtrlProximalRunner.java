@@ -34,9 +34,8 @@ public class FtrlProximalRunner {
                 buffer = ringBuffer.get(cursor).input();
             }
             disruptor.shutdown();
-
         } finally {
-            try (OutputFormat of = outputFormat) {}
+            outputFormat.close();
         }
         if (outputForModelPath != null) {
             FtrlProximalModel.saveModel(model, outputForModelPath);
@@ -60,7 +59,7 @@ public class FtrlProximalRunner {
         return this;
     }
     @Inject
-    public FtrlProximalRunner outputFormat(OutputFormat outputFormat) {
+    public FtrlProximalRunner outputFormat(@Named("delegate") OutputFormat outputFormat) {
         this.outputFormat = outputFormat;
         return this;
     }
