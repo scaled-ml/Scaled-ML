@@ -1,35 +1,23 @@
 package io.scaledml.ftrl.semiparallel;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
-import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.WorkHandler;
-import com.lmax.disruptor.dsl.Disruptor;
-import io.scaledml.ftrl.inputformats.InputFormat;
 import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.io.LineBytesBuffer;
+import io.scaledml.ftrl.conf.TwoPhaseEvent;
+import io.scaledml.ftrl.inputformats.InputFormat;
 
 
-public class ParseInputWorkHandler implements WorkHandler<LineBytesBuffer> {
+public class ParseInputWorkHandler implements WorkHandler<TwoPhaseEvent<SparseItem>> {
     InputFormat inputFormat;
-    Disruptor<SparseItem> itemDisruptor;
 
     @Override
-    public void onEvent(LineBytesBuffer event) throws Exception {
-        long cursor = itemDisruptor.getRingBuffer().next();
-        SparseItem item = itemDisruptor.get(cursor);
-        inputFormat.parse(event, item);
-        itemDisruptor.getRingBuffer().publish(cursor);
+    public void onEvent(TwoPhaseEvent<SparseItem> event) throws Exception {
+        inputFormat.parse(event.input(), event.output());
     }
 
     @Inject
     public ParseInputWorkHandler inputFormat(InputFormat format) {
         this.inputFormat = format;
-        return this;
-    }
-    @Inject
-    public ParseInputWorkHandler itemDisruptor(@Named("secondDisruptor") Disruptor<SparseItem> itemDisruptor) {
-        this.itemDisruptor = itemDisruptor;
         return this;
     }
 }

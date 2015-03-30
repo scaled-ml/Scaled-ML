@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.CliFactory;
+import io.scaledml.ftrl.parallel.ParallelModule;
 import io.scaledml.ftrl.semiparallel.SemiParallelModule;
 
 public class Main {
@@ -20,8 +21,15 @@ public class Main {
     }
 
     public static void runFtrlProximal(FtrlOptions ftrlOptions) throws Exception {
-        Injector injector = Guice.createInjector(new SemiParallelModule(ftrlOptions));
+        Injector injector = createInjector(ftrlOptions);
         FtrlProximalRunner runner = injector.getInstance(FtrlProximalRunner.class);
         runner.process();
+    }
+
+    private static Injector createInjector(FtrlOptions ftrlOptions) {
+        if (ftrlOptions.scalable()) {
+            return Guice.createInjector(new ParallelModule(ftrlOptions));
+        }
+        return Guice.createInjector(new SemiParallelModule(ftrlOptions));
     }
 }

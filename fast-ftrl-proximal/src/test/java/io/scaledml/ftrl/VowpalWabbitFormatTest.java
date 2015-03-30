@@ -1,8 +1,8 @@
 package io.scaledml.ftrl;
 
 import com.google.common.base.Charsets;
-import io.scaledml.ftrl.inputformats.VowpalWabbitFormat;
 import io.scaledml.ftrl.inputformats.InputFormat;
+import io.scaledml.ftrl.inputformats.VowpalWabbitFormat;
 import io.scaledml.ftrl.io.LineBytesBuffer;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 import org.apache.commons.io.input.ReaderInputStream;
@@ -10,7 +10,8 @@ import org.junit.Test;
 
 import java.io.StringReader;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class VowpalWabbitFormatTest {
 
