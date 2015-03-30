@@ -52,4 +52,14 @@ public interface FtrlOptions {
     @Option(longName = "threads", defaultValue = "1",
             description = "Parallelization level")
     int threads();
+
+    @Option(longName = "scalable",
+            description = "Make algorithm more scalable may be in cost of some quality loss")
+    boolean scalable();
+
+    @Option(longName = "input-ring-size", defaultValue = "0", hidden = true)
+    int inputRingSize();
+
+    @Option(longName = "second-ring-size", defaultValue = "0", hidden = true)
+    int secondRingSize();
 }

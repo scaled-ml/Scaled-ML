@@ -3,10 +3,11 @@ package io.scaledml.ftrl;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.lmax.disruptor.*;
+import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
-import io.scaledml.ftrl.outputformats.OutputFormat;
+import io.scaledml.ftrl.conf.TwoPhaseEvent;
 import io.scaledml.ftrl.io.LineBytesBuffer;
+import io.scaledml.ftrl.outputformats.OutputFormat;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 
 import java.io.IOException;
@@ -15,8 +16,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 public class FtrlProximalRunner {
-    private Disruptor<LineBytesBuffer> inputDisruptor;
-    private Disruptor<?> secondDisruptor;
+    private Disruptor<? extends TwoPhaseEvent<?>> disruptor;
     private InputStream inputStream;
     private FtrlProximalModel model;
     private Path outputForModelPath;
@@ -24,18 +24,16 @@ public class FtrlProximalRunner {
 
     public void process() throws IOException {
         try (FastBufferedInputStream stream = new FastBufferedInputStream(inputStream)) {
-            inputDisruptor.start();
-            secondDisruptor.start();
-            RingBuffer<LineBytesBuffer> ringBuffer = inputDisruptor.getRingBuffer();
+            disruptor.start();
+            RingBuffer<? extends TwoPhaseEvent> ringBuffer = disruptor.getRingBuffer();
             long cursor = ringBuffer.next();
-            LineBytesBuffer buffer = ringBuffer.get(cursor);
+            LineBytesBuffer buffer = ringBuffer.get(cursor).input();
             while (buffer.readLineFrom(stream)) {
                 ringBuffer.publish(cursor);
                 cursor = ringBuffer.next();
-                buffer = ringBuffer.get(cursor);
+                buffer = ringBuffer.get(cursor).input();
             }
-            inputDisruptor.shutdown();
-            secondDisruptor.shutdown();
+            disruptor.shutdown();
 
         } finally {
             try (OutputFormat of = outputFormat) {}
@@ -46,15 +44,11 @@ public class FtrlProximalRunner {
     }
 
     @Inject
-    public FtrlProximalRunner inputDisruptor(@Named("inputDisruptor") Disruptor<LineBytesBuffer> inputDisruptor) {
-        this.inputDisruptor = inputDisruptor;
+    public FtrlProximalRunner disruptor(@Named("disruptor") Disruptor<? extends TwoPhaseEvent<?>> disruptor) {
+        this.disruptor = disruptor;
         return this;
     }
-    @Inject
-    public FtrlProximalRunner secondDisruptor(@Named("secondDisruptor") Disruptor<?> secondDisruptor) {
-        this.secondDisruptor = secondDisruptor;
-        return this;
-    }
+
     @Inject
     public FtrlProximalRunner inputStream(InputStream inputStream) {
         this.inputStream = inputStream;

@@ -1,6 +1,8 @@
 package io.scaledml.ftrl.outputformats;
 
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import io.scaledml.ftrl.SparseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +12,10 @@ import java.io.IOException;
 public class CollectStatisticsOutputFormat implements OutputFormat {
     private static final Logger logger = LoggerFactory.getLogger(CollectStatisticsOutputFormat.class);
     private OutputFormat delegate;
-    double logLikelyhood = 0.;
-    long itemNo = 0;
-    long nextItemNoToPrint = 1;
+    private FinishCollectStatisticsListener finishListener;
+    private double logLikelyhood = 0.;
+    private long itemNo = 0;
+    private long nextItemNoToPrint = 1;
 
     public CollectStatisticsOutputFormat() {
         logger.info("mean logloss\titems\tcurrent label\tcurrent prediction");
@@ -32,12 +35,27 @@ public class CollectStatisticsOutputFormat implements OutputFormat {
 
     @Override
     public void close() throws IOException {
-        logger.info("Total mean logloss: " + -logLikelyhood / itemNo + " Total items: " + itemNo);
+        finishListener.finishedCollectingStatistics(this);
         delegate.close();
     }
 
-    public CollectStatisticsOutputFormat delegate(OutputFormat delegate) {
+    public double logLikelyhood() {
+        return logLikelyhood;
+    }
+
+    public long itemNo() {
+        return itemNo;
+    }
+
+    @Inject
+    public CollectStatisticsOutputFormat delegate(@Named("delegate") OutputFormat delegate) {
         this.delegate = delegate;
+        return this;
+    }
+
+    @Inject
+    public CollectStatisticsOutputFormat finishListener(FinishCollectStatisticsListener finishListener) {
+        this.finishListener = finishListener;
         return this;
     }
 }
