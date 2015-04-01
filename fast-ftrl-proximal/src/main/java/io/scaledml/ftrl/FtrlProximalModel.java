@@ -1,6 +1,5 @@
 package io.scaledml.ftrl;
 
-import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.floats.FloatBigArrayBigList;
 import it.unimi.dsi.fastutil.floats.FloatBigList;

@@ -12,6 +12,7 @@ import io.scaledml.ftrl.conf.TwoPhaseEvent;
 import io.scaledml.ftrl.outputformats.StatisticsCalculator;
 import io.scaledml.ftrl.outputformats.OutputFormat;
 
+
 public class ParallelModule extends AbstractParallelModule<Increment> {
 
     public ParallelModule(FtrlOptions options) {

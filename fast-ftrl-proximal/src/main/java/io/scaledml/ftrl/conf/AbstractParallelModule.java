@@ -35,7 +35,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public abstract class AbstractParallelModule<T extends Object> extends AbstractModule {
+public abstract class AbstractParallelModule<T> extends AbstractModule {
     protected final ExecutorService threadsProvider = Executors.newCachedThreadPool(DaemonThreadFactory.INSTANCE);
     protected final FtrlOptions options;
 
@@ -100,6 +100,7 @@ public abstract class AbstractParallelModule<T extends Object> extends AbstractM
     @Provides
     @Singleton
     @Named("disruptor")
+    @SuppressWarnings("Unchecked")
     protected Disruptor<TwoPhaseEvent<T>> inputDisruptor(Provider<WorkHandler<TwoPhaseEvent<T>>> workHandlerProvider,
                                                          Provider<EventHandler<TwoPhaseEvent<T>>> evenHandlerProvider) {
         Disruptor<TwoPhaseEvent<T>> disruptor = new Disruptor<>(

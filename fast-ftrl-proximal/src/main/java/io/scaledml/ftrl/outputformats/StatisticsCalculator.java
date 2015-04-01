@@ -4,6 +4,7 @@ package io.scaledml.ftrl.outputformats;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import io.scaledml.ftrl.SparseItem;
+import io.scaledml.ftrl.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,7 @@ public class StatisticsCalculator implements OutputFormat {
     public void emmit(SparseItem item, double prediction) {
         delegate.emmit(item, prediction);
         itemNo++;
-        logLikelyhood += Math.log(item.label() - 0. > 0.9 ?  prediction : 1 - prediction);
+        logLikelyhood += Math.log(Util.doublesEqual(1., item.label()) ?  prediction : 1 - prediction);
         if (itemNo == nextItemNoToPrint) {
             nextItemNoToPrint *= 2;
             logger.info(-logLikelyhood / itemNo + "\t" + itemNo + "\t" +

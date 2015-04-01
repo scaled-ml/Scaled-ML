@@ -28,7 +28,7 @@ public class LineBytesBufferTest {
     public void testReadLine() throws Exception {
         Path fileExpected = Paths.get(tempDirectory.toString(), "expected");
         try (BufferedWriter writer = Files.newBufferedWriter(fileExpected, Charsets.US_ASCII)) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 2000; i++) {
                 for (int j = 0; j < i; j++) {
                     sb.append(j);

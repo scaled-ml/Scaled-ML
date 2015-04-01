@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.bytes.ByteArrays;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 public class LineBytesBuffer {
     private byte[] bytes;
@@ -39,10 +38,7 @@ public class LineBytesBuffer {
             bytes = ByteArrays.grow(bytes, bytes.length + 1024);
         }
         size = start + Math.max(len, 0);
-        if (size == 0 && len < 0) {
-            return false;
-        }
-        return true;
+        return !(size == 0 && len < 0);
     }
 
     public String toAsciiString() {

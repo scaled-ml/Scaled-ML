@@ -3,6 +3,7 @@ package io.scaledml.ftrl.inputformats;
 import com.google.common.base.CharMatcher;
 import com.google.inject.Inject;
 import io.scaledml.ftrl.SparseItem;
+import io.scaledml.ftrl.Util;
 import io.scaledml.ftrl.io.LineBytesBuffer;
 
 public class VowpalWabbitFormat implements InputFormat {
@@ -12,7 +13,7 @@ public class VowpalWabbitFormat implements InputFormat {
     private FeatruresProcessor featruresProcessor;
 
     private enum State {
-        BEFORE_LABEL, LABEL, AFTER_LABEL, BEFORE_NAMESPACE, NAMESPACE, BEFORE_FEATURE, FEATURE;
+        BEFORE_LABEL, LABEL, AFTER_LABEL, BEFORE_NAMESPACE, NAMESPACE, BEFORE_FEATURE, FEATURE
     }
 
     private final CharMatcher NUMBER_MATCHER = CharMatcher.DIGIT.or(CharMatcher.anyOf(".-")).precomputed();
@@ -39,7 +40,7 @@ public class VowpalWabbitFormat implements InputFormat {
                     if (NUMBER_MATCHER.matches(c)) {
                         buffer.append(b);
                     } else {
-                        item.label(Double.parseDouble(buffer.toAsciiString()) > 0.0001 ? 1. : 0.);
+                        item.label(Util.doublesEqual(1., Double.parseDouble(buffer.toAsciiString())) ? 1. : 0.);
                         buffer.clear();
                         state = State.AFTER_LABEL;
                     }

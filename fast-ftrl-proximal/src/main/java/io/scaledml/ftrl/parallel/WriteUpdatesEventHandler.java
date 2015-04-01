@@ -6,8 +6,6 @@ import com.lmax.disruptor.EventHandler;
 import io.scaledml.ftrl.FtrlProximalModel;
 import io.scaledml.ftrl.Increment;
 import io.scaledml.ftrl.conf.TwoPhaseEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class WriteUpdatesEventHandler implements EventHandler<TwoPhaseEvent<Increment>> {
     private FtrlProximalModel model;
