@@ -34,14 +34,4 @@ public class Increment {
     public LongList indexes() {
         return indexes;
     }
-
-    public void writeToModel(FtrlProximalModel model) {
-        for (int i = 0; i < indexes().size(); i++) {
-            long index = indexes().getLong(i);
-            double nDelta = incrementOfN().getDouble(i);
-            double zDelta = incrementOfZ().getDouble(i);
-            model.n().set(index, (float) (model.n().getFloat(index) + nDelta));
-            model.z().set(index, (float) (model.z().getFloat(index) + zDelta));
-        }
-    }
 }

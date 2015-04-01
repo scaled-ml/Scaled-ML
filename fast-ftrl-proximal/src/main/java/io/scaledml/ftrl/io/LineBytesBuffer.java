@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.bytes.ByteArrays;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class LineBytesBuffer {
     private byte[] bytes;
@@ -64,6 +65,18 @@ public class LineBytesBuffer {
         bytes[size] = b;
         size++;
     }
+
+    public void putInteger(int num) {
+        append(int0(num));
+        append(int1(num));
+        append(int2(num));
+        append(int3(num));
+    }
+
+    private static byte int3(int x) { return (byte)(x >> 24); }
+    private static byte int2(int x) { return (byte)(x >> 16); }
+    private static byte int1(int x) { return (byte)(x >>  8); }
+    private static byte int0(int x) { return (byte)(x      ); }
 
     public void clear() {
         size = 0;

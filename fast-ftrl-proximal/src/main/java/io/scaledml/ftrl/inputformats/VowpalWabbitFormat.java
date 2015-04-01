@@ -1,19 +1,15 @@
 package io.scaledml.ftrl.inputformats;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hashing;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import io.scaledml.ftrl.SparseItem;
 import io.scaledml.ftrl.io.LineBytesBuffer;
 
 public class VowpalWabbitFormat implements InputFormat {
-    private final static HashFunction murmur =  Hashing.murmur3_128(42);
     private static final char NAME_CHAR = 'z';
-    private long featuresNumber;
     private final LineBytesBuffer buffer = new LineBytesBuffer();
     private final LineBytesBuffer namespace = new LineBytesBuffer();
+    private FeatruresProcessor featruresProcessor;
 
     private enum State {
         BEFORE_LABEL, LABEL, AFTER_LABEL, BEFORE_NAMESPACE, NAMESPACE, BEFORE_FEATURE, FEATURE;
@@ -95,18 +91,17 @@ public class VowpalWabbitFormat implements InputFormat {
         if (state == State.FEATURE) {
             addIndex(item);
         }
+        featruresProcessor.finalize(item);
     }
 
     private void addIndex(SparseItem item) {
-        item.addIndex(Math.abs(murmur.newHasher()
-                        .putBytes(namespace.bytes(), 0, namespace.size())
-                        .putBytes(buffer.bytes(), 0, buffer.size()).hash().asLong()) % featuresNumber);
+        featruresProcessor.addFeature(item, namespace, buffer, 1.);
         buffer.clear();
     }
 
     @Inject
-    public VowpalWabbitFormat featuresNumber(@Named("featuresNumber") long featuresNumber) {
-        this.featuresNumber = featuresNumber;
+    public VowpalWabbitFormat featruresProcessor(FeatruresProcessor featruresProcessor) {
+        this.featruresProcessor = featruresProcessor;
         return this;
     }
 }

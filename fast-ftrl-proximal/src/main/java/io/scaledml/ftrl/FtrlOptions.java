@@ -53,7 +53,7 @@ public interface FtrlOptions {
             description = "Parallelization level")
     int threads();
 
-    @Option(longName = "scalable",
+    @Option(longName = "scalable", hidden = true,
             description = "Make algorithm more scalable may be in cost of some quality loss. " +
                     "You should not use that property with threads < 8")
     boolean scalable();

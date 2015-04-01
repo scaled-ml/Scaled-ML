@@ -10,7 +10,7 @@ import io.scaledml.ftrl.FtrlOptions;
 import io.scaledml.ftrl.SparseItem;
 import io.scaledml.ftrl.conf.AbstractParallelModule;
 import io.scaledml.ftrl.conf.TwoPhaseEvent;
-import io.scaledml.ftrl.outputformats.CollectStatisticsOutputFormat;
+import io.scaledml.ftrl.outputformats.StatisticsCalculator;
 import io.scaledml.ftrl.outputformats.OutputFormat;
 
 public class SemiParallelModule extends AbstractParallelModule<SparseItem> {
@@ -25,7 +25,7 @@ public class SemiParallelModule extends AbstractParallelModule<SparseItem> {
         bindConstant().annotatedWith(Names.named("statsCollectors")).to(1);
         bind(new TypeLiteral<EventHandler<TwoPhaseEvent<SparseItem>>>() {}).to(LearnEventHandler.class).asEagerSingleton();
         bind(new TypeLiteral<WorkHandler<TwoPhaseEvent<SparseItem>>>() {}).to(ParseInputWorkHandler.class);
-        bind(OutputFormat.class).to(CollectStatisticsOutputFormat.class).asEagerSingleton();
+        bind(OutputFormat.class).to(StatisticsCalculator.class).asEagerSingleton();
     }
 
     @Override

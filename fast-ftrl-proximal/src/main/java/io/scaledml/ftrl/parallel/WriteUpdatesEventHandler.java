@@ -10,13 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class WriteUpdatesEventHandler implements EventHandler<TwoPhaseEvent<Increment>> {
-    private static final Logger logger = LoggerFactory.getLogger(WriteUpdatesEventHandler.class);
     private FtrlProximalModel model;
-
 
     @Override
     public void onEvent(TwoPhaseEvent<Increment> event, long sequence, boolean endOfBatch) throws Exception {
-        event.output().writeToModel(model);
+        model.writeToModel(event.output());
     }
 
     @Inject

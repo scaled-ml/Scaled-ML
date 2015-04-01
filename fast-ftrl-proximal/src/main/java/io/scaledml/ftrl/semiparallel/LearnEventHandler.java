@@ -24,7 +24,7 @@ public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>
     @Override
     public void onEvent(TwoPhaseEvent<SparseItem> event, long sequence, boolean endOfBatch) throws Exception {
         double prediction = algorithm.learn(event.output(), increment);
-        increment.writeToModel(model);
+        model.writeToModel(increment);
         outputFormat.emmit(event.output(), prediction);
     }
 

@@ -1,11 +1,12 @@
 package io.scaledml.ftrl;
 
+import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.floats.FloatBigArrayBigList;
 import it.unimi.dsi.fastutil.floats.FloatBigList;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 import it.unimi.dsi.fastutil.io.FastBufferedOutputStream;
-import it.unimi.dsi.fastutil.longs.LongList;
+import it.unimi.dsi.fastutil.longs.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -58,14 +59,6 @@ public class FtrlProximalModel implements Serializable {
         return this;
     }
 
-    public FloatBigList n() {
-        return n;
-    }
-
-    public FloatBigList z() {
-        return z;
-    }
-
     public FtrlProximalModel featuresNumber(long featuresNumber) {
         n = new FloatBigArrayBigList(featuresNumber);
         z = new FloatBigArrayBigList(featuresNumber);
@@ -78,8 +71,8 @@ public class FtrlProximalModel implements Serializable {
         currentN.clear();
         currentZ.clear();
         for (long index : indexes) {
-            currentN.add(n.getFloat(index));
-            currentZ.add(z.getFloat(index));
+            currentN.add(n.get(index));
+            currentZ.add(z.get(index));
         }
     }
 
@@ -97,5 +90,15 @@ public class FtrlProximalModel implements Serializable {
 
     public long featuresNumber() {
         return n.size64();
+    }
+
+    public void writeToModel(Increment increment) {
+        for (int i = 0; i < increment.indexes().size(); i++) {
+            long index = increment.indexes().getLong(i);
+            double nDelta = increment.incrementOfN().getDouble(i);
+            double zDelta = increment.incrementOfZ().getDouble(i);
+            n.set(index, (float) (n.get(index) + nDelta));
+            z.set(index, (float) (z.get(index) + zDelta));
+        }
     }
 }

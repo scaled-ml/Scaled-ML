@@ -9,15 +9,15 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class CollectStatisticsOutputFormat implements OutputFormat {
-    private static final Logger logger = LoggerFactory.getLogger(CollectStatisticsOutputFormat.class);
+public class StatisticsCalculator implements OutputFormat {
+    private static final Logger logger = LoggerFactory.getLogger(StatisticsCalculator.class);
     private OutputFormat delegate;
     private FinishCollectStatisticsListener finishListener;
     private double logLikelyhood = 0.;
     private long itemNo = 0;
     private long nextItemNoToPrint = 1;
 
-    public CollectStatisticsOutputFormat() {
+    public StatisticsCalculator() {
         logger.info("mean logloss\titems\tcurrent label\tcurrent prediction");
     }
 
@@ -48,13 +48,13 @@ public class CollectStatisticsOutputFormat implements OutputFormat {
     }
 
     @Inject
-    public CollectStatisticsOutputFormat delegate(@Named("delegate") OutputFormat delegate) {
+    public StatisticsCalculator delegate(@Named("delegate") OutputFormat delegate) {
         this.delegate = delegate;
         return this;
     }
 
     @Inject
-    public CollectStatisticsOutputFormat finishListener(FinishCollectStatisticsListener finishListener) {
+    public StatisticsCalculator finishListener(FinishCollectStatisticsListener finishListener) {
         this.finishListener = finishListener;
         return this;
     }

@@ -15,7 +15,7 @@ public class FinishCollectStatisticsListener {
     private double totalLogLikelyhood = 0.;
     private long totalItems = 0;
 
-    public synchronized void finishedCollectingStatistics(CollectStatisticsOutputFormat collector) {
+    public synchronized void finishedCollectingStatistics(StatisticsCalculator collector) {
         totalItems += collector.itemNo();
         totalLogLikelyhood += collector.logLikelyhood();
         finishCollectEvents++;
