@@ -49,6 +49,11 @@ public interface FtrlOptions {
             description = "Show this help")
     boolean help();
 
+    @Option(shortName = "q", longName = "quadratic",
+            description = "Add quadratic features"
+    )
+    boolean quadratic();
+
     @Option(longName = "threads", defaultValue = "1",
             description = "Parallelization level")
     int threads();

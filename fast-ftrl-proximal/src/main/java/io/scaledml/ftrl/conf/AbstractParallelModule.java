@@ -14,10 +14,7 @@ import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.scaledml.ftrl.FtrlOptions;
 import io.scaledml.ftrl.FtrlProximalModel;
 import io.scaledml.ftrl.FtrlProximalRunner;
-import io.scaledml.ftrl.inputformats.FeatruresProcessor;
-import io.scaledml.ftrl.inputformats.InputFormat;
-import io.scaledml.ftrl.inputformats.SimpleFeatruresProcessor;
-import io.scaledml.ftrl.inputformats.VowpalWabbitFormat;
+import io.scaledml.ftrl.inputformats.*;
 import io.scaledml.ftrl.outputformats.FinishCollectStatisticsListener;
 import io.scaledml.ftrl.outputformats.NullOutputFormat;
 import io.scaledml.ftrl.outputformats.OutputFormat;
@@ -125,7 +122,17 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
         bind(InputFormat.class).to(VowpalWabbitFormat.class);
         bind(FtrlProximalRunner.class).asEagerSingleton();
         bind(FinishCollectStatisticsListener.class).asEagerSingleton();
-        bind(FeatruresProcessor.class).to(SimpleFeatruresProcessor.class);
+    }
+
+    @Provides
+    public FeatruresProcessor featruresProcessor(@Named("featuresNumber") long featuresNumber) {
+        SimpleFeatruresProcessor simpleFeatruresProcessor = new SimpleFeatruresProcessor().featuresNumber(featuresNumber);
+        if (!options.quadratic()) {
+            return simpleFeatruresProcessor;
+        }
+        return new QuadraticFeaturesProcessor()
+                .featuresNumber(featuresNumber)
+                .next(simpleFeatruresProcessor);
     }
 
     protected int ringBufferSize() {
