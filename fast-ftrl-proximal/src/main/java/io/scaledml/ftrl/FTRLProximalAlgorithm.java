@@ -23,7 +23,7 @@ public class FTRLProximalAlgorithm {
                 double nDelta = gradient * gradient;
                 double n = currentN.getDouble(i);
                 double w = currentWeights.getDouble(i);
-                double learning_rate = 1. / model.alfa() * (Math.sqrt(n + gradient * gradient) - Math.sqrt(n));
+                double learning_rate = 1. / model.alfa() * (Math.sqrt(n + nDelta) - Math.sqrt(n));
                 double zDelta = gradient - w * learning_rate;
                 increment.addIncrement(index, nDelta, zDelta);
             }

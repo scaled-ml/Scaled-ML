@@ -10,7 +10,7 @@ import io.scaledml.ftrl.io.LineBytesBuffer;
 /**
 * Created by aonuchin on 01.04.15.
 */
-public class SimpleFeatruresProcessor implements FeatruresProcessor {
+public class CategorialFeatruresProcessor implements FeatruresProcessor {
     private final static HashFunction murmur = Hashing.murmur3_128(42);
     private long featuresNumber;
 
@@ -23,7 +23,7 @@ public class SimpleFeatruresProcessor implements FeatruresProcessor {
     }
 
     @Inject
-    public SimpleFeatruresProcessor featuresNumber(@Named("featuresNumber") long featuresNumber) {
+    public CategorialFeatruresProcessor featuresNumber(@Named("featuresNumber") long featuresNumber) {
         this.featuresNumber = featuresNumber;
         return this;
     }

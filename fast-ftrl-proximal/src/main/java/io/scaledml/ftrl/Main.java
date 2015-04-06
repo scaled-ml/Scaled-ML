@@ -22,12 +22,13 @@ public class Main {
 
     public static void runFtrlProximal(FtrlOptions ftrlOptions) throws Exception {
         Injector injector = createInjector(ftrlOptions);
+
         FtrlProximalRunner runner = injector.getInstance(FtrlProximalRunner.class);
-        runner.process();
+        runner.process(ftrlOptions.skipFirst());
     }
 
     private static Injector createInjector(FtrlOptions ftrlOptions) {
-        if (ftrlOptions.scalable()) {
+        if (ftrlOptions.parallel()) {
             return Guice.createInjector(new ParallelModule(ftrlOptions));
         }
         return Guice.createInjector(new SemiParallelModule(ftrlOptions));

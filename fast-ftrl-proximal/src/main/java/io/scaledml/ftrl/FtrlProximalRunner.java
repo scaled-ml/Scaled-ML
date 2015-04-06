@@ -22,13 +22,19 @@ public class FtrlProximalRunner {
     private Path outputForModelPath;
     private OutputFormat outputFormat;
 
-    public void process() throws IOException {
+    public void process(boolean skipFirst) throws IOException {
         try (FastBufferedInputStream stream = new FastBufferedInputStream(inputStream)) {
             disruptor.start();
             RingBuffer<? extends TwoPhaseEvent> ringBuffer = disruptor.getRingBuffer();
             long cursor = ringBuffer.next();
             LineBytesBuffer buffer = ringBuffer.get(cursor).input();
+
+            boolean needToSkipNext = skipFirst;
             while (buffer.readLineFrom(stream)) {
+                if (needToSkipNext) {
+                    needToSkipNext = false;
+                    continue;
+                }
                 ringBuffer.publish(cursor);
                 cursor = ringBuffer.next();
                 buffer = ringBuffer.get(cursor).input();
@@ -53,16 +59,19 @@ public class FtrlProximalRunner {
         this.inputStream = inputStream;
         return this;
     }
+
     @Inject
     public FtrlProximalRunner model(FtrlProximalModel model) {
         this.model = model;
         return this;
     }
+
     @Inject
     public FtrlProximalRunner outputFormat(@Named("delegate") OutputFormat outputFormat) {
         this.outputFormat = outputFormat;
         return this;
     }
+
     @Inject
     public FtrlProximalRunner outputForModelPath(Optional<Path> outputForModelPath) {
         return outputForModelPath(outputForModelPath.orElse(null));

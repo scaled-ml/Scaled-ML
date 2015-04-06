@@ -53,11 +53,18 @@ public interface FtrlOptions {
             description = "Parallelization level")
     int threads();
 
-    @Option(longName = "scalable", hidden = true,
-            description = "Make algorithm more scalable may be in cost of some quality loss. " +
+    @Option(longName = "parallel", hidden = true,
+            description = "Make algorithm more parallel may be in cost of some quality loss. " +
                     "You should not use that property with threads < 8")
-    boolean scalable();
+    boolean parallel();
+
+    @Option(longName = "format",defaultValue = "vw", description = "Input file format." +
+            "'vw' or 'csw' are currently supported")
+    String format();
 
     @Option(longName = "ring-size", defaultValue = "0", hidden = true)
     int ringSize();
+
+    @Option(longName = "skip-first", description = "Skip first string of file(usually if it is a csv header", hidden = true)
+    boolean skipFirst();
 }

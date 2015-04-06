@@ -14,6 +14,8 @@ public class FtrlOptionsObject implements FtrlOptions {
     private boolean testOnly = false;
     private int threads = 1;
     private boolean scalable = false;
+    private String format;
+    private boolean skipFirst;
 
     @Override
     public int hashcodeBits() {
@@ -76,12 +78,22 @@ public class FtrlOptionsObject implements FtrlOptions {
     }
 
     @Override
-    public boolean scalable() {
+    public boolean parallel() {
         return scalable;
+    }
+
+    @Override
+    public String format() {
+        return format;
     }
 
     public FtrlOptionsObject hashcodeBits(int hashcodeBits) {
         this.hashcodeBits = hashcodeBits;
+        return this;
+    }
+
+    public FtrlOptionsObject format(String format) {
+        this.format = format;
         return this;
     }
 
@@ -92,6 +104,11 @@ public class FtrlOptionsObject implements FtrlOptions {
 
     public FtrlOptionsObject beta(double beta) {
         this.beta = beta;
+        return this;
+    }
+
+    public FtrlOptionsObject skipFirst(boolean skipFirst) {
+        this.skipFirst = skipFirst;
         return this;
     }
 
@@ -143,5 +160,10 @@ public class FtrlOptionsObject implements FtrlOptions {
     @Override
     public int ringSize() {
         return 0;
+    }
+
+    @Override
+    public boolean skipFirst() {
+        return skipFirst;
     }
 }
