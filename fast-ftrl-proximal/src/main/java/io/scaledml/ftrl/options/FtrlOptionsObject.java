@@ -13,7 +13,7 @@ public class FtrlOptionsObject implements FtrlOptions {
     private String initialRegressor;
     private boolean testOnly = false;
     private int threads = 1;
-    private boolean scalable = false;
+    private boolean parallelLearn = false;
     private boolean quadratic = false;
     private String format = "vw";
     private boolean skipFirst = false;
@@ -85,7 +85,7 @@ public class FtrlOptionsObject implements FtrlOptions {
 
     @Override
     public boolean parallelLearn() {
-        return scalable;
+        return parallelLearn;
     }
 
     @Override
@@ -159,7 +159,7 @@ public class FtrlOptionsObject implements FtrlOptions {
     }
 
     public FtrlOptionsObject scalable(boolean scalable) {
-        this.scalable = scalable;
+        this.parallelLearn = scalable;
         return this;
     }
 

@@ -22,7 +22,7 @@ public class CSVFormatTest {
                 "44.0,1,44,102";
 
         InputFormat format = new CSVFormat()
-                .featruresProcessor(new SimpleFeatruresProcessor().featuresNumber(500));
+                .featruresProcessor(new SimpleFeaturesProcessor().featuresNumber(500));
         LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item);

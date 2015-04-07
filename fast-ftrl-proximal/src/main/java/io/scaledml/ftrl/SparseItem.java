@@ -40,5 +40,6 @@ public class SparseItem {
     public void clear() {
         label = 0.;
         indexes.clear();
+        values.clear();
     }
 }

@@ -33,8 +33,8 @@ public class StatisticsCalculator implements OutputFormat {
         smoothLogLikelyhood = smoothLogLikelyhood * (1. - alfa) + itemLikelyhood * alfa;
         if (itemNo == nextItemNoToPrint) {
             nextItemNoToPrint *= 2;
-            logger.info(-logLikelyhood / itemNo + "\t" + -smoothLogLikelyhood + "\t" + itemNo + "\t" +
-                    item.label() + "\t" + prediction + "\t" + item.indexes().size());
+            logger.info(-logLikelyhood / itemNo + "\t" + ((1. / alfa) > itemNo ? -smoothLogLikelyhood : 0) +
+                    "\t" + itemNo + "\t" + item.label() + "\t" + prediction + "\t" + item.indexes().size());
         }
     }
 

@@ -2,10 +2,11 @@ package io.scaledml.ftrl.featuresprocessors;
 
 import com.google.inject.Inject;
 import io.scaledml.ftrl.SparseItem;
+import io.scaledml.ftrl.inputformats.FeaturesProcessor;
 import io.scaledml.ftrl.util.LineBytesBuffer;
 
-public abstract class ChainFeaturesProcessor implements FeatruresProcessor {
-    private FeatruresProcessor next;
+public abstract class ChainFeaturesProcessor implements FeaturesProcessor {
+    private FeaturesProcessor next;
 
     @Override
     public void addFeature(SparseItem item, LineBytesBuffer namespace, LineBytesBuffer feature, double value) {
@@ -25,7 +26,7 @@ public abstract class ChainFeaturesProcessor implements FeatruresProcessor {
     protected abstract void doFinalize(SparseItem item);
 
     @Inject
-    public <T extends ChainFeaturesProcessor> T next(FeatruresProcessor next) {
+    public <T extends ChainFeaturesProcessor> T next(FeaturesProcessor next) {
         this.next = next;
         return (T) this;
     }

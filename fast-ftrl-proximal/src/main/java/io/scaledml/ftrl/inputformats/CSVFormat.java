@@ -19,7 +19,7 @@ public class CSVFormat implements InputFormat {
 
     private static final String CAT_PREFIX = "CAT";
 
-    private FeatruresProcessor featruresProcessor;
+    private FeaturesProcessor featuresProcessor;
 
     @Override
     public void parse(LineBytesBuffer line, SparseItem item) {
@@ -37,14 +37,14 @@ public class CSVFormat implements InputFormat {
 
         for (int i = 1; i < splits.length; i++) {
             LineBytesBuffer split = new LineBytesBuffer(CAT_PREFIX + i + splits[i]);
-            featruresProcessor.addFeature(item, NAMESPACE, split, 1.);
+            featuresProcessor.addFeature(item, NAMESPACE, split, 1.);
         }
-        featruresProcessor.finalize(item);
+        featuresProcessor.finalize(item);
     }
 
     @Inject
-    public CSVFormat featruresProcessor(FeatruresProcessor featruresProcessor) {
-        this.featruresProcessor = featruresProcessor;
+    public CSVFormat featruresProcessor(FeaturesProcessor featuresProcessor) {
+        this.featuresProcessor = featuresProcessor;
         return this;
     }
 }

@@ -16,9 +16,7 @@ import io.scaledml.ftrl.FtrlProximalRunner;
 import io.scaledml.ftrl.featuresprocessors.FeatruresProcessor;
 import io.scaledml.ftrl.featuresprocessors.QuadraticFeaturesProcessor;
 import io.scaledml.ftrl.featuresprocessors.SimpleFeatruresProcessor;
-import io.scaledml.ftrl.inputformats.CSVFormat;
-import io.scaledml.ftrl.inputformats.InputFormat;
-import io.scaledml.ftrl.inputformats.VowpalWabbitFormat;
+import io.scaledml.ftrl.inputformats.*;
 import io.scaledml.ftrl.options.FtrlOptions;
 import io.scaledml.ftrl.outputformats.FinishCollectStatisticsListener;
 import io.scaledml.ftrl.outputformats.NullOutputFormat;
@@ -127,7 +125,6 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
         ThrowingProviderBinder.forModule(this);
         bindConstant().annotatedWith(Names.named("testOnly")).to(options.testOnly());
         bindConstant().annotatedWith(Names.named("skipFirst")).to(options.skipFirst());
-
         switch (options.format()) {
             case "vw":
                 bind(InputFormat.class).to(VowpalWabbitFormat.class);
@@ -137,21 +134,21 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
                 break;
             default:
                 throw new IllegalArgumentException(options.format());
-
         }
         bind(FtrlProximalRunner.class).asEagerSingleton();
         bind(FinishCollectStatisticsListener.class).asEagerSingleton();
     }
 
+
     @Provides
-    public FeatruresProcessor featruresProcessor(@Named("featuresNumber") long featuresNumber) {
-        SimpleFeatruresProcessor simpleFeatruresProcessor = new SimpleFeatruresProcessor().featuresNumber(featuresNumber);
+    public FeaturesProcessor featuresProcessor(@Named("featuresNumber") long featuresNumber) {
+        SimpleFeaturesProcessor simpleFeaturesProcessor = new SimpleFeaturesProcessor().featuresNumber(featuresNumber);
         if (!options.quadratic()) {
-            return simpleFeatruresProcessor;
+            return simpleFeaturesProcessor;
         }
         return new QuadraticFeaturesProcessor()
                 .featuresNumber(featuresNumber)
-                .next(simpleFeatruresProcessor);
+                .next(simpleFeaturesProcessor);
     }
 
     protected int ringBufferSize() {
