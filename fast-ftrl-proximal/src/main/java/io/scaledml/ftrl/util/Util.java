@@ -5,7 +5,7 @@ import com.google.common.hash.Hashing;
 import com.google.common.primitives.Doubles;
 
 public class Util {
-    private static final double EPSILON = 0.000001;
+    private static final double EPSILON = 0.0000001;
     private final static HashFunction murmur = Hashing.murmur3_128(42);
 
     private final static HashFunction murmur32 = Hashing.murmur3_32(17);
