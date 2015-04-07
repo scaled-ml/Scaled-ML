@@ -168,14 +168,13 @@ public class FtrlOptionsObject implements FtrlOptions {
         return 0;
     }
 
-<<<<<<< HEAD
     public FtrlOptionsObject quadratic(boolean quadratic) {
         this.quadratic = quadratic;
         return this;
-=======
+    }
+
     @Override
     public boolean skipFirst() {
         return skipFirst;
->>>>>>> aabd8a500ca3065d928196d70fdac1bcceb61385
     }
 }

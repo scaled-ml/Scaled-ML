@@ -17,7 +17,7 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
     }
 
     public LineBytesBuffer(String str) {
-        this.bytes = str.getBytes(Charsets.US_ASCII);
+        this.bytes = str.getBytes(Charsets.UTF_8);
         size = bytes.length;
     }
 
