@@ -14,7 +14,7 @@ public class FTRLProximalAlgorithm {
 
     public double learn(SparseItem item, Increment increment) {
         calculateWeights(item);
-        double predict = predict();
+        double predict = predict(item);
         double gradient = item.label() - predict;
         if (!testOnly) {
             increment.clear();
@@ -31,10 +31,10 @@ public class FTRLProximalAlgorithm {
         return predict;
     }
 
-    private double predict() {
+    private double predict(SparseItem item) {
         double sumWeights = 0.;
         for (int i = 0; i < currentWeights.size(); i++) {
-            sumWeights += currentWeights.getDouble(i);
+            sumWeights += currentWeights.getDouble(i) * item.values().getDouble(i);
         }
         return 1. / (1. + Math.exp(sumWeights));
     }
@@ -59,6 +59,7 @@ public class FTRLProximalAlgorithm {
         this.model = model;
         return this;
     }
+
     @Inject
     public FTRLProximalAlgorithm testOnly(@Named("testOnly") boolean testOnly) {
         this.testOnly = testOnly;

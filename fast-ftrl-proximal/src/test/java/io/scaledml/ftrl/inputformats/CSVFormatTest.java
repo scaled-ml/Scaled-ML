@@ -1,10 +1,7 @@
-package integration;
+package io.scaledml.ftrl.inputformats;
 
 import com.google.common.base.Charsets;
 import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.inputformats.CSVFormat;
-import io.scaledml.ftrl.inputformats.CategorialFeatruresProcessor;
-import io.scaledml.ftrl.inputformats.InputFormat;
 import io.scaledml.ftrl.io.LineBytesBuffer;
 import org.junit.Test;
 
@@ -25,7 +22,7 @@ public class CSVFormatTest {
                 "44.0,1,44,102";
 
         InputFormat format = new CSVFormat()
-                .featruresProcessor(new CategorialFeatruresProcessor().featuresNumber(500));
+                .featruresProcessor(new SimpleFeatruresProcessor().featuresNumber(500));
         LineBytesBuffer line = LineBytesBuffer.buildFromString(line1, Charsets.US_ASCII);
         SparseItem item = new SparseItem();
         format.parse(line, item);

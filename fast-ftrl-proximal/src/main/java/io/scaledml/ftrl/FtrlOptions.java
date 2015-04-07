@@ -53,10 +53,10 @@ public interface FtrlOptions {
             description = "Parallelization level")
     int threads();
 
-    @Option(longName = "parallel", hidden = true,
-            description = "Make algorithm more parallel may be in cost of some quality loss. " +
+    @Option(longName = "parallel-learn", hidden = true,
+            description = "Make algorithm learn parallelLearn may be in cost of some quality loss. " +
                     "You should not use that property with threads < 8")
-    boolean parallel();
+    boolean parallelLearn();
 
     @Option(longName = "format",defaultValue = "vw", description = "Input file format." +
             "'vw' or 'csw' are currently supported")

@@ -14,8 +14,8 @@ public class FtrlOptionsObject implements FtrlOptions {
     private boolean testOnly = false;
     private int threads = 1;
     private boolean scalable = false;
-    private String format;
-    private boolean skipFirst;
+    private String format = "vw";
+    private boolean skipFirst = false;
 
     @Override
     public int hashcodeBits() {
@@ -78,7 +78,7 @@ public class FtrlOptionsObject implements FtrlOptions {
     }
 
     @Override
-    public boolean parallel() {
+    public boolean parallelLearn() {
         return scalable;
     }
 

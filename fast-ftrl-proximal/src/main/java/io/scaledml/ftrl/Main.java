@@ -28,7 +28,7 @@ public class Main {
     }
 
     private static Injector createInjector(FtrlOptions ftrlOptions) {
-        if (ftrlOptions.parallel()) {
+        if (ftrlOptions.parallelLearn()) {
             return Guice.createInjector(new ParallelModule(ftrlOptions));
         }
         return Guice.createInjector(new SemiParallelModule(ftrlOptions));
