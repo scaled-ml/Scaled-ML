@@ -135,7 +135,17 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
         }
         bind(FtrlProximalRunner.class).asEagerSingleton();
         bind(FinishCollectStatisticsListener.class).asEagerSingleton();
-        bind(FeatruresProcessor.class).to(SimpleFeatruresProcessor.class);
+    }
+
+    @Provides
+    public FeatruresProcessor featruresProcessor(@Named("featuresNumber") long featuresNumber) {
+        SimpleFeatruresProcessor simpleFeatruresProcessor = new SimpleFeatruresProcessor().featuresNumber(featuresNumber);
+        if (!options.quadratic()) {
+            return simpleFeatruresProcessor;
+        }
+        return new QuadraticFeaturesProcessor()
+                .featuresNumber(featuresNumber)
+                .next(simpleFeatruresProcessor);
     }
 
     protected int ringBufferSize() {

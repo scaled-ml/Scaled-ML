@@ -6,7 +6,7 @@ import com.google.inject.name.Named;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import io.scaledml.ftrl.conf.TwoPhaseEvent;
-import io.scaledml.ftrl.io.LineBytesBuffer;
+import io.scaledml.ftrl.util.LineBytesBuffer;
 import io.scaledml.ftrl.outputformats.OutputFormat;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 

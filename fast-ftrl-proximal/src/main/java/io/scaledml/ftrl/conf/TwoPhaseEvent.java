@@ -1,7 +1,7 @@
 package io.scaledml.ftrl.conf;
 
 import com.lmax.disruptor.EventFactory;
-import io.scaledml.ftrl.io.LineBytesBuffer;
+import io.scaledml.ftrl.util.LineBytesBuffer;
 
 public class TwoPhaseEvent<T> {
     public static <T> EventFactory<TwoPhaseEvent<T>> factory(EventFactory<T> outputFactory) {

@@ -4,7 +4,7 @@ package io.scaledml.ftrl.outputformats;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.Util;
+import io.scaledml.ftrl.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,22 +15,26 @@ public class StatisticsCalculator implements OutputFormat {
     private OutputFormat delegate;
     private FinishCollectStatisticsListener finishListener;
     private double logLikelyhood = 0.;
+    private double smoothLogLikelyhood = 0.;
+    private double alfa = 1. / 10000.;
     private long itemNo = 0;
     private long nextItemNoToPrint = 1;
 
     public StatisticsCalculator() {
-        logger.info("mean logloss\titems\tcurrent label\tcurrent prediction");
+        logger.info("mean logloss\tsmooth logloss\titems\tcurrent label\tcurrent prediction\tfeatures number");
     }
 
     @Override
     public void emmit(SparseItem item, double prediction) {
         delegate.emmit(item, prediction);
         itemNo++;
-        logLikelyhood += Math.log(Util.doublesEqual(1., item.label()) ?  prediction : 1 - prediction);
+        double itemLikelyhood = Math.log(Util.doublesEqual(1., item.label()) ? prediction : 1 - prediction);
+        logLikelyhood += itemLikelyhood;
+        smoothLogLikelyhood = smoothLogLikelyhood * (1. - alfa) + itemLikelyhood * alfa;
         if (itemNo == nextItemNoToPrint) {
             nextItemNoToPrint *= 2;
-            logger.info(-logLikelyhood / itemNo + "\t" + itemNo + "\t" +
-                    item.label() + "\t" + prediction);
+            logger.info(-logLikelyhood / itemNo + "\t" + -smoothLogLikelyhood + "\t" + itemNo + "\t" +
+                    item.label() + "\t" + prediction + "\t" + item.indexes().size());
         }
     }
 

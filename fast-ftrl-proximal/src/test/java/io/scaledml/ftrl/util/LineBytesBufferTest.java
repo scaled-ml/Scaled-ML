@@ -1,4 +1,4 @@
-package io.scaledml.ftrl.io;
+package io.scaledml.ftrl.util;
 
 
 import com.google.common.base.Charsets;
@@ -59,6 +59,26 @@ public class LineBytesBufferTest {
             }
         }
         assertTrue(Files.readAllLines(fileExpected, Charsets.US_ASCII).equals(Files.readAllLines(fileActual, Charsets.US_ASCII)));
+    }
+
+    @Test
+    public void testCompare() throws Exception {
+        LineBytesBuffer b1 = new LineBytesBuffer();
+        LineBytesBuffer b2 = new LineBytesBuffer();
+        assertTrue(b1.compareTo(b2) == 0);
+        b1.append((byte) 1);
+        b1.append((byte) 1);
+        b2.append((byte) 1);
+        b2.append((byte) 2);
+        assertTrue(b1.compareTo(b2) < 0);
+        b1.clear();
+        b2.clear();
+        b1.append((byte) 1);
+        b1.append((byte) 1);
+        b2.append((byte) 1);
+        b2.append((byte) 1);
+        b2.append((byte) 1);
+        assertTrue(b1.compareTo(b2) < 0);
     }
 
     @After

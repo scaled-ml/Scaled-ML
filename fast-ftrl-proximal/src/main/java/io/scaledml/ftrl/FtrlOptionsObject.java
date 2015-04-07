@@ -14,6 +14,7 @@ public class FtrlOptionsObject implements FtrlOptions {
     private boolean testOnly = false;
     private int threads = 1;
     private boolean scalable = false;
+    private boolean quadratic = false;
     private String format = "vw";
     private boolean skipFirst = false;
 
@@ -70,6 +71,11 @@ public class FtrlOptionsObject implements FtrlOptions {
     @Override
     public boolean help() {
         return false;
+    }
+
+    @Override
+    public boolean quadratic() {
+        return quadratic;
     }
 
     @Override
@@ -160,6 +166,11 @@ public class FtrlOptionsObject implements FtrlOptions {
     @Override
     public int ringSize() {
         return 0;
+    }
+
+    public FtrlOptionsObject quadratic(boolean quadratic) {
+        this.quadratic = quadratic;
+        return this;
     }
 
     @Override

@@ -2,8 +2,8 @@ package io.scaledml.ftrl.inputformats;
 
 import com.google.inject.Inject;
 import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.Util;
-import io.scaledml.ftrl.io.LineBytesBuffer;
+import io.scaledml.ftrl.util.LineBytesBuffer;
+import io.scaledml.ftrl.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +14,7 @@ public class CSVFormat implements InputFormat {
 
     private static final Logger logger = LoggerFactory.getLogger(CSVFormat.class);
 
-    private static final LineBytesBuffer NAMESPACE = LineBytesBuffer.buildFromString("KU");
+    private static final LineBytesBuffer NAMESPACE = new LineBytesBuffer("KU");
 
     private static final String CAT_PREFIX = "CAT";
 
@@ -35,7 +35,7 @@ public class CSVFormat implements InputFormat {
         }
 
         for (int i = 1; i < splits.length; i++) {
-            LineBytesBuffer split = LineBytesBuffer.buildFromString(CAT_PREFIX + i + splits[i]);
+            LineBytesBuffer split = new LineBytesBuffer(CAT_PREFIX + i + splits[i]);
             featruresProcessor.addFeature(item, NAMESPACE, split, 1.);
         }
         featruresProcessor.finalize(item);

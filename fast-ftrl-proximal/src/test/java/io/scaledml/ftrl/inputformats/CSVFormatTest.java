@@ -2,7 +2,7 @@ package io.scaledml.ftrl.inputformats;
 
 import com.google.common.base.Charsets;
 import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.io.LineBytesBuffer;
+import io.scaledml.ftrl.util.LineBytesBuffer;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -23,7 +23,7 @@ public class CSVFormatTest {
 
         InputFormat format = new CSVFormat()
                 .featruresProcessor(new SimpleFeatruresProcessor().featuresNumber(500));
-        LineBytesBuffer line = LineBytesBuffer.buildFromString(line1, Charsets.US_ASCII);
+        LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item);
         assertNotNull(item);

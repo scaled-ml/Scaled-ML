@@ -2,7 +2,12 @@ package io.scaledml.ftrl.inputformats;
 
 import com.google.common.base.Charsets;
 import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.io.LineBytesBuffer;
+import io.scaledml.ftrl.inputformats.InputFormat;
+import io.scaledml.ftrl.inputformats.SimpleFeatruresProcessor;
+import io.scaledml.ftrl.inputformats.VowpalWabbitFormat;
+import io.scaledml.ftrl.util.LineBytesBuffer;
+import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
+import org.apache.commons.io.input.ReaderInputStream;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -18,7 +23,7 @@ public class VowpalWabbitFormatTest {
                 "|C19 175 |C20 100075";
         InputFormat format = new VowpalWabbitFormat()
                 .featruresProcessor(new SimpleFeatruresProcessor().featuresNumber(500));
-        LineBytesBuffer line = LineBytesBuffer.buildFromString(line1, Charsets.US_ASCII);
+        LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item);
         assertNotNull(item);
@@ -31,7 +36,7 @@ public class VowpalWabbitFormatTest {
         String line1 = "1 |КАТ1 ФИЧА1 |кат2 фича2 фича3 |запрос у попа была собака он ее любил ";
         InputFormat format = new VowpalWabbitFormat()
                 .featruresProcessor(new SimpleFeatruresProcessor().featuresNumber(500));
-        LineBytesBuffer line = LineBytesBuffer.buildFromString(line1, Charsets.UTF_8);
+        LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item);
         assertNotNull(item);
