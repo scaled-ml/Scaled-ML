@@ -53,12 +53,14 @@ The options available are:
 	[--ftrl_beta value] : ftrl beta patameter (option in ftrl)
 	[--data -d value] : Example Set
 	[--final_regressor -f value] : Final regressor to save (arg inputStream filename)
+	[--format value] : Input file format.'vw' or 'csv' are currently supported
 	[--bit_precision -b value] : number of bits in the feature table
 	[--help -h] : Show this help
 	[--initial_regressor -i value] : Initial regressor(s) to load into memory (arg inputStream filename)
 	[--l1 value] : l_1 lambda (L1 regularization)
 	[--l2 value] : l_2 lambda (L2 regularization)
 	[--predictions -p value] : File to output predictions to
+	[--quadratic -q] : Add quadratic features
 	[--testonly -t] : Ignore label information and just test
 	[--threads value] : Parallelization level
 ```
