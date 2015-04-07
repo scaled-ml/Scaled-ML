@@ -64,8 +64,8 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
             return new PrintStreamOutputFormat().outputStream(System.out);
         }
         return new PrintStreamOutputFormat()
-                    .outputStream(new PrintStream(new FastBufferedOutputStream(
-                            Files.newOutputStream(Paths.get(options.predictions())))));
+                .outputStream(new PrintStream(new FastBufferedOutputStream(
+                        Files.newOutputStream(Paths.get(options.predictions())))));
     }
 
     @Provides
@@ -88,12 +88,14 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
     Optional<Path> outputForModelPath() {
         return options.finalRegressor() == null ? Optional.<Path>empty() : Optional.of(Paths.get(options.finalRegressor()));
     }
+
     @Provides
     @Singleton
     @Named("disruptor")
     protected Disruptor<? extends TwoPhaseEvent<?>> inputDisruptor(@Named("disruptor") Disruptor<TwoPhaseEvent<T>> disruptor) {
         return disruptor;
     }
+
     @Provides
     @Singleton
     @Named("disruptor")
@@ -119,7 +121,18 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
     protected void configureCommonBeans() {
         ThrowingProviderBinder.forModule(this);
         bindConstant().annotatedWith(Names.named("testOnly")).to(options.testOnly());
-        bind(InputFormat.class).to(VowpalWabbitFormat.class);
+
+        switch (options.format()) {
+            case "vw":
+                bind(InputFormat.class).to(VowpalWabbitFormat.class);
+                break;
+            case "csv":
+                bind(InputFormat.class).to(CSVFormat.class);
+                break;
+            default:
+                throw new IllegalArgumentException(options.format());
+
+        }
         bind(FtrlProximalRunner.class).asEagerSingleton();
         bind(FinishCollectStatisticsListener.class).asEagerSingleton();
     }

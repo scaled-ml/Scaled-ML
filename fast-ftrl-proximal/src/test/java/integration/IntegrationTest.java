@@ -1,6 +1,8 @@
-package io.scaledml.ftrl;
+package integration;
 
 
+import io.scaledml.ftrl.FtrlOptionsObject;
+import io.scaledml.ftrl.Main;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
