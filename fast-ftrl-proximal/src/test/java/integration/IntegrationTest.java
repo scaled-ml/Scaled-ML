@@ -1,8 +1,8 @@
 package integration;
 
 
-import io.scaledml.ftrl.FtrlOptionsObject;
 import io.scaledml.ftrl.Main;
+import io.scaledml.ftrl.options.FtrlOptionsObject;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -43,8 +43,8 @@ public class IntegrationTest {
         int predictionsNum = predictions.length;
         assertEquals(predictionsNum, 100);
         assertTrue(Arrays.stream(predictions).allMatch(p -> p < 0.5));
-    //    assertEquals(0.2355821069092084, predictions[0], 0.001);
-      //  assertEquals(0.2495902538274775, predictions[63], 0.001);
+        //    assertEquals(0.2355821069092084, predictions[0], 0.001);
+        //  assertEquals(0.2495902538274775, predictions[63], 0.001);
     }
 
     @Test

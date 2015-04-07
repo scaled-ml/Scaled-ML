@@ -1,4 +1,4 @@
-package io.scaledml.ftrl;
+package io.scaledml.ftrl.options;
 
 import com.lexicalscope.jewel.cli.Option;
 
@@ -63,7 +63,7 @@ public interface FtrlOptions {
                     "You should not use that property with threads < 8")
     boolean parallelLearn();
 
-    @Option(longName = "format",defaultValue = "vw", description = "Input file format." +
+    @Option(longName = "format", defaultValue = "vw", description = "Input file format." +
             "'vw' or 'csw' are currently supported")
     String format();
 

@@ -5,9 +5,9 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
-import io.scaledml.ftrl.conf.TwoPhaseEvent;
-import io.scaledml.ftrl.util.LineBytesBuffer;
+import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
 import io.scaledml.ftrl.outputformats.OutputFormat;
+import io.scaledml.ftrl.util.LineBytesBuffer;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 
 import java.io.IOException;
@@ -21,8 +21,9 @@ public class FtrlProximalRunner {
     private FtrlProximalModel model;
     private Path outputForModelPath;
     private OutputFormat outputFormat;
+    private boolean skipFirst;
 
-    public void process(boolean skipFirst) throws IOException {
+    public void process() throws IOException {
         try (FastBufferedInputStream stream = new FastBufferedInputStream(inputStream)) {
             disruptor.start();
             RingBuffer<? extends TwoPhaseEvent> ringBuffer = disruptor.getRingBuffer();
@@ -69,6 +70,12 @@ public class FtrlProximalRunner {
     @Inject
     public FtrlProximalRunner outputFormat(@Named("delegate") OutputFormat outputFormat) {
         this.outputFormat = outputFormat;
+        return this;
+    }
+
+    @Inject
+    public FtrlProximalRunner skipFirst(@Named("skipFirst") boolean skipFirst) {
+        this.skipFirst = skipFirst;
         return this;
     }
 

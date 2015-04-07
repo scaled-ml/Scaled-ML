@@ -2,6 +2,7 @@ package io.scaledml.ftrl.inputformats;
 
 import com.google.inject.Inject;
 import io.scaledml.ftrl.SparseItem;
+import io.scaledml.ftrl.featuresprocessors.FeatruresProcessor;
 import io.scaledml.ftrl.util.LineBytesBuffer;
 import io.scaledml.ftrl.util.Util;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package io.scaledml.ftrl.inputformats;
+package io.scaledml.ftrl.featuresprocessors;
 
 import com.google.inject.Inject;
 import io.scaledml.ftrl.SparseItem;

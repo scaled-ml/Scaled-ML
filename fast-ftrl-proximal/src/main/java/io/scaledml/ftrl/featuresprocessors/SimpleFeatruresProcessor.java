@@ -1,10 +1,10 @@
-package io.scaledml.ftrl.inputformats;
+package io.scaledml.ftrl.featuresprocessors;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.util.Util;
 import io.scaledml.ftrl.util.LineBytesBuffer;
+import io.scaledml.ftrl.util.Util;
 
 public class SimpleFeatruresProcessor implements FeatruresProcessor {
     private long featuresNumber;
@@ -12,8 +12,8 @@ public class SimpleFeatruresProcessor implements FeatruresProcessor {
     @Override
     public void addFeature(SparseItem item, LineBytesBuffer namespace, LineBytesBuffer feature, double value) {
         item.addIndex(Math.abs(Util.murmur().newHasher()
-                        .putBytes(namespace.bytes(), 0, namespace.size())
-                        .putBytes(feature.bytes(), 0, feature.size()).hash().asLong()) % featuresNumber);
+                .putBytes(namespace.bytes(), 0, namespace.size())
+                .putBytes(feature.bytes(), 0, feature.size()).hash().asLong()) % featuresNumber);
     }
 
     @Inject

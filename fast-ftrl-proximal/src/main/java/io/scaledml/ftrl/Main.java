@@ -4,12 +4,13 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.CliFactory;
+import io.scaledml.ftrl.options.FtrlOptions;
 import io.scaledml.ftrl.parallel.ParallelModule;
 import io.scaledml.ftrl.semiparallel.SemiParallelModule;
 
 public class Main {
 
-    public static void main(String ... args) throws Exception {
+    public static void main(String... args) throws Exception {
         FtrlOptions ftrlOptions;
         try {
             ftrlOptions = CliFactory.parseArguments(FtrlOptions.class, args);
@@ -24,7 +25,7 @@ public class Main {
         Injector injector = createInjector(ftrlOptions);
 
         FtrlProximalRunner runner = injector.getInstance(FtrlProximalRunner.class);
-        runner.process(ftrlOptions.skipFirst());
+        runner.process();
     }
 
     private static Injector createInjector(FtrlOptions ftrlOptions) {

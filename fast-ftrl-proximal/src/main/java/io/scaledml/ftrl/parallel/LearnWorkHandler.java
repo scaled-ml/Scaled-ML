@@ -6,7 +6,7 @@ import com.lmax.disruptor.WorkHandler;
 import io.scaledml.ftrl.FTRLProximalAlgorithm;
 import io.scaledml.ftrl.Increment;
 import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.conf.TwoPhaseEvent;
+import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
 import io.scaledml.ftrl.inputformats.InputFormat;
 import io.scaledml.ftrl.outputformats.OutputFormat;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class LearnWorkHandler implements WorkHandler<TwoPhaseEvent<Increment>>, 
     public void onEvent(TwoPhaseEvent<Increment> event) throws Exception {
         item.clear();
         inputFormat.parse(event.input(), item);
-        outputFormat.emmit(item, algorithm.learn(item, event.output()));
+        outputFormat.emit(item, algorithm.learn(item, event.output()));
     }
 
     @Inject
@@ -33,11 +33,13 @@ public class LearnWorkHandler implements WorkHandler<TwoPhaseEvent<Increment>>, 
         this.inputFormat = inputFormat;
         return this;
     }
+
     @Inject
     public LearnWorkHandler algorithm(FTRLProximalAlgorithm algorithm) {
         this.algorithm = algorithm;
         return this;
     }
+
     @Inject
     public LearnWorkHandler outputFormat(OutputFormat outputFormat) {
         this.outputFormat = outputFormat;

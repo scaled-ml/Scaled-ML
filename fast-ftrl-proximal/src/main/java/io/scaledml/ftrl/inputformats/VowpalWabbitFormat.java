@@ -3,8 +3,9 @@ package io.scaledml.ftrl.inputformats;
 import com.google.common.base.CharMatcher;
 import com.google.inject.Inject;
 import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.util.Util;
+import io.scaledml.ftrl.featuresprocessors.FeatruresProcessor;
 import io.scaledml.ftrl.util.LineBytesBuffer;
+import io.scaledml.ftrl.util.Util;
 
 public class VowpalWabbitFormat implements InputFormat {
     private static final char NAME_CHAR = 'z';

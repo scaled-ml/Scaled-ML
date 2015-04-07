@@ -5,5 +5,5 @@ import io.scaledml.ftrl.SparseItem;
 import java.io.Closeable;
 
 public interface OutputFormat extends Closeable {
-    void emmit(SparseItem item, double prediction);
+    void emit(SparseItem item, double prediction);
 }

@@ -6,12 +6,12 @@ import com.google.inject.name.Names;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.WorkHandler;
-import io.scaledml.ftrl.FtrlOptions;
 import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.conf.AbstractParallelModule;
-import io.scaledml.ftrl.conf.TwoPhaseEvent;
-import io.scaledml.ftrl.outputformats.StatisticsCalculator;
+import io.scaledml.ftrl.disruptor.AbstractParallelModule;
+import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
+import io.scaledml.ftrl.options.FtrlOptions;
 import io.scaledml.ftrl.outputformats.OutputFormat;
+import io.scaledml.ftrl.outputformats.StatisticsCalculator;
 
 public class SemiParallelModule extends AbstractParallelModule<SparseItem> {
 
@@ -23,8 +23,10 @@ public class SemiParallelModule extends AbstractParallelModule<SparseItem> {
     protected void configure() {
         configureCommonBeans();
         bindConstant().annotatedWith(Names.named("statsCollectors")).to(1);
-        bind(new TypeLiteral<EventHandler<TwoPhaseEvent<SparseItem>>>() {}).to(LearnEventHandler.class).asEagerSingleton();
-        bind(new TypeLiteral<WorkHandler<TwoPhaseEvent<SparseItem>>>() {}).to(ParseInputWorkHandler.class);
+        bind(new TypeLiteral<EventHandler<TwoPhaseEvent<SparseItem>>>() {
+        }).to(LearnEventHandler.class).asEagerSingleton();
+        bind(new TypeLiteral<WorkHandler<TwoPhaseEvent<SparseItem>>>() {
+        }).to(ParseInputWorkHandler.class);
         bind(OutputFormat.class).to(StatisticsCalculator.class).asEagerSingleton();
     }
 

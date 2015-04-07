@@ -1,4 +1,4 @@
-package io.scaledml.ftrl.conf;
+package io.scaledml.ftrl.disruptor;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
@@ -11,10 +11,15 @@ import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
-import io.scaledml.ftrl.FtrlOptions;
 import io.scaledml.ftrl.FtrlProximalModel;
 import io.scaledml.ftrl.FtrlProximalRunner;
-import io.scaledml.ftrl.inputformats.*;
+import io.scaledml.ftrl.featuresprocessors.FeatruresProcessor;
+import io.scaledml.ftrl.featuresprocessors.QuadraticFeaturesProcessor;
+import io.scaledml.ftrl.featuresprocessors.SimpleFeatruresProcessor;
+import io.scaledml.ftrl.inputformats.CSVFormat;
+import io.scaledml.ftrl.inputformats.InputFormat;
+import io.scaledml.ftrl.inputformats.VowpalWabbitFormat;
+import io.scaledml.ftrl.options.FtrlOptions;
 import io.scaledml.ftrl.outputformats.FinishCollectStatisticsListener;
 import io.scaledml.ftrl.outputformats.NullOutputFormat;
 import io.scaledml.ftrl.outputformats.OutputFormat;
@@ -121,6 +126,7 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
     protected void configureCommonBeans() {
         ThrowingProviderBinder.forModule(this);
         bindConstant().annotatedWith(Names.named("testOnly")).to(options.testOnly());
+        bindConstant().annotatedWith(Names.named("skipFirst")).to(options.skipFirst());
 
         switch (options.format()) {
             case "vw":

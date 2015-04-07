@@ -1,7 +1,7 @@
 package io.scaledml.ftrl.inputformats;
 
-import com.google.common.base.Charsets;
 import io.scaledml.ftrl.SparseItem;
+import io.scaledml.ftrl.featuresprocessors.SimpleFeatruresProcessor;
 import io.scaledml.ftrl.util.LineBytesBuffer;
 import org.junit.Test;
 

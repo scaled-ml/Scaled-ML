@@ -50,7 +50,7 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
 
     public boolean readLineFrom(FastBufferedInputStream stream) throws IOException {
         int start = 0, len;
-        while((len = stream.readLine(bytes, start, bytes.length - start)) == bytes.length - start ) {
+        while ((len = stream.readLine(bytes, start, bytes.length - start)) == bytes.length - start) {
             start += len;
             bytes = ByteArrays.grow(bytes, bytes.length + 1024);
         }

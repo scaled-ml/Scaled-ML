@@ -7,7 +7,7 @@ import io.scaledml.ftrl.FTRLProximalAlgorithm;
 import io.scaledml.ftrl.FtrlProximalModel;
 import io.scaledml.ftrl.Increment;
 import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.conf.TwoPhaseEvent;
+import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
 import io.scaledml.ftrl.outputformats.OutputFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>
     public void onEvent(TwoPhaseEvent<SparseItem> event, long sequence, boolean endOfBatch) throws Exception {
         double prediction = algorithm.learn(event.output(), increment);
         model.writeToModel(increment);
-        outputFormat.emmit(event.output(), prediction);
+        outputFormat.emit(event.output(), prediction);
     }
 
     @Inject
@@ -33,11 +33,13 @@ public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>
         this.outputFormat = format;
         return this;
     }
+
     @Inject
     public LearnEventHandler algorithm(FTRLProximalAlgorithm algorithm) {
         this.algorithm = algorithm;
         return this;
     }
+
     @Inject
     public LearnEventHandler model(FtrlProximalModel model) {
         this.model = model;

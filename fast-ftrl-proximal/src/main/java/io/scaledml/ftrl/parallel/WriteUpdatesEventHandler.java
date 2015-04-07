@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.lmax.disruptor.EventHandler;
 import io.scaledml.ftrl.FtrlProximalModel;
 import io.scaledml.ftrl.Increment;
-import io.scaledml.ftrl.conf.TwoPhaseEvent;
+import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
 
 public class WriteUpdatesEventHandler implements EventHandler<TwoPhaseEvent<Increment>> {
     private FtrlProximalModel model;

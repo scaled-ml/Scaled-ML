@@ -25,8 +25,8 @@ public class StatisticsCalculator implements OutputFormat {
     }
 
     @Override
-    public void emmit(SparseItem item, double prediction) {
-        delegate.emmit(item, prediction);
+    public void emit(SparseItem item, double prediction) {
+        delegate.emit(item, prediction);
         itemNo++;
         double itemLikelyhood = Math.log(Util.doublesEqual(1., item.label()) ? prediction : 1 - prediction);
         logLikelyhood += itemLikelyhood;
