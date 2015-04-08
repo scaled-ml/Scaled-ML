@@ -69,4 +69,4 @@ References
 ----------
 For more information see ["Ad Click Prediction: a View from the Trenches"](http://research.google.com/pubs/pub41159.html) paper.
 
-![ Codeship Badge](https://codeship.com/projects/73069/status?branch=master)
+![ Codeship Badge](https://codeship.com/projects/55b7e1c0-bfe9-0132-f5cd-7eb09717a41c/status?branch=master)
