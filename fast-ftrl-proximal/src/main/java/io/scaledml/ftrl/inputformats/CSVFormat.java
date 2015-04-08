@@ -31,7 +31,8 @@ public class CSVFormat implements InputFormat {
 
         for (int colNum = 0; colNum < splits.length; colNum++) {
             String colValue = splits[colNum];
-            switch (columnsMask.getCategory(colNum)) {
+            ColumnsMask.ColumnType columnType = columnsMask.getCategory(colNum);
+            switch (columnType) {
                 case LABEL:
                     double label = Double.parseDouble(colValue);
                     item.label(Util.doublesEqual(1., label) ? 1. : 0.);
@@ -39,15 +40,17 @@ public class CSVFormat implements InputFormat {
                 case ID:
                     break;
                 case NUMERICAL:
-                    LineBytesBuffer cat = new LineBytesBuffer(CAT_PREFIX + colNum);
-                    double value = Strings.isNullOrEmpty(colValue)
-                            ? 0.
-                            : Double.parseDouble(colValue);
-                    featuresProcessor.addFeature(item, NAMESPACE, cat, value);
+                    if (!Strings.isNullOrEmpty(colValue)) {
+                        LineBytesBuffer cat = new LineBytesBuffer(CAT_PREFIX + colNum);
+                        double value = Double.parseDouble(colValue);
+                        featuresProcessor.addFeature(item, NAMESPACE, cat, value);
+                    }
                     break;
                 case CATEGORICAL:
-                    LineBytesBuffer catVaue = new LineBytesBuffer(CAT_PREFIX + colNum + colValue);
-                    featuresProcessor.addFeature(item, NAMESPACE, catVaue, 1.);
+                    if (!Strings.isNullOrEmpty(colValue)) {
+                        LineBytesBuffer catVaue = new LineBytesBuffer(CAT_PREFIX + colNum + colValue);
+                        featuresProcessor.addFeature(item, NAMESPACE, catVaue, 1.);
+                    }
                     break;
             }
         }

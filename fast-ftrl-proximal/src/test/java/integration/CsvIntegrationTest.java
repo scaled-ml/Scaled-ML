@@ -28,21 +28,21 @@ public class CsvIntegrationTest {
         Main.runFtrlProximal(new FtrlOptionsObject()
                 .finalRegressor(tempDirectory + "/model")
                 .threads(3)
-                .data(getClass().getResource("/train-small.csv").getPath())
+                .data(getClass().getResource("/ruslan-train-small.csv").getPath())
                 .format("csv")
                 .skipFirst(true)
-//                .csvMask("lc[37]n"));
-                .csvMask("lc"));
+                .csvMask("lc[37]n"));
+//                .csvMask("lc"));
 
         Main.runFtrlProximal(new FtrlOptionsObject()
                 .initialRegressor(tempDirectory + "/model")
                 .testOnly(true)
                 .predictions(tempDirectory + "/predictions")
-                .data(getClass().getResource("/test-small.csv").getPath())
+                .data(getClass().getResource("/ruslan-test-small.csv").getPath())
                 .format("csv")
                 .skipFirst(true)
-//                .csvMask("lc[37]n"));
-                .csvMask("lc"));
+                .csvMask("lc[37]n"));
+//                .csvMask("lc"));
         double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
                 .stream().mapToDouble(Double::parseDouble).toArray();
         int predictionsNum = predictions.length;
