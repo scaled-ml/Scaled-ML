@@ -6,9 +6,11 @@ import java.util.ArrayList;
  * @author Ilya Smagin ilya-sm@yandex-team.ru on 4/8/15.
  */
 public class ColumnsMask {
+    private final String str;
     private ArrayList<ColumnType> columns = new ArrayList<>();
 
     public ColumnsMask(String str) {
+        this.str = str;
         char[] arr = str.toCharArray();
         State state = State.OUT_OF_BRACKET;
         StringBuilder sb = new StringBuilder();
@@ -74,6 +76,11 @@ public class ColumnsMask {
             default:
                 throw new IllegalArgumentException("" + c);
         }
+    }
+
+    @Override
+    public String toString() {
+        return str;
     }
 
     public ColumnType getCategory(int colNumber) {

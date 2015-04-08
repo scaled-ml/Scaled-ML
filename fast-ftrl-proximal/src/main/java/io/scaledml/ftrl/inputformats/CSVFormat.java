@@ -1,8 +1,10 @@
 package io.scaledml.ftrl.inputformats;
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.featuresprocessors.FeatruresProcessor;
+import io.scaledml.ftrl.options.ColumnsMask;
 import io.scaledml.ftrl.util.LineBytesBuffer;
 import io.scaledml.ftrl.util.Util;
 import org.slf4j.Logger;
@@ -20,31 +22,48 @@ public class CSVFormat implements InputFormat {
     private static final String CAT_PREFIX = "CAT";
 
     private FeaturesProcessor featuresProcessor;
+    private ColumnsMask columnsMask;
 
     @Override
     public void parse(LineBytesBuffer line, SparseItem item) {
         item.clear();
         String[] splits = line.toString().split(",");
 
-
-        try {
-            double label = Double.parseDouble(splits[0]);
-            item.label(Util.doublesEqual(1., label) ? 1. : 0.);
-
-        } catch (NumberFormatException e) {
-            logger.info("Unable to parse label for " + line.toString());
+        for (int colNum = 0; colNum < splits.length; colNum++) {
+            String colValue = splits[colNum];
+            switch (columnsMask.getCategory(colNum)) {
+                case LABEL:
+                    double label = Double.parseDouble(colValue);
+                    item.label(Util.doublesEqual(1., label) ? 1. : 0.);
+                    break;
+                case ID:
+                    break;
+                case NUMERICAL:
+                    LineBytesBuffer cat = new LineBytesBuffer(CAT_PREFIX + colNum);
+                    double value = Strings.isNullOrEmpty(colValue)
+                            ? 0.
+                            : Double.parseDouble(colValue);
+                    featuresProcessor.addFeature(item, NAMESPACE, cat, value);
+                    break;
+                case CATEGORICAL:
+                    LineBytesBuffer catVaue = new LineBytesBuffer(CAT_PREFIX + colNum + colValue);
+                    featuresProcessor.addFeature(item, NAMESPACE, catVaue, 1.);
+                    break;
+            }
         }
 
-        for (int i = 1; i < splits.length; i++) {
-            LineBytesBuffer split = new LineBytesBuffer(CAT_PREFIX + i + splits[i]);
-            featuresProcessor.addFeature(item, NAMESPACE, split, 1.);
-        }
         featuresProcessor.finalize(item);
     }
 
     @Inject
     public CSVFormat featruresProcessor(FeaturesProcessor featuresProcessor) {
         this.featuresProcessor = featuresProcessor;
+        return this;
+    }
+
+    @Inject
+    CSVFormat csvMask(@Named("csvMask") ColumnsMask columnsMask) {
+        this.columnsMask = columnsMask;
         return this;
     }
 }

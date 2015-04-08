@@ -1,9 +1,6 @@
 package io.scaledml.ftrl.disruptor;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Provider;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
+import com.google.inject.*;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import com.google.inject.throwingproviders.ThrowingProviderBinder;
@@ -13,10 +10,9 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.scaledml.ftrl.FtrlProximalModel;
 import io.scaledml.ftrl.FtrlProximalRunner;
-import io.scaledml.ftrl.featuresprocessors.FeatruresProcessor;
 import io.scaledml.ftrl.featuresprocessors.QuadraticFeaturesProcessor;
-import io.scaledml.ftrl.featuresprocessors.SimpleFeatruresProcessor;
 import io.scaledml.ftrl.inputformats.*;
+import io.scaledml.ftrl.options.ColumnsMask;
 import io.scaledml.ftrl.options.FtrlOptions;
 import io.scaledml.ftrl.outputformats.FinishCollectStatisticsListener;
 import io.scaledml.ftrl.outputformats.NullOutputFormat;
@@ -130,6 +126,10 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
                 bind(InputFormat.class).to(VowpalWabbitFormat.class);
                 break;
             case "csv":
+                ColumnsMask columnsMask = new ColumnsMask(options.csvMask());
+                bind(new TypeLiteral<ColumnsMask>() {
+                }).annotatedWith(Names.named("csvMask")).toInstance(columnsMask);
+
                 bind(InputFormat.class).to(CSVFormat.class);
                 break;
             default:

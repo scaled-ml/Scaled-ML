@@ -186,7 +186,7 @@ public class FtrlOptionsObject implements FtrlOptions {
 
     @Override
     public String csvMask() {
-        return null;
+        return csvMask;
     }
 
 
