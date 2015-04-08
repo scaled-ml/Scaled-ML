@@ -1,4 +1,4 @@
-package integration;
+package integration.ruslan;
 
 
 import io.scaledml.ftrl.Main;

@@ -17,7 +17,7 @@ import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class IntegrationTest {
+public class T1IntegrationTest {
     private Path tempDirectory;
 
     @Before
@@ -40,8 +40,8 @@ public class IntegrationTest {
                 .stream().mapToDouble(Double::parseDouble).toArray();
         int predictionsNum = predictions.length;
         assertEquals(predictionsNum, 100);
-        assertTrue(Arrays.stream(predictions).allMatch(p -> p < 0.5));
 
+        assertTrue(Arrays.stream(predictions).allMatch(p -> p < 0.5));
         assertEquals(0.2355821069092084, predictions[0], 0.001);
         assertEquals(0.2495902538274775, predictions[63], 0.001);
     }
