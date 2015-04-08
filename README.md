@@ -68,3 +68,5 @@ The options available are:
 References
 ----------
 For more information see ["Ad Click Prediction: a View from the Trenches"](http://research.google.com/pubs/pub41159.html) paper.
+
+![ Codeship Badge](https://codeship.com/projects/73069/status?branch=master)
