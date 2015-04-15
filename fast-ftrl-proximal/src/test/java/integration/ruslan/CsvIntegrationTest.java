@@ -32,7 +32,6 @@ public class CsvIntegrationTest {
                 .format("csv")
                 .skipFirst(true)
                 .csvMask("lc[37]n"));
-//                .csvMask("lc"));
 
         Main.runFtrlProximal(new FtrlOptionsObject()
                 .initialRegressor(tempDirectory + "/model")
@@ -42,7 +41,6 @@ public class CsvIntegrationTest {
                 .format("csv")
                 .skipFirst(true)
                 .csvMask("lc[37]n"));
-//                .csvMask("lc"));
         double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
                 .stream().mapToDouble(Double::parseDouble).toArray();
         int predictionsNum = predictions.length;

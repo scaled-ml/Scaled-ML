@@ -43,19 +43,25 @@ public class CSVFormat implements InputFormat {
                     if (!Strings.isNullOrEmpty(colValue)) {
                         LineBytesBuffer cat = new LineBytesBuffer(CAT_PREFIX + colNum);
                         double value = Double.parseDouble(colValue);
-                        featuresProcessor.addFeature(item, NAMESPACE, cat, value);
+                        addFeature(item, cat, value);
                     }
                     break;
                 case CATEGORICAL:
                     if (!Strings.isNullOrEmpty(colValue)) {
                         LineBytesBuffer catVaue = new LineBytesBuffer(CAT_PREFIX + colNum + colValue);
-                        featuresProcessor.addFeature(item, NAMESPACE, catVaue, 1.);
+                        addFeature(item, catVaue, 1.);
                     }
                     break;
             }
         }
 
         featuresProcessor.finalize(item);
+    }
+
+    private void addFeature(SparseItem item, LineBytesBuffer cat, double value) {
+        if (!Util.doublesEqual(value, 0)) {
+            featuresProcessor.addFeature(item, NAMESPACE, cat, value);
+        }
     }
 
     @Inject

@@ -19,7 +19,7 @@ public class VowpalWabbitFormat implements InputFormat {
     }
 
     private final CharMatcher NUMBER_MATCHER = CharMatcher.DIGIT.or(CharMatcher.anyOf(".-")).precomputed();
-    private final CharMatcher NAME_MATCHER = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.anyOf("_")).precomputed();
+    private final CharMatcher NAME_MATCHER = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.anyOf("_=-")).precomputed();
     private final CharMatcher PIPE_MATCHER = CharMatcher.anyOf("|").precomputed();
     private final CharMatcher COLON_MATCHER = CharMatcher.anyOf(":").precomputed();
 
@@ -57,7 +57,7 @@ public class VowpalWabbitFormat implements InputFormat {
                     break;
                 case BEFORE_NAMESPACE:
                     if (NAME_MATCHER.matches(c)) {
-                        feature.append(b);
+                        namespace.append(b);
                         state = State.NAMESPACE;
                     }
                     break;
@@ -114,7 +114,9 @@ public class VowpalWabbitFormat implements InputFormat {
     }
 
     private void addIndex(SparseItem item, double value) {
-        featuresProcessor.addFeature(item, namespace, feature, value);
+        if (!Util.doublesEqual(value, 0.)) {
+            featuresProcessor.addFeature(item, namespace, feature, value);
+        }
         feature.clear();
         number.clear();
     }

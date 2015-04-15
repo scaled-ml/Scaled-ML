@@ -17,7 +17,7 @@ import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class VwIntegrationTest {
+public class VWIntegrationTest {
     private Path tempDirectory;
 
     @Before
