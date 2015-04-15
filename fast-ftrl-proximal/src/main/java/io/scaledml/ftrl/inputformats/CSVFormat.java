@@ -25,8 +25,6 @@ public class CSVFormat implements InputFormat {
     public void parse(LineBytesBuffer line, SparseItem item) {
         item.clear();
         String[] splits = line.toString().split(",");
-
-
         try {
             double label = Double.parseDouble(splits[0]);
             item.label(Util.doublesEqual(1., label) ? 1. : 0.);
@@ -40,6 +38,12 @@ public class CSVFormat implements InputFormat {
             featuresProcessor.addFeature(item, NAMESPACE, split, 1.);
         }
         featuresProcessor.finalize(item);
+    }
+
+    private void addFeature(SparseItem item, LineBytesBuffer cat, double value) {
+        if (!Util.doublesEqual(value, 0)) {
+            featuresProcessor.addFeature(item, NAMESPACE, cat, value);
+        }
     }
 
     @Inject
