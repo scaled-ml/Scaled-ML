@@ -9,43 +9,51 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 public class StatisticsCalculator implements OutputFormat {
     private static final Logger logger = LoggerFactory.getLogger(StatisticsCalculator.class);
+
+    private static final DecimalFormat df = new DecimalFormat("0.0000");
     private OutputFormat delegate;
     private FinishCollectStatisticsListener finishListener;
-    private double logLikelyhood = 0.;
-    private double smoothLogLikelyhood = 0.;
+    private double logLikelihood = 0.;
+    private double smoothLogLikelihood = 0.;
     private double alfa = 1. / 10000.;
     private long itemNo = 0;
     private long nextItemNoToPrint = 1;
 
+    private static String f(double v){
+        return df.format(v);
+    }
+
     public StatisticsCalculator() {
-        logger.info("mean logloss\tsmooth logloss\titems\tcurrent label\tcurrent prediction\tfeatures number");
+        logger.info("mean_logloss\tsmooth_logloss\titems\tcurrent_label\tcurrent_prediction\tfeatures_number");
     }
 
     @Override
     public void emit(SparseItem item, double prediction) {
         delegate.emit(item, prediction);
         itemNo++;
-        double itemLikelyhood = Math.log(Util.doublesEqual(1., item.label()) ? prediction : 1 - prediction);
-        logLikelyhood += itemLikelyhood;
-        smoothLogLikelyhood = smoothLogLikelyhood * (1. - alfa) + itemLikelyhood * alfa;
+        double itemLogLikelihood = Math.log(Util.doublesEqual(1., item.label()) ? prediction : 1 - prediction);
+        logLikelihood += itemLogLikelihood;
+        smoothLogLikelihood = smoothLogLikelihood * (1. - alfa) + itemLogLikelihood * alfa;
         if (itemNo == nextItemNoToPrint) {
             nextItemNoToPrint *= 2;
-            logger.info(-logLikelyhood / itemNo + "\t" + -smoothLogLikelyhood  + "\t" +
-                    itemNo + "\t" + item.label() + "\t" + prediction + "\t" + item.indexes().size());
+            double meanLogLoss = -logLikelihood / itemNo;
+            logger.info(f(meanLogLoss) + "\t" + f(-smoothLogLikelihood) + "\t" +
+                    itemNo + "\t" + f(item.label()) + "\t" + f(prediction) + "\t" + item.indexes().size());
         }
     }
 
     @Override
     public void close() throws IOException {
         finishListener.finishedCollectingStatistics(this);
-        // delegate can be shared among threads so it mus be closed separately
+        // delegate can be shared among threads so it must be closed separately
     }
 
-    public double logLikelyhood() {
-        return logLikelyhood;
+    public double logLikelihood() {
+        return logLikelihood;
     }
 
     public long itemNo() {

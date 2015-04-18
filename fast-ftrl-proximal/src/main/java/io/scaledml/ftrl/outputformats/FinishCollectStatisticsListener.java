@@ -17,7 +17,7 @@ public class FinishCollectStatisticsListener {
 
     public synchronized void finishedCollectingStatistics(StatisticsCalculator collector) {
         totalItems += collector.itemNo();
-        totalLogLikelyhood += collector.logLikelyhood();
+        totalLogLikelyhood += collector.logLikelihood();
         finishCollectEvents++;
         if (finishCollectEvents >= expectedFinishCollectEventsNum) {
             logger.info("Total mean logloss: " + -totalLogLikelyhood / totalItems + " Total items: " + totalItems);

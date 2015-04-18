@@ -6,7 +6,6 @@ import io.scaledml.ftrl.options.FtrlOptionsObject;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -15,7 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
-@Ignore
+
 public class CsvIntegrationTest {
     private Path tempDirectory;
 
@@ -31,7 +30,8 @@ public class CsvIntegrationTest {
                 .threads(3)
                 .data(getClass().getResource("/ruslan-train-small.csv").getPath())
                 .format("csv")
-                .skipFirst(true));
+                .skipFirst(true)
+                .csvMask("lc[37]n"));
 
         Main.runFtrlProximal(new FtrlOptionsObject()
                 .initialRegressor(tempDirectory + "/model")
@@ -39,7 +39,9 @@ public class CsvIntegrationTest {
                 .predictions(tempDirectory + "/predictions")
                 .data(getClass().getResource("/ruslan-test-small.csv").getPath())
                 .format("csv")
-                .skipFirst(true));
+                .skipFirst(true)
+                .csvMask("lc[37]n"));
+
         double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
                 .stream().mapToDouble(Double::parseDouble).toArray();
         int predictionsNum = predictions.length;
