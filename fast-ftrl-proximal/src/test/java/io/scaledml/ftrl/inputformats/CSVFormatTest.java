@@ -13,7 +13,6 @@ import static org.junit.Assert.assertNotNull;
  * @author Ilya Smagin ilya-sm@yandex-team.ru on 4/5/15.
  */
 public class CSVFormatTest {
-
     @Test
     public void testParse() throws Exception {
         String line1 = "0,e6c5b5cd,68fd1e64,0b153874,c92f3b61,8e407662,2b53e5fb,1f6f0bb6,21ddcdc9,4f94c62a,7d1526c6," +
@@ -30,6 +29,6 @@ public class CSVFormatTest {
         format.parse(line, item);
         assertNotNull(item);
         assertEquals(0., item.label(), 0.000001);
-        assertEquals(60, item.indexes().size());
+        assertEquals(58, item.indexes().size());
     }
 }
