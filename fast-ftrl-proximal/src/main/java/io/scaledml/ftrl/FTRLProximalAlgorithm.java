@@ -15,12 +15,11 @@ public class FTRLProximalAlgorithm {
     public double learn(SparseItem item, Increment increment) {
         calculateWeights(item);
         double predict = predict(item);
-        double predict2 = predict(item);
         double gradient = item.label() - predict;
         if (!testOnly) {
             increment.clear();
             for (int i = 0; i < item.indexes().size(); i++) {
-                long index = item.indexes().getLong(i);
+                long index = item.indexes().getLong(i) % model.featuresNumber();
                 double nDelta = gradient * gradient;
                 double n = currentN.getDouble(i);
                 double w = currentWeights.getDouble(i);

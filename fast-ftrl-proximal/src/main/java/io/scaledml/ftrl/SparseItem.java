@@ -1,5 +1,6 @@
 package io.scaledml.ftrl;
 
+import io.scaledml.ftrl.util.Util;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -29,7 +30,7 @@ public class SparseItem {
     }
 
     public SparseItem label(double label) {
-        this.label = label;
+        this.label = Util.doublesEqual(1., label) ? 1. : 0.;
         return this;
     }
 

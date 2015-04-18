@@ -3,6 +3,7 @@ package io.scaledml.ftrl.inputformats;
 import com.google.common.base.CharMatcher;
 import com.google.inject.Inject;
 import io.scaledml.ftrl.SparseItem;
+import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
 import io.scaledml.ftrl.util.LineBytesBuffer;
 import io.scaledml.ftrl.util.Util;
 
@@ -114,9 +115,7 @@ public class VowpalWabbitFormat implements InputFormat {
     }
 
     private void addIndex(SparseItem item, double value) {
-        if (!Util.doublesEqual(value, 0.)) {
-            featuresProcessor.addFeature(item, namespace, feature, value);
-        }
+        featuresProcessor.addFeature(item, namespace, feature, value);
         feature.clear();
         number.clear();
     }

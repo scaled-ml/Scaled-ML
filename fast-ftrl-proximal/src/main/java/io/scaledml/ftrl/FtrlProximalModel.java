@@ -69,7 +69,8 @@ public class FtrlProximalModel implements Serializable {
     public void readVectors(LongList indexes, DoubleList currentN, DoubleList currentZ) {
         currentN.clear();
         currentZ.clear();
-        for (long index : indexes) {
+        for (long ind : indexes) {
+            long index = ind % featuresNumber();
             currentN.add(n.get(index));
             currentZ.add(z.get(index));
         }

@@ -10,7 +10,9 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.scaledml.ftrl.FtrlProximalModel;
 import io.scaledml.ftrl.FtrlProximalRunner;
+import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
 import io.scaledml.ftrl.featuresprocessors.QuadraticFeaturesProcessor;
+import io.scaledml.ftrl.featuresprocessors.SimpleFeaturesProcessor;
 import io.scaledml.ftrl.inputformats.*;
 import io.scaledml.ftrl.options.ColumnsMask;
 import io.scaledml.ftrl.options.FtrlOptions;
@@ -77,12 +79,6 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
     }
 
     @Provides
-    @Named("featuresNumber")
-    public long featuresNumber(FtrlProximalModel model) {
-        return model.featuresNumber();
-    }
-
-    @Provides
     @Singleton
     Optional<Path> outputForModelPath() {
         return options.finalRegressor() == null ? Optional.<Path>empty() : Optional.of(Paths.get(options.finalRegressor()));
@@ -127,6 +123,7 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
                 break;
             case "csv":
                 ColumnsMask columnsMask = new ColumnsMask(options.csvMask());
+                bindConstant().annotatedWith(Names.named("csvDelimiter")).to(options.csvDelimiter());
                 bind(new TypeLiteral<ColumnsMask>() {
                 }).annotatedWith(Names.named("csvMask")).toInstance(columnsMask);
 
@@ -141,13 +138,12 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
 
 
     @Provides
-    public FeaturesProcessor featuresProcessor(@Named("featuresNumber") long featuresNumber) {
-        SimpleFeaturesProcessor simpleFeaturesProcessor = new SimpleFeaturesProcessor().featuresNumber(featuresNumber);
+    public FeaturesProcessor featuresProcessor() {
+        SimpleFeaturesProcessor simpleFeaturesProcessor = new SimpleFeaturesProcessor();
         if (!options.quadratic()) {
             return simpleFeaturesProcessor;
         }
         return new QuadraticFeaturesProcessor()
-                .featuresNumber(featuresNumber)
                 .next(simpleFeaturesProcessor);
     }
 

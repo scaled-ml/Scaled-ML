@@ -1,6 +1,7 @@
 package io.scaledml.ftrl.inputformats;
 
 import io.scaledml.ftrl.SparseItem;
+import io.scaledml.ftrl.featuresprocessors.SimpleFeaturesProcessor;
 import io.scaledml.ftrl.util.LineBytesBuffer;
 import org.junit.Test;
 
@@ -16,7 +17,7 @@ public class VowpalWabbitFormatTest {
                 "|device_model 76dc4769 |device_type 1 |device_conn_type 0 |C14 8330 |C15 320 |C16 50 |C17 761 |C18 3 " +
                 "|C19 175 |C20 100075";
         InputFormat format = new VowpalWabbitFormat()
-                .featruresProcessor(new SimpleFeaturesProcessor().featuresNumber(500));
+                .featruresProcessor(new SimpleFeaturesProcessor());
         LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item);
@@ -29,7 +30,7 @@ public class VowpalWabbitFormatTest {
     public void testParseUtf8() throws Exception {
         String line1 = "1 |КАТ1 ФИЧА1 |кат2 фича2 фича3 |запрос у попа была собака он ее любил ";
         InputFormat format = new VowpalWabbitFormat()
-                .featruresProcessor(new SimpleFeaturesProcessor().featuresNumber(500));
+                .featruresProcessor(new SimpleFeaturesProcessor());
         LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item);
@@ -42,7 +43,7 @@ public class VowpalWabbitFormatTest {
     public void testParseNumerical() throws Exception {
         String line1 = "1 |сat1 feature1:2 |сat2 feature2:100.55 фича3:-123.4 | cat3 feature4 feature5:-17";
         InputFormat format = new VowpalWabbitFormat()
-                .featruresProcessor(new SimpleFeaturesProcessor().featuresNumber(500));
+                .featruresProcessor(new SimpleFeaturesProcessor());
         LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item);
@@ -69,7 +70,7 @@ public class VowpalWabbitFormatTest {
                 "NUM09:1 NUM10:1382.0 NUM11:1  NUM13:1 NUM14:1386.0 NUM15:1.0 NUM16:181 NUM17:4 NUM18:6.0 NUM19:7.0 " +
                 "NUM20:0.0 NUM21:0 NUM22:5 NUM23:1382";
         InputFormat format = new VowpalWabbitFormat()
-                .featruresProcessor(new SimpleFeaturesProcessor().featuresNumber(500));
+                .featruresProcessor(new SimpleFeaturesProcessor());
         LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item);

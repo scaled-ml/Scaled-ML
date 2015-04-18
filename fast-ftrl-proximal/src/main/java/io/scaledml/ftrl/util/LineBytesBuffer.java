@@ -126,4 +126,8 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
     public int hashCode() {
         return Util.murmur32().hashBytes(bytes, 0, size).hashCode();
     }
+
+    public boolean empty() {
+        return size == 0;
+    }
 }

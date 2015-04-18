@@ -1,12 +1,11 @@
 package io.scaledml.ftrl.inputformats;
 
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import io.scaledml.ftrl.SparseItem;
+import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
 import io.scaledml.ftrl.options.ColumnsMask;
 import io.scaledml.ftrl.util.LineBytesBuffer;
-import io.scaledml.ftrl.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,50 +14,53 @@ import org.slf4j.LoggerFactory;
  */
 public class CSVFormat implements InputFormat {
 
-    private static final Logger logger = LoggerFactory.getLogger(CSVFormat.class);
-
-    private static final LineBytesBuffer NAMESPACE = new LineBytesBuffer("KU");
-
-    private static final String CAT_PREFIX = "CAT";
-
     private FeaturesProcessor featuresProcessor;
     private ColumnsMask columnsMask;
+    private char csvDelimiter = ',';
+    private final LineBytesBuffer valueBuffer = new LineBytesBuffer();
+    private final LineBytesBuffer namespaceBuffer = new LineBytesBuffer();
+
 
     @Override
     public void parse(LineBytesBuffer line, SparseItem item) {
         item.clear();
-        String[] splits = line.toString().split(",");
-        for (int colNum = 0; colNum < splits.length; colNum++) {
-            String colValue = splits[colNum];
-            ColumnsMask.ColumnType columnType = columnsMask.getCategory(colNum);
-            switch (columnType) {
-                case LABEL:
-                    double label = Double.parseDouble(colValue);
-                    item.label(Util.doublesEqual(1., label) ? 1. : 0.);
-                    break;
-                case ID:
-                    break;
-                case NUMERICAL:
-                    if (!Strings.isNullOrEmpty(colValue)) {
-                        LineBytesBuffer cat = new LineBytesBuffer(CAT_PREFIX + colNum);
-                        double value = Double.parseDouble(colValue);
-                        addFeature(item, cat, value);
-                    }
-                    break;
-                case CATEGORICAL:
-                    if (!Strings.isNullOrEmpty(colValue)) {
-                        LineBytesBuffer catVaue = new LineBytesBuffer(CAT_PREFIX + colNum + colValue);
-                        addFeature(item, catVaue, 1.);
-                    }
-                    break;
+        valueBuffer.clear();
+        int colNum = 0;
+        for (int i = 0; i < line.size(); i++) {
+            byte b = line.get(i);
+            if (((char) b) != csvDelimiter) {
+                valueBuffer.append(b);
+            } else {
+                addFeature(item, colNum);
+                colNum++;
+                valueBuffer.clear();
             }
         }
+        addFeature(item, colNum);
         featuresProcessor.finalize(item);
     }
 
-    private void addFeature(SparseItem item, LineBytesBuffer cat, double value) {
-        if (!Util.doublesEqual(value, 0)) {
-            featuresProcessor.addFeature(item, NAMESPACE, cat, value);
+    private void addFeature(SparseItem item, int colNum) {
+        if (valueBuffer.empty()) {
+            return;
+        }
+        namespaceBuffer.clear();
+        namespaceBuffer.putInteger(colNum);
+        ColumnsMask.ColumnType columnType = columnsMask.getCategory(colNum);
+        switch (columnType) {
+            case LABEL:
+                double label = Double.parseDouble(valueBuffer.toAsciiString());
+                item.label(label);
+                break;
+            case ID:
+                break;
+            case NUMERICAL:
+                double value = Double.parseDouble(valueBuffer.toAsciiString());
+                featuresProcessor.addFeature(item, namespaceBuffer, namespaceBuffer, value);
+                break;
+            case CATEGORICAL:
+                featuresProcessor.addFeature(item, namespaceBuffer, valueBuffer, 1.);
+                break;
         }
     }
 
@@ -71,6 +73,12 @@ public class CSVFormat implements InputFormat {
     @Inject
     CSVFormat csvMask(@Named("csvMask") ColumnsMask columnsMask) {
         this.columnsMask = columnsMask;
+        return this;
+    }
+
+    @Inject
+    CSVFormat csvDelimiter(@Named("csvDelimiter") char csvDelimiter) {
+        this.csvDelimiter = csvDelimiter;
         return this;
     }
 }

@@ -1,7 +1,7 @@
 package io.scaledml.ftrl.inputformats;
 
 import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.featuresprocessors.SimpleFeatruresProcessor;
+import io.scaledml.ftrl.featuresprocessors.SimpleFeaturesProcessor;
 import io.scaledml.ftrl.options.ColumnsMask;
 import io.scaledml.ftrl.util.LineBytesBuffer;
 import org.junit.Test;
@@ -23,13 +23,14 @@ public class CSVFormatTest {
                 "44.0,1,44,102";
 
         InputFormat format = new CSVFormat()
-                .featruresProcessor(new SimpleFeaturesProcessor().featuresNumber(500))
-                .csvMask(new ColumnsMask("lc"));
+                .featruresProcessor(new SimpleFeaturesProcessor())
+                .csvMask(new ColumnsMask("lc[37]n"))
+                .csvDelimiter(',');
         LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item);
         assertNotNull(item);
         assertEquals(0., item.label(), 0.000001);
-        assertEquals(58, item.indexes().size());
+        assertEquals(57, item.indexes().size());
     }
 }

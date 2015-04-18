@@ -80,5 +80,9 @@ public interface FtrlOptions {
             defaultValue = "lc[*]")
     String csvMask();
 
+    @Option(longName = "csv-delimiter",
+            description ="csv columns delimiter. Must be only one character",
+            defaultValue = ",")
+    char csvDelimiter();
 
 }

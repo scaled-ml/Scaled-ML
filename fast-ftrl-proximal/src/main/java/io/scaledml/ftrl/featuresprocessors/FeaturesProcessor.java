@@ -1,4 +1,4 @@
-package io.scaledml.ftrl.inputformats;
+package io.scaledml.ftrl.featuresprocessors;
 
 import io.scaledml.ftrl.SparseItem;
 import io.scaledml.ftrl.util.LineBytesBuffer;

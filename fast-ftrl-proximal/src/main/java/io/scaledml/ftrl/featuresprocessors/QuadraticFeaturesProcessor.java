@@ -48,10 +48,4 @@ public class QuadraticFeaturesProcessor extends ChainFeaturesProcessor {
     protected void doFinalize(SparseItem item) {
         featuresPerNamespace.clear();
     }
-
-    @Inject
-    public QuadraticFeaturesProcessor featuresNumber(@Named("featuresNumber") long featuresNumber) {
-        this.featuresNumber = featuresNumber;
-        return this;
-    }
 }

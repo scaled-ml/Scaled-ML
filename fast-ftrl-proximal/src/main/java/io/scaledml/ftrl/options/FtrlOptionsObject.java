@@ -1,6 +1,8 @@
 package io.scaledml.ftrl.options;
 
 
+import com.google.inject.Inject;
+
 public class FtrlOptionsObject implements FtrlOptions {
     private int hashcodeBits = 18;
     private double alfa = 0.005;
@@ -18,6 +20,7 @@ public class FtrlOptionsObject implements FtrlOptions {
     private String format = "vw";
     private boolean skipFirst = false;
     private String csvMask = "lc[*]";
+    private char csvDelimiter = ',';
 
     @Override
     public int hashcodeBits() {
@@ -190,4 +193,14 @@ public class FtrlOptionsObject implements FtrlOptions {
     }
 
 
+    @Override
+    public char csvDelimiter() {
+        return csvDelimiter;
+    }
+
+    @Inject
+    public FtrlOptionsObject csvDelimiter(char csvDelimiter) {
+        this.csvDelimiter = csvDelimiter;
+        return this;
+    }
 }
