@@ -17,6 +17,7 @@ public class FtrlOptionsObject implements FtrlOptions {
     private boolean quadratic = false;
     private String format = "vw";
     private boolean skipFirst = false;
+    private String csvMask = "lc[*]";
 
     @Override
     public int hashcodeBits() {
@@ -163,6 +164,11 @@ public class FtrlOptionsObject implements FtrlOptions {
         return this;
     }
 
+    public FtrlOptionsObject csvMask(String csvMask) {
+        this.csvMask = csvMask;
+        return this;
+    }
+
     @Override
     public int ringSize() {
         return 0;
@@ -177,4 +183,11 @@ public class FtrlOptionsObject implements FtrlOptions {
     public boolean skipFirst() {
         return skipFirst;
     }
+
+    @Override
+    public String csvMask() {
+        return csvMask;
+    }
+
+
 }

@@ -2,6 +2,7 @@ package io.scaledml.ftrl.inputformats;
 
 import io.scaledml.ftrl.SparseItem;
 import io.scaledml.ftrl.featuresprocessors.SimpleFeatruresProcessor;
+import io.scaledml.ftrl.options.ColumnsMask;
 import io.scaledml.ftrl.util.LineBytesBuffer;
 import org.junit.Test;
 
@@ -12,7 +13,6 @@ import static org.junit.Assert.assertNotNull;
  * @author Ilya Smagin ilya-sm@yandex-team.ru on 4/5/15.
  */
 public class CSVFormatTest {
-
     @Test
     public void testParse() throws Exception {
         String line1 = "0,e6c5b5cd,68fd1e64,0b153874,c92f3b61,8e407662,2b53e5fb,1f6f0bb6,21ddcdc9,4f94c62a,7d1526c6," +
@@ -22,12 +22,13 @@ public class CSVFormatTest {
                 "44.0,1,44,102";
 
         InputFormat format = new CSVFormat()
-                .featruresProcessor(new SimpleFeaturesProcessor().featuresNumber(500));
+                .featruresProcessor(new SimpleFeaturesProcessor().featuresNumber(500))
+                .csvMask(new ColumnsMask("lc"));
         LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item);
         assertNotNull(item);
         assertEquals(0., item.label(), 0.000001);
-        assertEquals(60, item.indexes().size());
+        assertEquals(58, item.indexes().size());
     }
 }

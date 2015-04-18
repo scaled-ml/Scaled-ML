@@ -72,4 +72,13 @@ public interface FtrlOptions {
 
     @Option(longName = "skip-first", description = "Skip first string of file(usually if it is a csv header", hidden = true)
     boolean skipFirst();
+
+    @Option(longName = "csv-mask", description = "Csv columns information. It could contain " +
+            "(l)Label, (i)d, (n)umeric or (c)categorical marks with amount of columns on the same type" +
+            " in brackets[]." +
+            "Some valid examples are: 'ilcccccnnnnn', 'ic[20]n[10]', 'lc[10]n[*],",
+            defaultValue = "lc[*]")
+    String csvMask();
+
+
 }
