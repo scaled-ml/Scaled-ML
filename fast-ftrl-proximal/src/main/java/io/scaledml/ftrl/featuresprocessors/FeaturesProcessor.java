@@ -1,6 +1,6 @@
 package io.scaledml.ftrl.featuresprocessors;
 
-import io.scaledml.ftrl.SparseItem;
+import io.scaledml.core.SparseItem;
 import io.scaledml.ftrl.util.LineBytesBuffer;
 
 public interface FeaturesProcessor {

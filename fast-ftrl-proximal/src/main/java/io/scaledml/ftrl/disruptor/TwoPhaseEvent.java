@@ -9,6 +9,7 @@ public class TwoPhaseEvent<T> {
     }
 
     private final LineBytesBuffer input = new LineBytesBuffer();
+    private long lineNo;
     private final T output;
 
     public TwoPhaseEvent(T output) {
@@ -21,5 +22,14 @@ public class TwoPhaseEvent<T> {
 
     public T output() {
         return output;
+    }
+
+    public TwoPhaseEvent<T> lineNo(long lineNo) {
+        this.lineNo = lineNo;
+        return this;
+    }
+
+    public long lineNo() {
+        return lineNo;
     }
 }

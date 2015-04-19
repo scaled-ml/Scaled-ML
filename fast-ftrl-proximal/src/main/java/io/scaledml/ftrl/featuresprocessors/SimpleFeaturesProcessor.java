@@ -1,8 +1,6 @@
 package io.scaledml.ftrl.featuresprocessors;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
-import io.scaledml.ftrl.SparseItem;
+import io.scaledml.core.SparseItem;
 import io.scaledml.ftrl.util.LineBytesBuffer;
 import io.scaledml.ftrl.util.Util;
 

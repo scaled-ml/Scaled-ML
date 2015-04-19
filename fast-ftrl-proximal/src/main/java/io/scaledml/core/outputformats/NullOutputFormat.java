@@ -1,7 +1,7 @@
-package io.scaledml.ftrl.outputformats;
+package io.scaledml.core.outputformats;
 
 
-import io.scaledml.ftrl.SparseItem;
+import io.scaledml.core.SparseItem;
 
 import java.io.IOException;
 

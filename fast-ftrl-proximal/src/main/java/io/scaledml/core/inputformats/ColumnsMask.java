@@ -1,4 +1,4 @@
-package io.scaledml.ftrl.options;
+package io.scaledml.core.inputformats;
 
 import java.util.ArrayList;
 

@@ -6,9 +6,9 @@ import com.lmax.disruptor.LifecycleAware;
 import io.scaledml.ftrl.FTRLProximalAlgorithm;
 import io.scaledml.ftrl.FtrlProximalModel;
 import io.scaledml.ftrl.Increment;
-import io.scaledml.ftrl.SparseItem;
+import io.scaledml.core.SparseItem;
 import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
-import io.scaledml.ftrl.outputformats.OutputFormat;
+import io.scaledml.core.outputformats.OutputFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

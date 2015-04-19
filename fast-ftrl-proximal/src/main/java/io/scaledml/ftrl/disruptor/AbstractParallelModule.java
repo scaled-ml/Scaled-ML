@@ -13,13 +13,13 @@ import io.scaledml.ftrl.FtrlProximalRunner;
 import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
 import io.scaledml.ftrl.featuresprocessors.QuadraticFeaturesProcessor;
 import io.scaledml.ftrl.featuresprocessors.SimpleFeaturesProcessor;
-import io.scaledml.ftrl.inputformats.*;
-import io.scaledml.ftrl.options.ColumnsMask;
+import io.scaledml.core.inputformats.*;
+import io.scaledml.core.inputformats.ColumnsMask;
 import io.scaledml.ftrl.options.FtrlOptions;
 import io.scaledml.ftrl.outputformats.FinishCollectStatisticsListener;
-import io.scaledml.ftrl.outputformats.NullOutputFormat;
-import io.scaledml.ftrl.outputformats.OutputFormat;
-import io.scaledml.ftrl.outputformats.PrintStreamOutputFormat;
+import io.scaledml.core.outputformats.NullOutputFormat;
+import io.scaledml.core.outputformats.OutputFormat;
+import io.scaledml.core.outputformats.PrintStreamOutputFormat;
 import it.unimi.dsi.fastutil.io.FastBufferedOutputStream;
 
 import java.io.IOException;

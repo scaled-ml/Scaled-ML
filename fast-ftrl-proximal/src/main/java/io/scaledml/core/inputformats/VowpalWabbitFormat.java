@@ -1,8 +1,8 @@
-package io.scaledml.ftrl.inputformats;
+package io.scaledml.core.inputformats;
 
 import com.google.common.base.CharMatcher;
 import com.google.inject.Inject;
-import io.scaledml.ftrl.SparseItem;
+import io.scaledml.core.SparseItem;
 import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
 import io.scaledml.ftrl.util.LineBytesBuffer;
 import io.scaledml.ftrl.util.Util;
@@ -26,11 +26,12 @@ public class VowpalWabbitFormat implements InputFormat {
 
 
     @Override
-    public void parse(LineBytesBuffer line, SparseItem item) {
+    public void parse(LineBytesBuffer line, SparseItem item, long lineNo) {
         item.clear();
         feature.clear();
         namespace.clear();
         number.clear();
+        item.id(Long.toString(lineNo));
         State state = State.BEFORE_LABEL;
         for (int i = 0; i < line.size(); i++) {
             byte b = line.get(i);

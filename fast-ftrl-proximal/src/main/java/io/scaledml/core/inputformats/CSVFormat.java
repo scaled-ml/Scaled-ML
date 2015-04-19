@@ -1,13 +1,10 @@
-package io.scaledml.ftrl.inputformats;
+package io.scaledml.core.inputformats;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import io.scaledml.ftrl.SparseItem;
+import io.scaledml.core.SparseItem;
 import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
-import io.scaledml.ftrl.options.ColumnsMask;
 import io.scaledml.ftrl.util.LineBytesBuffer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Ilya Smagin ilya-sm@yandex-team.ru on 4/2/15.
@@ -22,7 +19,7 @@ public class CSVFormat implements InputFormat {
 
 
     @Override
-    public void parse(LineBytesBuffer line, SparseItem item) {
+    public void parse(LineBytesBuffer line, SparseItem item, long lineNo) {
         item.clear();
         valueBuffer.clear();
         int colNum = 0;
@@ -37,6 +34,9 @@ public class CSVFormat implements InputFormat {
             }
         }
         addFeature(item, colNum);
+        if (item.id() == null) {
+            item.id(Long.toString(lineNo));
+        }
         featuresProcessor.finalize(item);
     }
 
@@ -53,6 +53,7 @@ public class CSVFormat implements InputFormat {
                 item.label(label);
                 break;
             case ID:
+                item.id(valueBuffer.toString());
                 break;
             case NUMERICAL:
                 double value = Double.parseDouble(valueBuffer.toAsciiString());

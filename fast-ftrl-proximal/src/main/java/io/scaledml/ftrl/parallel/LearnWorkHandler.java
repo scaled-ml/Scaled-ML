@@ -5,10 +5,10 @@ import com.lmax.disruptor.LifecycleAware;
 import com.lmax.disruptor.WorkHandler;
 import io.scaledml.ftrl.FTRLProximalAlgorithm;
 import io.scaledml.ftrl.Increment;
-import io.scaledml.ftrl.SparseItem;
+import io.scaledml.core.SparseItem;
 import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
-import io.scaledml.ftrl.inputformats.InputFormat;
-import io.scaledml.ftrl.outputformats.OutputFormat;
+import io.scaledml.core.inputformats.InputFormat;
+import io.scaledml.core.outputformats.OutputFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +24,7 @@ public class LearnWorkHandler implements WorkHandler<TwoPhaseEvent<Increment>>, 
     @Override
     public void onEvent(TwoPhaseEvent<Increment> event) throws Exception {
         item.clear();
-        inputFormat.parse(event.input(), item);
+        inputFormat.parse(event.input(), item, event.lineNo());
         outputFormat.emit(item, algorithm.learn(item, event.output()));
     }
 

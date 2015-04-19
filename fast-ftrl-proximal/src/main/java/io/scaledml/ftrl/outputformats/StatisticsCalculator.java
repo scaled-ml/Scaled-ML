@@ -3,7 +3,8 @@ package io.scaledml.ftrl.outputformats;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import io.scaledml.ftrl.SparseItem;
+import io.scaledml.core.outputformats.OutputFormat;
+import io.scaledml.core.SparseItem;
 import io.scaledml.ftrl.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

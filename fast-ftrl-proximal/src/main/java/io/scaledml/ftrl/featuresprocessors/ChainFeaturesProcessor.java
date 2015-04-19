@@ -1,7 +1,7 @@
 package io.scaledml.ftrl.featuresprocessors;
 
 import com.google.inject.Inject;
-import io.scaledml.ftrl.SparseItem;
+import io.scaledml.core.SparseItem;
 import io.scaledml.ftrl.util.LineBytesBuffer;
 
 public abstract class ChainFeaturesProcessor implements FeaturesProcessor {

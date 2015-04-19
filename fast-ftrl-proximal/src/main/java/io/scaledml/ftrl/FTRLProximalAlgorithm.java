@@ -3,6 +3,7 @@ package io.scaledml.ftrl;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import io.scaledml.core.SparseItem;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 
 public class FTRLProximalAlgorithm {

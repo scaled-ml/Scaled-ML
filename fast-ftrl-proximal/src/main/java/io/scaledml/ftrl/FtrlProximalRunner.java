@@ -6,7 +6,7 @@ import com.google.inject.name.Named;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
-import io.scaledml.ftrl.outputformats.OutputFormat;
+import io.scaledml.core.outputformats.OutputFormat;
 import io.scaledml.ftrl.util.LineBytesBuffer;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 
@@ -29,16 +29,19 @@ public class FtrlProximalRunner {
             RingBuffer<? extends TwoPhaseEvent> ringBuffer = disruptor.getRingBuffer();
             long cursor = ringBuffer.next();
             LineBytesBuffer buffer = ringBuffer.get(cursor).input();
-
+            long lineNo = 0;
+            ringBuffer.get(cursor).lineNo(lineNo);
             boolean needToSkipNext = skipFirst;
             while (buffer.readLineFrom(stream)) {
                 if (needToSkipNext) {
                     needToSkipNext = false;
                     continue;
                 }
+                lineNo++;
                 ringBuffer.publish(cursor);
                 cursor = ringBuffer.next();
                 buffer = ringBuffer.get(cursor).input();
+                ringBuffer.get(cursor).lineNo(lineNo);
             }
             disruptor.shutdown();
         } finally {

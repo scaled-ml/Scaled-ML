@@ -9,7 +9,7 @@ import io.scaledml.ftrl.Increment;
 import io.scaledml.ftrl.disruptor.AbstractParallelModule;
 import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
 import io.scaledml.ftrl.options.FtrlOptions;
-import io.scaledml.ftrl.outputformats.OutputFormat;
+import io.scaledml.core.outputformats.OutputFormat;
 import io.scaledml.ftrl.outputformats.StatisticsCalculator;
 
 

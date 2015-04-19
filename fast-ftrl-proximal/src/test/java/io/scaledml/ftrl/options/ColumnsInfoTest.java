@@ -1,5 +1,6 @@
 package io.scaledml.ftrl.options;
 
+import io.scaledml.core.inputformats.ColumnsMask;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;

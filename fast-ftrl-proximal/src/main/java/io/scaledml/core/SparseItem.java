@@ -1,4 +1,4 @@
-package io.scaledml.ftrl;
+package io.scaledml.core;
 
 import io.scaledml.ftrl.util.Util;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
@@ -9,16 +9,19 @@ import it.unimi.dsi.fastutil.longs.LongList;
 public class SparseItem {
     private final LongList indexes = new LongArrayList();
     private final DoubleList values = new DoubleArrayList();
+    private String id;
     private double label;
 
-    public void addIndex(long index) {
+    public SparseItem addIndex(long index) {
         indexes.add(index);
         values.add(1.);
+        return this;
     }
 
-    public void addIndex(long index, double value) {
+    public SparseItem addIndex(long index, double value) {
         indexes.add(index);
         values.add(value);
+        return this;
     }
 
     public LongList indexes() {
@@ -34,13 +37,23 @@ public class SparseItem {
         return this;
     }
 
+    public SparseItem id(String id) {
+        this.id = id;
+        return this;
+    }
+
     public double label() {
         return label;
     }
 
     public void clear() {
         label = 0.;
+        id = null;
         indexes.clear();
         values.clear();
+    }
+
+    public String id() {
+        return id;
     }
 }
