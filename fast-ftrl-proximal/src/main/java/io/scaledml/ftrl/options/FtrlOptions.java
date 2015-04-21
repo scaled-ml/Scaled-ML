@@ -1,6 +1,9 @@
 package io.scaledml.ftrl.options;
 
+import com.google.common.base.Joiner;
 import com.lexicalscope.jewel.cli.Option;
+
+import java.util.Arrays;
 
 public interface FtrlOptions {
 
@@ -64,8 +67,8 @@ public interface FtrlOptions {
     boolean parallelLearn();
 
     @Option(longName = "format", defaultValue = "vw", description = "Input file format." +
-            "'vw' or 'csw' are currently supported")
-    String format();
+            "vw, csv, binary are currently supported")
+    InputFormatType format();
 
     @Option(longName = "ring-size", defaultValue = "0", hidden = true)
     int ringSize();
@@ -76,8 +79,8 @@ public interface FtrlOptions {
     @Option(longName = "csv-mask", description = "Csv columns information. It could contain " +
             "(l)Label, (i)d, (n)umeric or (c)categorical marks with amount of columns on the same type" +
             " in brackets[]." +
-            "Some valid examples are: 'ilcccccnnnnn', 'ic[20]n[10]', 'lc[10]n[*],",
-            defaultValue = "lc[*]")
+            "Some valid examples are: 'ilcccccnnnnn', 'lc[10]n",
+            defaultValue = "lc")
     String csvMask();
 
     @Option(longName = "csv-delimiter",

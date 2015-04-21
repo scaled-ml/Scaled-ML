@@ -17,9 +17,9 @@ public class FtrlOptionsObject implements FtrlOptions {
     private int threads = 1;
     private boolean parallelLearn = false;
     private boolean quadratic = false;
-    private String format = "vw";
+    private InputFormatType format = InputFormatType.vw;
     private boolean skipFirst = false;
-    private String csvMask = "lc[*]";
+    private String csvMask = "lc";
     private char csvDelimiter = ',';
 
     @Override
@@ -93,7 +93,7 @@ public class FtrlOptionsObject implements FtrlOptions {
     }
 
     @Override
-    public String format() {
+    public InputFormatType format() {
         return format;
     }
 
@@ -102,7 +102,7 @@ public class FtrlOptionsObject implements FtrlOptions {
         return this;
     }
 
-    public FtrlOptionsObject format(String format) {
+    public FtrlOptionsObject format(InputFormatType format) {
         this.format = format;
         return this;
     }

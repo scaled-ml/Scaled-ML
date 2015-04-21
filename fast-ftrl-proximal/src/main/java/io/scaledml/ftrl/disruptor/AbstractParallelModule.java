@@ -118,10 +118,10 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
         bindConstant().annotatedWith(Names.named("testOnly")).to(options.testOnly());
         bindConstant().annotatedWith(Names.named("skipFirst")).to(options.skipFirst());
         switch (options.format()) {
-            case "vw":
+            case vw:
                 bind(InputFormat.class).to(VowpalWabbitFormat.class);
                 break;
-            case "csv":
+            case csv:
                 ColumnsMask columnsMask = new ColumnsMask(options.csvMask());
                 bindConstant().annotatedWith(Names.named("csvDelimiter")).to(options.csvDelimiter());
                 bind(new TypeLiteral<ColumnsMask>() {
@@ -129,8 +129,11 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
 
                 bind(InputFormat.class).to(CSVFormat.class);
                 break;
+            case binary:
+                bind(InputFormat.class).to(BinaryInputFormat.class);
+                break;
             default:
-                throw new IllegalArgumentException(options.format());
+                throw new IllegalArgumentException(options.format().toString());
         }
         bind(FtrlProximalRunner.class).asEagerSingleton();
         bind(FinishCollectStatisticsListener.class).asEagerSingleton();

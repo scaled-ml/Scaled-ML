@@ -15,13 +15,21 @@ public class FinishCollectStatisticsListener {
     private double totalLogLikelyhood = 0.;
     private long totalItems = 0;
 
+    public FinishCollectStatisticsListener() {
+        logger.info("mean_logloss\tsmooth_logloss\titems\tcurrent_label\tcurrent_prediction\tfeatures_number");
+    }
+
     public synchronized void finishedCollectingStatistics(StatisticsCalculator collector) {
         totalItems += collector.itemNo();
         totalLogLikelyhood += collector.logLikelihood();
         finishCollectEvents++;
         if (finishCollectEvents >= expectedFinishCollectEventsNum) {
-            logger.info("Total mean logloss: " + -totalLogLikelyhood / totalItems + " Total items: " + totalItems);
+            logger.info("Total mean logloss: " + logLoss() + " Total items: " + totalItems);
         }
+    }
+
+    public synchronized double logLoss() {
+        return -totalLogLikelyhood / totalItems;
     }
 
     @Inject

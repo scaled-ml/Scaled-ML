@@ -1,11 +1,13 @@
-package io.scaledml.ftrl.util;
+package io.scaledml.core.util;
 
 import com.google.common.base.Charsets;
 import it.unimi.dsi.fastutil.bytes.ByteArrays;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
     private byte[] bytes;
@@ -79,13 +81,6 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
         size++;
     }
 
-    public void putInteger(int num) {
-        append((byte) (num));
-        append((byte) (num >> 8));
-        append((byte) (num >> 16));
-        append((byte) (num >> 24));
-    }
-
     public void clear() {
         size = 0;
     }
@@ -100,6 +95,63 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
             }
         }
         return Integer.compare(size, o.size);
+    }
+
+    public boolean empty() {
+        return size == 0;
+    }
+
+    public int putByte(byte b) {
+        append(b);
+        return 1;
+    }
+
+    public int putShort(short num) {
+        append((byte) (num));
+        append((byte) (num >> 8));
+        return 2;
+    }
+    public int putString(String str) {
+        byte[] strBytes = str.getBytes(Charsets.US_ASCII);
+        assert strBytes.length < Short.MAX_VALUE;
+        putShort((short) strBytes.length);
+        bytes = ByteArrays.ensureCapacity(bytes, size + strBytes.length);
+        System.arraycopy(strBytes, 0, bytes, size, strBytes.length);
+        size += strBytes.length;
+        return strBytes.length + 2;
+    }
+
+    public int putLong(long num) {
+        assert num >= 0 && num < (1L << 40);
+        append((byte) (num));
+        append((byte) (num >> 8));
+        append((byte) (num >> 16));
+        append((byte) (num >> 24));
+        append((byte) (num >> 32));
+        return 5;
+    }
+
+    public short readShort(AtomicInteger cursor) {
+        return (short) (((bytes[cursor.getAndIncrement()] & 0xff)) |
+                 ((bytes[cursor.getAndIncrement()] & 0xff) << 8));
+    }
+
+    public long readLong(AtomicInteger cursor) {
+        return ((bytes[cursor.getAndIncrement()] & 0xffL) |
+                ((bytes[cursor.getAndIncrement()] & 0xffL) << 8) |
+                ((bytes[cursor.getAndIncrement()] & 0xffL) << 16) |
+                ((bytes[cursor.getAndIncrement()] & 0xffL) << 24) |
+                ((bytes[cursor.getAndIncrement()] & 0xffL) << 32));
+    }
+
+    public String readString(AtomicInteger cursor) {
+        short size = readShort(cursor);
+        int start = cursor.get();
+        return new String(bytes, start, cursor.addAndGet(size) - start, Charsets.US_ASCII);
+    }
+
+    public byte readByte(AtomicInteger cursor) {
+        return bytes[cursor.getAndIncrement()];
     }
 
     @Override
@@ -127,7 +179,4 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
         return Util.murmur32().hashBytes(bytes, 0, size).hashCode();
     }
 
-    public boolean empty() {
-        return size == 0;
-    }
 }

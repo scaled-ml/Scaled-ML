@@ -31,11 +31,12 @@ public class T1IntegrationTest {
                 .finalRegressor(tempDirectory + "/model")
                 .threads(3)
                 .data(getClass().getResource("/train-small.vw").getPath()));
-        Main.runFtrlProximal(new FtrlOptionsObject()
+        double logLoss = Main.runFtrlProximal(new FtrlOptionsObject()
                 .initialRegressor(tempDirectory + "/model")
                 .testOnly(true)
                 .predictions(tempDirectory + "/predictions")
                 .data(getClass().getResource("/test-small.vw").getPath()));
+        assertEquals(0.47427705769071893, logLoss, 0.000000001);
         double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
                 .stream().mapToDouble(Double::parseDouble).toArray();
         int predictionsNum = predictions.length;
@@ -53,13 +54,14 @@ public class T1IntegrationTest {
                 .threads(3)
                 .scalable(true)
                 .data(getClass().getResource("/train-small.vw").getPath()));
-        Main.runFtrlProximal(new FtrlOptionsObject()
+        double logLoss = Main.runFtrlProximal(new FtrlOptionsObject()
                 .initialRegressor(tempDirectory + "/model")
                 .testOnly(true)
                 .threads(3)
                 .scalable(true)
                 .predictions(tempDirectory + "/predictions")
                 .data(getClass().getResource("/test-small.vw").getPath()));
+        assertEquals(0.4716154011659849, logLoss, 0.05);
         double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
                 .stream().mapToDouble(Double::parseDouble).toArray();
         int predictionsNum = predictions.length;

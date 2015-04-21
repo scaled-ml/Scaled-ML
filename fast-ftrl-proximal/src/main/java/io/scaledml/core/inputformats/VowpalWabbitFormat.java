@@ -4,8 +4,8 @@ import com.google.common.base.CharMatcher;
 import com.google.inject.Inject;
 import io.scaledml.core.SparseItem;
 import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
-import io.scaledml.ftrl.util.LineBytesBuffer;
-import io.scaledml.ftrl.util.Util;
+import io.scaledml.core.util.LineBytesBuffer;
+import io.scaledml.core.util.Util;
 
 public class VowpalWabbitFormat implements InputFormat {
     private static final char NAME_CHAR = 'z';

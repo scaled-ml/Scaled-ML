@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.CliFactory;
 import io.scaledml.ftrl.options.FtrlOptions;
+import io.scaledml.ftrl.outputformats.FinishCollectStatisticsListener;
 import io.scaledml.ftrl.parallel.ParallelModule;
 import io.scaledml.ftrl.semiparallel.SemiParallelModule;
 
@@ -21,11 +22,12 @@ public class Main {
         runFtrlProximal(ftrlOptions);
     }
 
-    public static void runFtrlProximal(FtrlOptions ftrlOptions) throws Exception {
+    public static double runFtrlProximal(FtrlOptions ftrlOptions) throws Exception {
         Injector injector = createInjector(ftrlOptions);
 
         FtrlProximalRunner runner = injector.getInstance(FtrlProximalRunner.class);
         runner.process();
+        return injector.getInstance(FinishCollectStatisticsListener.class).logLoss();
     }
 
     private static Injector createInjector(FtrlOptions ftrlOptions) {

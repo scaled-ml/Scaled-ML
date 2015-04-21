@@ -1,4 +1,4 @@
-package io.scaledml.ftrl.util;
+package io.scaledml.core.util;
 
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;

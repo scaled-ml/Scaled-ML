@@ -2,13 +2,11 @@ package io.scaledml.ftrl.featuresprocessors;
 
 
 import io.scaledml.core.SparseItem;
-import io.scaledml.ftrl.util.LineBytesBuffer;
-import io.scaledml.ftrl.util.PoolingMultiMap;
-import io.scaledml.ftrl.util.Util;
+import io.scaledml.core.util.LineBytesBuffer;
+import io.scaledml.core.util.PoolingMultiMap;
+import io.scaledml.core.util.Util;
 
 public class QuadraticFeaturesProcessor extends ChainFeaturesProcessor {
-
-    private long featuresNumber;
 
     private PoolingMultiMap<LineBytesBuffer, LineBytesBuffer> featuresPerNamespace =
             new PoolingMultiMap<>(LineBytesBuffer::new, LineBytesBuffer::new, new LineBytesBuffer[0]);
@@ -34,12 +32,12 @@ public class QuadraticFeaturesProcessor extends ChainFeaturesProcessor {
 
     private long calculateHash(LineBytesBuffer namespace1, LineBytesBuffer namespace2,
                                LineBytesBuffer feature1, LineBytesBuffer feature2) {
-        return Math.abs(Util.murmur().newHasher()
+        return Util.murmur().newHasher()
                 .putBytes(namespace1.bytes(), 0, namespace1.size())
                 .putBytes(namespace2.bytes(), 0, namespace2.size())
                 .putBytes(feature1.bytes(), 0, feature1.size())
                 .putBytes(feature2.bytes(), 0, feature2.size())
-                .hash().asLong()) % featuresNumber;
+                .hash().asLong();
     }
 
     @Override

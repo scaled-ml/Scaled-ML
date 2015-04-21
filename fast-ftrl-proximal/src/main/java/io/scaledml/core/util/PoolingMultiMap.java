@@ -1,4 +1,4 @@
-package io.scaledml.ftrl.util;
+package io.scaledml.core.util;
 
 import com.google.common.collect.Iterables;
 import it.unimi.dsi.fastutil.objects.*;

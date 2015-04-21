@@ -1,4 +1,4 @@
-package io.scaledml.ftrl.util;
+package io.scaledml.core.util;
 
 
 import com.google.common.base.Charsets;
@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class LineBytesBufferTest {
@@ -79,6 +81,59 @@ public class LineBytesBufferTest {
         b2.append((byte) 1);
         b2.append((byte) 1);
         assertTrue(b1.compareTo(b2) < 0);
+    }
+
+    @Test
+    public void testPutReadShort() {
+        LineBytesBuffer bb = new LineBytesBuffer();
+        for (short num = -1024; num < 1024; num++) {
+           assertEquals(2, bb.putShort(num));
+        }
+        bb.putShort(Short.MIN_VALUE);
+        bb.putShort(Short.MAX_VALUE);
+        AtomicInteger cursor = new AtomicInteger();
+        for (short num = -1024; num < 1024; num++) {
+            assertEquals(num, bb.readShort(cursor));
+        }
+        assertEquals(Short.MIN_VALUE, bb.readShort(cursor));
+        assertEquals(Short.MAX_VALUE, bb.readShort(cursor));
+    }
+
+    @Test
+    public void testPutReadString() {
+        LineBytesBuffer bb = new LineBytesBuffer();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 1024; i++) {
+            sb.append(Integer.toBinaryString(i));
+            sb.append(" oh ");
+        }
+        int writtenBytes = bb.putString(sb.toString());
+        AtomicInteger cursor = new AtomicInteger(0);
+        assertEquals(sb.toString(), bb.readString(cursor));
+        assertEquals(writtenBytes, cursor.get());
+    }
+
+    @Test
+    public void testPutReadLong() {
+        LineBytesBuffer bb = new LineBytesBuffer();
+        AtomicInteger cursor = new AtomicInteger(0);
+        assertEquals(5, bb.putLong(0));
+        assertEquals(0, bb.readLong(cursor));
+        assertEquals(5, cursor.get());
+        long bigNum = 7L * Integer.MAX_VALUE;
+        assertTrue(bigNum > Integer.MAX_VALUE);
+        for (long num = bigNum - 5000; num <= bigNum; num++) {
+            assertEquals(5, bb.putLong(num));
+        }
+        for (long num = bigNum - 5000; num <= bigNum; num++) {
+            assertEquals(num, bb.readLong(cursor));
+        }
+        bb.clear();
+        cursor.set(0);
+        long l1 = 338592878955L;
+        assertTrue(bigNum < l1);
+        assertEquals(5, bb.putLong(l1));
+        assertEquals(l1, bb.readLong(cursor));
     }
 
     @After

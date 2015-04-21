@@ -2,7 +2,7 @@ package io.scaledml.core.inputformats;
 
 import io.scaledml.core.SparseItem;
 import io.scaledml.ftrl.featuresprocessors.SimpleFeaturesProcessor;
-import io.scaledml.ftrl.util.LineBytesBuffer;
+import io.scaledml.core.util.LineBytesBuffer;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -21,9 +21,8 @@ public class VowpalWabbitFormatTest {
         LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item, 0);
-        assertNotNull(item);
         assertEquals(0., item.label(), 0.000001);
-        assertEquals(20, item.indexes().size());
+        assertEquals(20, item.indexes().stream().distinct().count());
     }
 
     @Test
@@ -34,9 +33,8 @@ public class VowpalWabbitFormatTest {
         LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item, 0);
-        assertNotNull(item);
         assertEquals(1., item.label(), 0.000001);
-        assertEquals(10, item.indexes().size());
+        assertEquals(10, item.indexes().stream().distinct().count());
     }
 
     @Test
@@ -47,9 +45,8 @@ public class VowpalWabbitFormatTest {
         LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item, 0);
-        assertNotNull(item);
         assertEquals(1., item.label(), 0.000001);
-        assertEquals(5, item.indexes().size());
+        assertEquals(5, item.indexes().stream().distinct().count());
         assertEquals(2., item.values().getDouble(0), 0.000001);
         assertEquals(100.55, item.values().getDouble(1), 0.000001);
         assertEquals(-123.4, item.values().getDouble(2), 0.000001);
@@ -74,8 +71,7 @@ public class VowpalWabbitFormatTest {
         LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item, 0);
-        assertNotNull(item);
         assertEquals(0., item.label(), 0.000001);
-        assertEquals(55, item.indexes().size());
+        assertEquals(55, item.indexes().stream().distinct().count());
     }
 }

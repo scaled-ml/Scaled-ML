@@ -1,19 +1,21 @@
 package io.scaledml.ftrl;
 
 
+import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
 import io.scaledml.core.outputformats.OutputFormat;
-import io.scaledml.ftrl.util.LineBytesBuffer;
+import io.scaledml.core.util.LineBytesBuffer;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class FtrlProximalRunner {
     private Disruptor<? extends TwoPhaseEvent<?>> disruptor;
@@ -44,6 +46,8 @@ public class FtrlProximalRunner {
                 ringBuffer.get(cursor).lineNo(lineNo);
             }
             disruptor.shutdown();
+            // there is a race in disruptor.shutdown()
+            Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS);
         } finally {
             outputFormat.close();
         }

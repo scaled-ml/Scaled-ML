@@ -3,6 +3,7 @@ package integration.ruslan;
 
 import io.scaledml.ftrl.Main;
 import io.scaledml.ftrl.options.FtrlOptionsObject;
+import io.scaledml.ftrl.options.InputFormatType;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -29,18 +30,18 @@ public class CsvIntegrationTest {
                 .finalRegressor(tempDirectory + "/model")
                 .threads(3)
                 .data(getClass().getResource("/ruslan-train-small.csv").getPath())
-                .format("csv")
-                .skipFirst(true)
-                .csvMask("lc[37]n"));
+                .format(InputFormatType.csv)
+                .skipFirst(true));
 
-        Main.runFtrlProximal(new FtrlOptionsObject()
+        double logLoss = Main.runFtrlProximal(new FtrlOptionsObject()
                 .initialRegressor(tempDirectory + "/model")
                 .testOnly(true)
                 .predictions(tempDirectory + "/predictions")
                 .data(getClass().getResource("/ruslan-test-small.csv").getPath())
-                .format("csv")
-                .skipFirst(true)
-                .csvMask("lc[37]n"));
+                .format(InputFormatType.csv)
+                .skipFirst(true));
+
+        assertEquals(0.518497737424817, logLoss, 0.000001);
 
         double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
                 .stream().mapToDouble(Double::parseDouble).toArray();
