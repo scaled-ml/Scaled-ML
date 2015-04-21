@@ -57,10 +57,10 @@ public class CSVFormat implements InputFormat {
                 break;
             case NUMERICAL:
                 double value = Double.parseDouble(valueBuffer.toAsciiString());
-                featuresProcessor.addFeature(item, namespaceBuffer, namespaceBuffer, value);
+                featuresProcessor.addNumericalFeature(item, namespaceBuffer, namespaceBuffer, value);
                 break;
             case CATEGORICAL:
-                featuresProcessor.addFeature(item, namespaceBuffer, valueBuffer, 1.);
+                featuresProcessor.addCategoricalFeature(item, namespaceBuffer, valueBuffer);
                 break;
         }
     }

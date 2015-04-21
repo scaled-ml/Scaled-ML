@@ -47,11 +47,11 @@ public class VowpalWabbitFormatTest {
         format.parse(line, item, 0);
         assertEquals(1., item.label(), 0.000001);
         assertEquals(5, item.indexes().stream().distinct().count());
-        assertEquals(2., item.values().getDouble(0), 0.000001);
-        assertEquals(100.55, item.values().getDouble(1), 0.000001);
-        assertEquals(-123.4, item.values().getDouble(2), 0.000001);
-        assertEquals(1., item.values().getDouble(3), 0.000001);
-        assertEquals(-17., item.values().getDouble(4), 0.000001);
+        assertEquals(1., item.getValue(0), 0.000001);
+        assertEquals(2., item.getValue(1), 0.000001);
+        assertEquals(100.55, item.getValue(2), 0.000001);
+        assertEquals(-123.4, item.getValue(3), 0.000001);
+        assertEquals(-17., item.getValue(4), 0.000001);
 
     }
 

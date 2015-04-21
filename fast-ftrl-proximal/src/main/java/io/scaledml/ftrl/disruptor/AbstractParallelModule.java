@@ -11,7 +11,6 @@ import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.scaledml.ftrl.FtrlProximalModel;
 import io.scaledml.ftrl.FtrlProximalRunner;
 import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
-import io.scaledml.ftrl.featuresprocessors.QuadraticFeaturesProcessor;
 import io.scaledml.ftrl.featuresprocessors.SimpleFeaturesProcessor;
 import io.scaledml.core.inputformats.*;
 import io.scaledml.core.inputformats.ColumnsMask;
@@ -146,8 +145,7 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
         if (!options.quadratic()) {
             return simpleFeaturesProcessor;
         }
-        return new QuadraticFeaturesProcessor()
-                .next(simpleFeaturesProcessor);
+        throw new UnsupportedOperationException();
     }
 
     protected int ringBufferSize() {

@@ -47,7 +47,7 @@ public class FtrlProximalRunner {
             }
             disruptor.shutdown();
             // there is a race in disruptor.shutdown()
-            Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS);
+            Uninterruptibles.sleepUninterruptibly(200, TimeUnit.MILLISECONDS);
         } finally {
             outputFormat.close();
         }

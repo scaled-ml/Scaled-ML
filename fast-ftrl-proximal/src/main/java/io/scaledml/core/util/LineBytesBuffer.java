@@ -131,6 +131,18 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
         return 5;
     }
 
+    public int putInteger(int num) {
+        append((byte) (num));
+        append((byte) (num >> 8));
+        append((byte) (num >> 16));
+        append((byte) (num >> 24));
+        return 4;
+    }
+
+    public int putFloat(float num) {
+        return putInteger(Float.floatToIntBits(num));
+    }
+
     public short readShort(AtomicInteger cursor) {
         return (short) (((bytes[cursor.getAndIncrement()] & 0xff)) |
                  ((bytes[cursor.getAndIncrement()] & 0xff) << 8));
@@ -152,6 +164,18 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
 
     public byte readByte(AtomicInteger cursor) {
         return bytes[cursor.getAndIncrement()];
+    }
+
+
+    public float readFloat(AtomicInteger cursor) {
+        return Float.intBitsToFloat(readInt(cursor));
+    }
+
+    public int readInt(AtomicInteger cursor) {
+        return ((bytes[cursor.getAndIncrement()] & 0xff) |
+                ((bytes[cursor.getAndIncrement()] & 0xff) << 8) |
+                ((bytes[cursor.getAndIncrement()] & 0xff) << 16) |
+                ((bytes[cursor.getAndIncrement()]) << 24));
     }
 
     @Override
@@ -178,5 +202,4 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
     public int hashCode() {
         return Util.murmur32().hashBytes(bytes, 0, size).hashCode();
     }
-
 }

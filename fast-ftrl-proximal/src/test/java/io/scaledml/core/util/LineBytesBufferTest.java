@@ -136,6 +136,16 @@ public class LineBytesBufferTest {
         assertEquals(l1, bb.readLong(cursor));
     }
 
+    @Test
+    public void testPutReadFloat() {
+        LineBytesBuffer bb = new LineBytesBuffer();
+        AtomicInteger cursor = new AtomicInteger(0);
+        bb.putFloat((float) Math.PI);
+        assertEquals((float) Math.PI, bb.readFloat(cursor), 0.0000001);
+        bb.putFloat((float) Math.E);
+        assertEquals((float) Math.E, bb.readFloat(cursor), 0.0000001);
+    }
+
     @After
     public void teardown() throws IOException {
         FileUtils.deleteDirectory(tempDirectory.toFile());

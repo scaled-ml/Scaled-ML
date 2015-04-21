@@ -83,13 +83,13 @@ public class VowpalWabbitFormat implements InputFormat {
                     if (NAME_MATCHER.matches(c)) {
                         feature.append(b);
                     } else if (PIPE_MATCHER.matches(c)) {
-                        addIndex(item, 1.);
+                        addCategoricalIndex(item);
                         state = State.BEFORE_NAMESPACE;
                         namespace.clear();
                     } else if (COLON_MATCHER.matches(c)) {
                         state = State.FEATURE_VALUE;
                     } else {
-                        addIndex(item, 1.);
+                        addCategoricalIndex(item);
                         state = State.BEFORE_FEATURE;
                     }
                     break;
@@ -97,26 +97,32 @@ public class VowpalWabbitFormat implements InputFormat {
                     if (NUMBER_MATCHER.matches(c)) {
                         number.append(b);
                     } else if (PIPE_MATCHER.matches(c)) {
-                        addIndex(item, Double.parseDouble(number.toAsciiString()));
+                        addNumericalIndex(item, Double.parseDouble(number.toAsciiString()));
                         state = State.BEFORE_NAMESPACE;
                         namespace.clear();
                     } else {
-                        addIndex(item, Double.parseDouble(number.toAsciiString()));
+                        addNumericalIndex(item, Double.parseDouble(number.toAsciiString()));
                         state = State.BEFORE_FEATURE;
                     }
             }
         }
         if (state == State.FEATURE) {
-            addIndex(item, 1.);
+            addCategoricalIndex(item);
         }
         if (state == State.FEATURE_VALUE) {
-            addIndex(item, Double.parseDouble(number.toAsciiString()));
+            addNumericalIndex(item, Double.parseDouble(number.toAsciiString()));
         }
         featuresProcessor.finalize(item);
     }
 
-    private void addIndex(SparseItem item, double value) {
-        featuresProcessor.addFeature(item, namespace, feature, value);
+    private void addNumericalIndex(SparseItem item, double value) {
+        featuresProcessor.addNumericalFeature(item, namespace, feature, value);
+        feature.clear();
+        number.clear();
+    }
+
+    private void addCategoricalIndex(SparseItem item) {
+        featuresProcessor.addCategoricalFeature(item, namespace, feature);
         feature.clear();
         number.clear();
     }
