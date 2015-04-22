@@ -61,7 +61,7 @@ public class T1IntegrationTest {
                 .scalable(true)
                 .predictions(tempDirectory + "/predictions")
                 .data(getClass().getResource("/test-small.vw").getPath()));
-        assertEquals(0.4716154011659849, logLoss, 0.005);
+        assertEquals(0.4716154011659849, logLoss, 0.01);
         double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
                 .stream().mapToDouble(Double::parseDouble).toArray();
         int predictionsNum = predictions.length;
