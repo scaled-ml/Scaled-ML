@@ -41,9 +41,10 @@ public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>
     public void onShutdown() {
         try {
             outputFormat.close();
-            phaser.arriveAndDeregister();
         } catch (IOException e) {
             logger.error("Failed to close", e);
+        } finally {
+            phaser.arriveAndDeregister();
         }
     }
 

@@ -40,9 +40,10 @@ public class LearnWorkHandler implements WorkHandler<TwoPhaseEvent<Increment>>, 
     public void onShutdown() {
         try {
             outputFormat.close();
-            phaser.arrive();
         } catch (IOException e) {
             logger.error("failed to close", e);
+        } finally {
+            phaser.arrive();
         }
     }
 
