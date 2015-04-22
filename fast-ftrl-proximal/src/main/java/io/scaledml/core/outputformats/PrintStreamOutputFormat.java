@@ -15,6 +15,7 @@ public class PrintStreamOutputFormat implements OutputFormat {
 
     @Override
     public void close() throws IOException {
+        outputStream.flush();
         outputStream.close();
     }
 
