@@ -14,7 +14,6 @@ import java.text.DecimalFormat;
 
 public class StatisticsCalculator implements OutputFormat {
     private static final Logger logger = LoggerFactory.getLogger(StatisticsCalculator.class);
-
     private static final DecimalFormat df = new DecimalFormat("0.0000");
     private OutputFormat delegate;
     private FinishCollectStatisticsListener finishListener;
@@ -46,6 +45,7 @@ public class StatisticsCalculator implements OutputFormat {
     @Override
     public void close() throws IOException {
         finishListener.finishedCollectingStatistics(this);
+
         // delegate can be shared among threads so it must be closed separately
     }
 

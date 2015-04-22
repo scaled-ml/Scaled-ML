@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;
 
 public class FtrlProximalRunner {
@@ -24,9 +25,11 @@ public class FtrlProximalRunner {
     private Path outputForModelPath;
     private OutputFormat outputFormat;
     private boolean skipFirst;
+    private Phaser phaser;
 
     public void process() throws IOException {
         try (FastBufferedInputStream stream = new FastBufferedInputStream(inputStream)) {
+            phaser.register();
             disruptor.start();
             RingBuffer<? extends TwoPhaseEvent> ringBuffer = disruptor.getRingBuffer();
             long cursor = ringBuffer.next();
@@ -46,8 +49,7 @@ public class FtrlProximalRunner {
                 ringBuffer.get(cursor).lineNo(lineNo);
             }
             disruptor.shutdown();
-            // there is a race in disruptor.shutdown()
-            Uninterruptibles.sleepUninterruptibly(200, TimeUnit.MILLISECONDS);
+            phaser.arriveAndAwaitAdvance();
         } finally {
             outputFormat.close();
         }
@@ -93,6 +95,12 @@ public class FtrlProximalRunner {
 
     public FtrlProximalRunner outputForModelPath(Path outputForModelPath) {
         this.outputForModelPath = outputForModelPath;
+        return this;
+    }
+
+    @Inject
+    public FtrlProximalRunner phaser(Phaser phaser) {
+        this.phaser = phaser;
         return this;
     }
 }

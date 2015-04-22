@@ -13,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Random;
+import java.util.concurrent.Phaser;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>>, LifecycleAware {
     private static final Logger logger = LoggerFactory.getLogger(LearnEventHandler.class);
@@ -20,12 +23,28 @@ public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>
     private FTRLProximalAlgorithm algorithm;
     private FtrlProximalModel model;
     private Increment increment = new Increment();
+    private Phaser phaser;
 
     @Override
     public void onEvent(TwoPhaseEvent<SparseItem> event, long sequence, boolean endOfBatch) throws Exception {
         double prediction = algorithm.learn(event.output(), increment);
         model.writeToModel(increment);
         outputFormat.emit(event.output(), prediction);
+    }
+
+    @Override
+    public void onStart() {
+        phaser.register();
+    }
+
+    @Override
+    public void onShutdown() {
+        try {
+            outputFormat.close();
+            phaser.arriveAndDeregister();
+        } catch (IOException e) {
+            logger.error("Failed to close", e);
+        }
     }
 
     @Inject
@@ -46,16 +65,9 @@ public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>
         return this;
     }
 
-    @Override
-    public void onStart() {
-    }
-
-    @Override
-    public void onShutdown() {
-        try {
-            outputFormat.close();
-        } catch (IOException e) {
-            logger.error("Failed to close", e);
-        }
+    @Inject
+    public LearnEventHandler phaser(Phaser phaser) {
+        this.phaser = phaser;
+        return this;
     }
 }

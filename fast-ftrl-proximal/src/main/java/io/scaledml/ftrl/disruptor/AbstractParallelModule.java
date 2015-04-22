@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Phaser;
 
 
 public abstract class AbstractParallelModule<T> extends AbstractModule {
@@ -136,6 +137,7 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
         }
         bind(FtrlProximalRunner.class).asEagerSingleton();
         bind(FinishCollectStatisticsListener.class).asEagerSingleton();
+        bind(Phaser.class).asEagerSingleton();
     }
 
 

@@ -49,6 +49,18 @@ public class SparseItem {
         return this;
     }
 
+    public LongList categoricalIndexes() {
+        return categoricalIndexes;
+    }
+
+    public LongList numericalIndexes() {
+        return numericalIndexes;
+    }
+
+    public DoubleList numericalValues() {
+        return numericalValues;
+    }
+
     public SparseItem id(String id) {
         this.id = id;
         return this;
