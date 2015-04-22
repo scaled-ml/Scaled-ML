@@ -38,6 +38,6 @@ public class VWIntegrationTest extends BaseIntegrationTest {
         double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
                 .stream().mapToDouble(Double::parseDouble).toArray();
         int predictionsNum = predictions.length;
-        assertEquals(0, predictionsNum);
+        assertEquals(100, predictionsNum);
     }
 }
