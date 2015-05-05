@@ -99,7 +99,7 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
                                                          Provider<EventHandler<TwoPhaseEvent<T>>> evenHandlerProvider) {
         Disruptor<TwoPhaseEvent<T>> disruptor = new Disruptor<>(
                 TwoPhaseEvent.factory(outputEventFactory()),
-                ringBufferSize(), threadsProvider,
+                options.ringSize(), threadsProvider,
                 ProducerType.SINGLE, new SleepingWaitStrategy());
         WorkHandler<TwoPhaseEvent<T>>[] parsers = new WorkHandler[options.threads()];
         for (int i = 0; i < options.threads(); i++) {
@@ -148,9 +148,5 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
             return simpleFeaturesProcessor;
         }
         throw new UnsupportedOperationException();
-    }
-
-    protected int ringBufferSize() {
-        return options.ringSize() > 0 ? options.ringSize() : 2048;
     }
 }

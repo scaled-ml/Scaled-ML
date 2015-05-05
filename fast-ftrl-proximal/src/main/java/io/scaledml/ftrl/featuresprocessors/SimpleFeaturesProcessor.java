@@ -19,9 +19,6 @@ public class SimpleFeaturesProcessor implements FeaturesProcessor {
 
     @Override
     public void addNumericalFeature(SparseItem item, LineBytesBuffer namespace, LineBytesBuffer feature, double value) {
-        if (Util.doublesEqual(0., value)) {
-            return;
-        }
         item.addNumericalIndex(index(namespace, feature), value);
     }
 

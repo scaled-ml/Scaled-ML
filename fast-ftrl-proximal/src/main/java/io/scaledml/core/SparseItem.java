@@ -165,4 +165,8 @@ public class SparseItem {
         }
         return sum;
     }
+
+    public void copyCategoricalFeaturesFrom(SparseItem item) {
+        categoricalIndexes.addAll(item.categoricalIndexes);
+    }
 }

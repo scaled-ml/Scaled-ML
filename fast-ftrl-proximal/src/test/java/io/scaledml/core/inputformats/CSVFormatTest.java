@@ -29,6 +29,6 @@ public class CSVFormatTest {
         SparseItem item = new SparseItem();
         format.parse(line, item, 0);
         assertEquals(0., item.label(), 0.000001);
-        assertEquals(57, item.indexes().stream().distinct().count());
+        assertEquals(58, item.indexes().stream().distinct().count());
     }
 }

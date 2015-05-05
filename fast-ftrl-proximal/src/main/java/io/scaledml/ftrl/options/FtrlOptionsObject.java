@@ -1,8 +1,6 @@
 package io.scaledml.ftrl.options;
 
 
-import com.google.inject.Inject;
-
 public class FtrlOptionsObject implements FtrlOptions {
     private int hashcodeBits = 18;
     private double alfa = 0.005;
@@ -21,6 +19,13 @@ public class FtrlOptionsObject implements FtrlOptions {
     private boolean skipFirst = false;
     private String csvMask = "lc";
     private char csvDelimiter = ',';
+    private int ringSize = 2048;
+    private boolean featureEngineering;
+
+    @Override
+    public boolean featureEngineering() {
+        return featureEngineering;
+    }
 
     @Override
     public int hashcodeBits() {
@@ -172,9 +177,13 @@ public class FtrlOptionsObject implements FtrlOptions {
         return this;
     }
 
+    public FtrlOptionsObject featureEngineering(boolean featureEngineering) {
+        this.featureEngineering = featureEngineering;
+        return this;
+    }
     @Override
     public int ringSize() {
-        return 0;
+        return ringSize;
     }
 
     public FtrlOptionsObject quadratic(boolean quadratic) {
@@ -198,9 +207,13 @@ public class FtrlOptionsObject implements FtrlOptions {
         return csvDelimiter;
     }
 
-    @Inject
     public FtrlOptionsObject csvDelimiter(char csvDelimiter) {
         this.csvDelimiter = csvDelimiter;
+        return this;
+    }
+
+    public FtrlOptionsObject ringSize(int ringSize) {
+        this.ringSize = ringSize;
         return this;
     }
 }

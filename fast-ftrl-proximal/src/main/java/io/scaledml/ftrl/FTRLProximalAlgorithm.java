@@ -33,7 +33,8 @@ public class FTRLProximalAlgorithm {
     }
 
     private double predict(SparseItem item) {
-        return 1. / (1. + Math.exp(item.scalarMultiply(currentWeights)));
+        double product = item.scalarMultiply(currentWeights);
+        return 1. / (1. + Math.exp(product));
     }
 
     private void calculateWeights(SparseItem item) {

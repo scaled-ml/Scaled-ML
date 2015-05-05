@@ -28,4 +28,8 @@ public class BaseIntegrationTest {
     public void teardown() throws IOException {
         FileUtils.deleteDirectory(tempDirectory.toFile());
     }
+
+    protected String resourcePath(String name) {
+        return getClass().getResource(name).getPath();
+    }
 }
