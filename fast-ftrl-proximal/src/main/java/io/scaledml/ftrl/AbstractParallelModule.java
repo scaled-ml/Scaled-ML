@@ -10,7 +10,6 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.scaledml.core.TwoPhaseEvent;
 import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
-import io.scaledml.ftrl.featuresprocessors.SimpleFeaturesProcessor;
 import io.scaledml.core.inputformats.*;
 import io.scaledml.core.inputformats.ColumnsMask;
 import io.scaledml.ftrl.options.FtrlOptions;
@@ -151,7 +150,7 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
 
     @Provides
     public FeaturesProcessor featuresProcessor() {
-        SimpleFeaturesProcessor simpleFeaturesProcessor = new SimpleFeaturesProcessor();
+        FeaturesProcessor simpleFeaturesProcessor = new FeaturesProcessor();
         if (!options.quadratic()) {
             return simpleFeaturesProcessor;
         }

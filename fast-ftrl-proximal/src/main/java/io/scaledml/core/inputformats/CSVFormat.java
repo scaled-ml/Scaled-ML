@@ -3,8 +3,8 @@ package io.scaledml.core.inputformats;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import io.scaledml.core.SparseItem;
-import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
 import io.scaledml.core.util.LineBytesBuffer;
+import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
 
 /**
  * @author Ilya Smagin ilya-sm@yandex-team.ru on 4/2/15.

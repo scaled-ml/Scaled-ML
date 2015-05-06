@@ -1,7 +1,7 @@
 package io.scaledml.core.inputformats;
 
 import io.scaledml.core.SparseItem;
-import io.scaledml.ftrl.featuresprocessors.SimpleFeaturesProcessor;
+import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
 import io.scaledml.core.util.LineBytesBuffer;
 import org.junit.Test;
 
@@ -22,7 +22,7 @@ public class CSVFormatTest {
                 "44.0,1,44,102";
 
         InputFormat format = new CSVFormat()
-                .featruresProcessor(new SimpleFeaturesProcessor())
+                .featruresProcessor(new FeaturesProcessor())
                 .csvMask(new ColumnsMask("lc[37]n"))
                 .csvDelimiter(',');
         LineBytesBuffer line = new LineBytesBuffer(line1);

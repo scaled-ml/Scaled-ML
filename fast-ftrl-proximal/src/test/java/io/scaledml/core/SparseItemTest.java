@@ -3,7 +3,7 @@ package io.scaledml.core;
 import io.scaledml.core.inputformats.InputFormat;
 import io.scaledml.core.inputformats.VowpalWabbitFormat;
 import io.scaledml.core.util.LineBytesBuffer;
-import io.scaledml.ftrl.featuresprocessors.SimpleFeaturesProcessor;
+import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -38,7 +38,7 @@ public class SparseItemTest {
 
     private SparseItem createSparseItem(String line1) {
         InputFormat format = new VowpalWabbitFormat()
-                .featruresProcessor(new SimpleFeaturesProcessor());
+                .featruresProcessor(new FeaturesProcessor());
         LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item, 0);

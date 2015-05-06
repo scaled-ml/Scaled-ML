@@ -13,7 +13,6 @@ import io.scaledml.core.SparseItem;
 import io.scaledml.core.inputformats.*;
 import io.scaledml.core.TwoPhaseEvent;
 import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
-import io.scaledml.ftrl.featuresprocessors.SimpleFeaturesProcessor;
 import io.scaledml.ftrl.options.FtrlOptions;
 import it.unimi.dsi.fastutil.io.FastBufferedOutputStream;
 import java.io.IOException;
@@ -60,7 +59,7 @@ public class FeatureEngineeringModule  extends AbstractModule {
         bind(SecondPassRunner.class);
         bind(FeatureEngineeringRunner.class);
         bind(Phaser.class).asEagerSingleton();
-        bind(FeaturesProcessor.class).to(SimpleFeaturesProcessor.class);
+        bind(FeaturesProcessor.class);
         try {
             bind(new TypeLiteral<Supplier<InputStream>>() {}).toInstance(this::openInputFile);
             bind(FastBufferedOutputStream.class).toInstance(new FastBufferedOutputStream(
