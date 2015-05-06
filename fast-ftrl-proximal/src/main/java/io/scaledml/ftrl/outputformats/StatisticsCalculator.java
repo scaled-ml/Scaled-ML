@@ -3,8 +3,9 @@ package io.scaledml.ftrl.outputformats;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.util.Util;
+import io.scaledml.core.outputformats.OutputFormat;
+import io.scaledml.core.SparseItem;
+import io.scaledml.core.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,6 @@ import java.text.DecimalFormat;
 
 public class StatisticsCalculator implements OutputFormat {
     private static final Logger logger = LoggerFactory.getLogger(StatisticsCalculator.class);
-
     private static final DecimalFormat df = new DecimalFormat("0.0000");
     private OutputFormat delegate;
     private FinishCollectStatisticsListener finishListener;
@@ -25,10 +25,6 @@ public class StatisticsCalculator implements OutputFormat {
 
     private static String f(double v){
         return df.format(v);
-    }
-
-    public StatisticsCalculator() {
-        logger.info("mean_logloss\tsmooth_logloss\titems\tcurrent_label\tcurrent_prediction\tfeatures_number");
     }
 
     @Override
@@ -49,6 +45,7 @@ public class StatisticsCalculator implements OutputFormat {
     @Override
     public void close() throws IOException {
         finishListener.finishedCollectingStatistics(this);
+
         // delegate can be shared among threads so it must be closed separately
     }
 

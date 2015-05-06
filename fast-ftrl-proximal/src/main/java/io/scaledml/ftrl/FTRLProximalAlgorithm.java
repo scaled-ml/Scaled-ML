@@ -3,6 +3,7 @@ package io.scaledml.ftrl;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import io.scaledml.core.SparseItem;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 
 public class FTRLProximalAlgorithm {
@@ -15,12 +16,11 @@ public class FTRLProximalAlgorithm {
     public double learn(SparseItem item, Increment increment) {
         calculateWeights(item);
         double predict = predict(item);
-        double predict2 = predict(item);
         double gradient = item.label() - predict;
         if (!testOnly) {
             increment.clear();
             for (int i = 0; i < item.indexes().size(); i++) {
-                long index = item.indexes().getLong(i);
+                long index = item.indexes().getLong(i) % model.featuresNumber();
                 double nDelta = gradient * gradient;
                 double n = currentN.getDouble(i);
                 double w = currentWeights.getDouble(i);
@@ -33,11 +33,8 @@ public class FTRLProximalAlgorithm {
     }
 
     private double predict(SparseItem item) {
-        double sumWeights = 0.;
-        for (int i = 0; i < currentWeights.size(); i++) {
-            sumWeights += currentWeights.getDouble(i) * item.values().getDouble(i);
-        }
-        return 1. / (1. + Math.exp(sumWeights));
+        double product = item.scalarMultiply(currentWeights);
+        return 1. / (1. + Math.exp(product));
     }
 
     private void calculateWeights(SparseItem item) {

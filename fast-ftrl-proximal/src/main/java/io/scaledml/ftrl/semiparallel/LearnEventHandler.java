@@ -6,13 +6,14 @@ import com.lmax.disruptor.LifecycleAware;
 import io.scaledml.ftrl.FTRLProximalAlgorithm;
 import io.scaledml.ftrl.FtrlProximalModel;
 import io.scaledml.ftrl.Increment;
-import io.scaledml.ftrl.SparseItem;
-import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
-import io.scaledml.ftrl.outputformats.OutputFormat;
+import io.scaledml.core.SparseItem;
+import io.scaledml.core.TwoPhaseEvent;
+import io.scaledml.core.outputformats.OutputFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.concurrent.Phaser;
 
 public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>>, LifecycleAware {
     private static final Logger logger = LoggerFactory.getLogger(LearnEventHandler.class);
@@ -20,12 +21,29 @@ public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>
     private FTRLProximalAlgorithm algorithm;
     private FtrlProximalModel model;
     private Increment increment = new Increment();
+    private Phaser phaser;
 
     @Override
     public void onEvent(TwoPhaseEvent<SparseItem> event, long sequence, boolean endOfBatch) throws Exception {
         double prediction = algorithm.learn(event.output(), increment);
         model.writeToModel(increment);
         outputFormat.emit(event.output(), prediction);
+    }
+
+    @Override
+    public void onStart() {
+        phaser.register();
+    }
+
+    @Override
+    public void onShutdown() {
+        try {
+            outputFormat.close();
+        } catch (IOException e) {
+            logger.error("Failed to close", e);
+        } finally {
+            phaser.arriveAndDeregister();
+        }
     }
 
     @Inject
@@ -46,16 +64,9 @@ public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>
         return this;
     }
 
-    @Override
-    public void onStart() {
-    }
-
-    @Override
-    public void onShutdown() {
-        try {
-            outputFormat.close();
-        } catch (IOException e) {
-            logger.error("Failed to close", e);
-        }
+    @Inject
+    public LearnEventHandler phaser(Phaser phaser) {
+        this.phaser = phaser;
+        return this;
     }
 }

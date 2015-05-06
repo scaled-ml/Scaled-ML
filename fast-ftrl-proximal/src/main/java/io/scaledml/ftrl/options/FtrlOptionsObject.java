@@ -15,9 +15,17 @@ public class FtrlOptionsObject implements FtrlOptions {
     private int threads = 1;
     private boolean parallelLearn = false;
     private boolean quadratic = false;
-    private String format = "vw";
+    private InputFormatType format = InputFormatType.vw;
     private boolean skipFirst = false;
-    private String csvMask = "lc[*]";
+    private String csvMask = "lc";
+    private char csvDelimiter = ',';
+    private int ringSize = 2048;
+    private boolean featureEngineering;
+
+    @Override
+    public boolean featureEngineering() {
+        return featureEngineering;
+    }
 
     @Override
     public int hashcodeBits() {
@@ -90,7 +98,7 @@ public class FtrlOptionsObject implements FtrlOptions {
     }
 
     @Override
-    public String format() {
+    public InputFormatType format() {
         return format;
     }
 
@@ -99,7 +107,7 @@ public class FtrlOptionsObject implements FtrlOptions {
         return this;
     }
 
-    public FtrlOptionsObject format(String format) {
+    public FtrlOptionsObject format(InputFormatType format) {
         this.format = format;
         return this;
     }
@@ -169,9 +177,13 @@ public class FtrlOptionsObject implements FtrlOptions {
         return this;
     }
 
+    public FtrlOptionsObject featureEngineering(boolean featureEngineering) {
+        this.featureEngineering = featureEngineering;
+        return this;
+    }
     @Override
     public int ringSize() {
-        return 0;
+        return ringSize;
     }
 
     public FtrlOptionsObject quadratic(boolean quadratic) {
@@ -190,4 +202,18 @@ public class FtrlOptionsObject implements FtrlOptions {
     }
 
 
+    @Override
+    public char csvDelimiter() {
+        return csvDelimiter;
+    }
+
+    public FtrlOptionsObject csvDelimiter(char csvDelimiter) {
+        this.csvDelimiter = csvDelimiter;
+        return this;
+    }
+
+    public FtrlOptionsObject ringSize(int ringSize) {
+        this.ringSize = ringSize;
+        return this;
+    }
 }

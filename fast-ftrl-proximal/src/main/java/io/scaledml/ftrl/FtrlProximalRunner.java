@@ -3,47 +3,22 @@ package io.scaledml.ftrl;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
-import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
-import io.scaledml.ftrl.outputformats.OutputFormat;
-import io.scaledml.ftrl.util.LineBytesBuffer;
-import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
+import io.scaledml.core.BaseDisruptorRunner;
+import io.scaledml.core.outputformats.OutputFormat;
+import io.scaledml.core.TwoPhaseEvent;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Optional;
 
-public class FtrlProximalRunner {
-    private Disruptor<? extends TwoPhaseEvent<?>> disruptor;
-    private InputStream inputStream;
+public class FtrlProximalRunner extends BaseDisruptorRunner {
     private FtrlProximalModel model;
     private Path outputForModelPath;
     private OutputFormat outputFormat;
-    private boolean skipFirst;
 
-    public void process() throws IOException {
-        try (FastBufferedInputStream stream = new FastBufferedInputStream(inputStream)) {
-            disruptor.start();
-            RingBuffer<? extends TwoPhaseEvent> ringBuffer = disruptor.getRingBuffer();
-            long cursor = ringBuffer.next();
-            LineBytesBuffer buffer = ringBuffer.get(cursor).input();
-
-            boolean needToSkipNext = skipFirst;
-            while (buffer.readLineFrom(stream)) {
-                if (needToSkipNext) {
-                    needToSkipNext = false;
-                    continue;
-                }
-                ringBuffer.publish(cursor);
-                cursor = ringBuffer.next();
-                buffer = ringBuffer.get(cursor).input();
-            }
-            disruptor.shutdown();
-        } finally {
-            outputFormat.close();
-        }
+    protected void afterDisruptorProcessed() throws IOException {
+        outputFormat.close();
         if (outputForModelPath != null) {
             FtrlProximalModel.saveModel(model, outputForModelPath);
         }
@@ -51,13 +26,7 @@ public class FtrlProximalRunner {
 
     @Inject
     public FtrlProximalRunner disruptor(@Named("disruptor") Disruptor<? extends TwoPhaseEvent<?>> disruptor) {
-        this.disruptor = disruptor;
-        return this;
-    }
-
-    @Inject
-    public FtrlProximalRunner inputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
+        setDisruptor(disruptor);
         return this;
     }
 
@@ -74,12 +43,6 @@ public class FtrlProximalRunner {
     }
 
     @Inject
-    public FtrlProximalRunner skipFirst(@Named("skipFirst") boolean skipFirst) {
-        this.skipFirst = skipFirst;
-        return this;
-    }
-
-    @Inject
     public FtrlProximalRunner outputForModelPath(Optional<Path> outputForModelPath) {
         return outputForModelPath(outputForModelPath.orElse(null));
     }
@@ -88,4 +51,5 @@ public class FtrlProximalRunner {
         this.outputForModelPath = outputForModelPath;
         return this;
     }
+
 }

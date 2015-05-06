@@ -1,11 +1,16 @@
 package io.scaledml.ftrl.options;
 
+import com.google.common.base.Joiner;
 import com.lexicalscope.jewel.cli.Option;
 
-public interface FtrlOptions {
+import java.util.Arrays;
 
+public interface FtrlOptions {
+    @Option(longName = "feature_engineering",
+            description = "Launch feature engineering program")
+    boolean featureEngineering();
     @Option(shortName = "b", longName = "bit_precision", defaultValue = "18",
-            maximum = 34, minimum = 1,
+            maximum = 40, minimum = 1,
             description = "number of bits in the feature table")
     int hashcodeBits();
 
@@ -26,11 +31,11 @@ public interface FtrlOptions {
     double l2();
 
     @Option(shortName = "f", longName = "final_regressor", defaultToNull = true,
-            description = "Final regressor to save (arg inputStream filename)")
+            description = "Final regressor to save (arg setInputStream filename)")
     String finalRegressor();
 
     @Option(shortName = "i", longName = "initial_regressor", defaultToNull = true,
-            description = "Initial regressor(s) to load into memory (arg inputStream filename)")
+            description = "Initial regressor(s) to load into memory (arg setInputStream filename)")
     String initialRegressor();
 
     @Option(shortName = "t", longName = "testonly",
@@ -64,21 +69,25 @@ public interface FtrlOptions {
     boolean parallelLearn();
 
     @Option(longName = "format", defaultValue = "vw", description = "Input file format." +
-            "'vw' or 'csw' are currently supported")
-    String format();
+            "vw, csv, binary are currently supported")
+    InputFormatType format();
 
-    @Option(longName = "ring-size", defaultValue = "0", hidden = true)
+    @Option(longName = "ring_size", defaultValue = "2048", hidden = true)
     int ringSize();
 
-    @Option(longName = "skip-first", description = "Skip first string of file(usually if it is a csv header", hidden = true)
+    @Option(longName = "skip_first", description = "Skip first string of file(usually if it is a csv header", hidden = true)
     boolean skipFirst();
 
-    @Option(longName = "csv-mask", description = "Csv columns information. It could contain " +
+    @Option(longName = "csv_mask", description = "Csv columns information. It could contain " +
             "(l)Label, (i)d, (n)umeric or (c)categorical marks with amount of columns on the same type" +
             " in brackets[]." +
-            "Some valid examples are: 'ilcccccnnnnn', 'ic[20]n[10]', 'lc[10]n[*],",
-            defaultValue = "lc[*]")
+            "Some valid examples are: 'ilcccccnnnnn', 'lc[10]n",
+            defaultValue = "lc")
     String csvMask();
 
+    @Option(longName = "csv_delimiter",
+            description ="csv columns delimiter. Must be only one character",
+            defaultValue = ",")
+    char csvDelimiter();
 
 }
