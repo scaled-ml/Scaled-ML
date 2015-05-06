@@ -6,7 +6,7 @@ import com.lmax.disruptor.WorkHandler;
 import io.scaledml.ftrl.FTRLProximalAlgorithm;
 import io.scaledml.ftrl.Increment;
 import io.scaledml.core.SparseItem;
-import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
+import io.scaledml.core.TwoPhaseEvent;
 import io.scaledml.core.inputformats.InputFormat;
 import io.scaledml.core.outputformats.OutputFormat;
 import org.slf4j.Logger;
@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.Phaser;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class LearnWorkHandler implements WorkHandler<TwoPhaseEvent<Increment>>, LifecycleAware {
     private static final Logger logger = LoggerFactory.getLogger(LearnWorkHandler.class);

@@ -1,4 +1,4 @@
-package io.scaledml.ftrl.disruptor;
+package io.scaledml.core;
 
 import com.lmax.disruptor.EventFactory;
 import io.scaledml.core.util.LineBytesBuffer;

@@ -6,7 +6,7 @@ import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.LifecycleAware;
 import io.scaledml.core.SparseItem;
 import io.scaledml.core.util.LineBytesBuffer;
-import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
+import io.scaledml.core.TwoPhaseEvent;
 import it.unimi.dsi.fastutil.io.FastBufferedOutputStream;
 
 import java.io.IOException;

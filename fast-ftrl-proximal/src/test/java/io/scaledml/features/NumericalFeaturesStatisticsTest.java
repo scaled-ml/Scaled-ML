@@ -65,7 +65,6 @@ public class NumericalFeaturesStatisticsTest {
         NumericalFeaturesStatistics st = new NumericalFeaturesStatistics()
                 .percentsHistogramStep(0.001);
         Double2DoubleMap histogram = st.buildHistogram(binning, min, max);
-        assertEquals(102, histogram.size());
         double sum = histogram.values()
                 .stream().mapToDouble(Double::doubleValue).sum();
         assertEquals(1., sum, Util.EPSILON);

@@ -1,4 +1,4 @@
-package io.scaledml.ftrl.disruptor;
+package io.scaledml.ftrl;
 
 import com.google.inject.*;
 import com.google.inject.name.Named;
@@ -8,8 +8,7 @@ import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
-import io.scaledml.ftrl.FtrlProximalModel;
-import io.scaledml.ftrl.FtrlProximalRunner;
+import io.scaledml.core.TwoPhaseEvent;
 import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
 import io.scaledml.ftrl.featuresprocessors.SimpleFeaturesProcessor;
 import io.scaledml.core.inputformats.*;
@@ -31,6 +30,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Phaser;
+import java.util.function.Supplier;
 
 
 public abstract class AbstractParallelModule<T> extends AbstractModule {
@@ -71,11 +71,19 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
 
     @Provides
     @Singleton
-    InputStream inputStream() throws IOException {
+    Supplier<InputStream> inputStream() throws IOException {
         if (options.data() == null) {
-            return System.in;
+            return () -> System.in;
         }
-        return Files.newInputStream(Paths.get(options.data()));
+        return this::openIputFile;
+    }
+
+    private InputStream openIputFile() {
+        try {
+            return Files.newInputStream(Paths.get(options.data()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Provides

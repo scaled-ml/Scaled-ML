@@ -6,7 +6,7 @@ import com.google.inject.name.Named;
 import com.lmax.disruptor.dsl.Disruptor;
 import io.scaledml.core.BaseDisruptorRunner;
 import io.scaledml.core.outputformats.OutputFormat;
-import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
+import io.scaledml.core.TwoPhaseEvent;
 
 import java.io.IOException;
 import java.nio.file.Path;

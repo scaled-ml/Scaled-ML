@@ -6,7 +6,7 @@ import com.lmax.disruptor.LifecycleAware;
 import com.lmax.disruptor.WorkHandler;
 import io.scaledml.core.SparseItem;
 import io.scaledml.core.inputformats.InputFormat;
-import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
+import io.scaledml.core.TwoPhaseEvent;
 import it.unimi.dsi.fastutil.longs.*;
 
 import java.util.concurrent.Phaser;

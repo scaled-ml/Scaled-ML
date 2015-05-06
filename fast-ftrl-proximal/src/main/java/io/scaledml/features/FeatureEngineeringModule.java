@@ -11,7 +11,7 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import io.scaledml.core.SparseItem;
 import io.scaledml.core.inputformats.*;
-import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
+import io.scaledml.core.TwoPhaseEvent;
 import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
 import io.scaledml.ftrl.featuresprocessors.SimpleFeaturesProcessor;
 import io.scaledml.ftrl.options.FtrlOptions;
@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Phaser;
+import java.util.function.Supplier;
 
 public class FeatureEngineeringModule  extends AbstractModule {
     protected final ExecutorService threadsProvider = Executors.newCachedThreadPool(DaemonThreadFactory.INSTANCE);
@@ -61,7 +62,7 @@ public class FeatureEngineeringModule  extends AbstractModule {
         bind(Phaser.class).asEagerSingleton();
         bind(FeaturesProcessor.class).to(SimpleFeaturesProcessor.class);
         try {
-            bind(InputStream.class).toInstance(Files.newInputStream(Paths.get(options.data())));
+            bind(new TypeLiteral<Supplier<InputStream>>() {}).toInstance(this::openInputFile);
             bind(FastBufferedOutputStream.class).toInstance(new FastBufferedOutputStream(
                     Files.newOutputStream(Paths.get(options.predictions()))));
 
@@ -115,5 +116,13 @@ public class FeatureEngineeringModule  extends AbstractModule {
         disruptor.handleEventsWithWorkerPool(parsers)
                 .then(outputHandlerProvider.get());
         return disruptor;
+    }
+
+    private InputStream openInputFile() {
+        try {
+            return Files.newInputStream(Paths.get(options.data()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

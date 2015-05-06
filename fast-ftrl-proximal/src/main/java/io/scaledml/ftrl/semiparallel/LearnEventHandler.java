@@ -7,15 +7,13 @@ import io.scaledml.ftrl.FTRLProximalAlgorithm;
 import io.scaledml.ftrl.FtrlProximalModel;
 import io.scaledml.ftrl.Increment;
 import io.scaledml.core.SparseItem;
-import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
+import io.scaledml.core.TwoPhaseEvent;
 import io.scaledml.core.outputformats.OutputFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Random;
 import java.util.concurrent.Phaser;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class LearnEventHandler implements EventHandler<TwoPhaseEvent<SparseItem>>, LifecycleAware {
     private static final Logger logger = LoggerFactory.getLogger(LearnEventHandler.class);

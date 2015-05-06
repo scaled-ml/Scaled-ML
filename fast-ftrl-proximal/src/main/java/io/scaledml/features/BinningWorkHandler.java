@@ -6,7 +6,7 @@ import com.lmax.disruptor.WorkHandler;
 import io.scaledml.core.SparseItem;
 import io.scaledml.core.inputformats.InputFormat;
 import io.scaledml.core.util.Util;
-import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
+import io.scaledml.core.TwoPhaseEvent;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 
 public class BinningWorkHandler implements WorkHandler<TwoPhaseEvent<SparseItem>> {
@@ -17,9 +17,14 @@ public class BinningWorkHandler implements WorkHandler<TwoPhaseEvent<SparseItem>
 
     @Override
     public void onEvent(TwoPhaseEvent<SparseItem> event) throws Exception {
+        SparseItem outputItem = event.output();
         item.clear();
+        outputItem.clear();
         format.parse(event.input(), item, event.lineNo());
-        event.output().copyCategoricalFeaturesFrom(item);
+        outputItem
+                .copyCategoricalFeaturesFrom(item)
+                .label(item.label())
+                .id(item.id());
         Long2ObjectMap<Binning> binnings = statistics.binnings();
         for (int i = 0; i < item.numericalIndexes().size(); i++) {
             long numericalIndex = item.numericalIndexes().getLong(i);
@@ -28,7 +33,7 @@ public class BinningWorkHandler implements WorkHandler<TwoPhaseEvent<SparseItem>
                     .putLong(numericalIndex)
                     .putDouble(binnings.get(numericalIndex).roundToPercentile(numericalValue))
                     .hash().asLong();
-            event.output().addCategoricalIndex(binningIndex);
+            outputItem.addCategoricalIndex(binningIndex);
         }
     }
 

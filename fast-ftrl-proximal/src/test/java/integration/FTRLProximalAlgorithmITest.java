@@ -86,7 +86,7 @@ public class FTRLProximalAlgorithmITest extends BaseIntegrationTest {
                 .format(InputFormatType.csv)
                 .skipFirst(true));
         syncFS();
-        assertEquals(0.518497737424817, logLoss, Util.EPSILON);
+        assertEquals(0.5183230180345785, logLoss, Util.EPSILON);
 
         double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
                 .stream().mapToDouble(Double::parseDouble).toArray();

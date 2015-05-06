@@ -6,22 +6,22 @@ import com.google.inject.name.Named;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import io.scaledml.core.util.LineBytesBuffer;
-import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Phaser;
+import java.util.function.Supplier;
 
 
 public abstract class BaseDisruptorRunner {
     private Disruptor<? extends TwoPhaseEvent<?>> disruptor;
-    private InputStream inputStream;
+    private Supplier<InputStream> inputStreamFactory;
     private boolean skipFirst;
     private Phaser phaser;
 
     public void process() throws IOException {
-        try (FastBufferedInputStream stream = new FastBufferedInputStream(inputStream)) {
+        try (FastBufferedInputStream stream = new FastBufferedInputStream(inputStreamFactory.get())) {
             Preconditions.checkArgument(phaser.getRegisteredParties() == 0);
             phaser.register();
             disruptor.start();
@@ -57,8 +57,8 @@ public abstract class BaseDisruptorRunner {
     }
 
     @Inject
-    public void setInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
+    public void setInputStreamFactory(Supplier<InputStream> inputStreamFactory) {
+        this.inputStreamFactory = inputStreamFactory;
     }
 
     @Inject

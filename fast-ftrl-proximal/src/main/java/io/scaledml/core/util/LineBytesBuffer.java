@@ -5,11 +5,13 @@ import it.unimi.dsi.fastutil.bytes.ByteArrays;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
+    private static final byte MINUS_CODE = 0;
+    private static final byte NL_CODE = 1;
+    private static final byte RETURN_CODE = 2;
     private byte[] bytes;
     private int size;
 
@@ -74,11 +76,26 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
     }
 
     public void append(byte b) {
-        if (size == bytes.length) {
+        if (size >= bytes.length - 1) {
             bytes = ByteArrays.grow(bytes, bytes.length + 1024);
         }
-        bytes[size] = b;
-        size++;
+        switch (b) {
+            case -1:
+                bytes[size++] = -1;
+                bytes[size++] = MINUS_CODE;
+                break;
+            case (byte) '\n':
+                bytes[size++] = -1;
+                bytes[size++] = NL_CODE;
+                break;
+            case (byte) '\r':
+                bytes[size++] = -1;
+                bytes[size++] = RETURN_CODE;
+                break;
+            default:
+                bytes[size++] = b;
+        }
+
     }
 
     public void clear() {
@@ -89,7 +106,7 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
     public int compareTo(LineBytesBuffer o) {
         int minSize = Math.min(size, o.size);
         for (int i = 0; i < minSize; i++) {
-            int byteCompare = Byte.compare(bytes[i], o.bytes[i]);
+            int byteCompare = Byte.compare(get(i), o.get(i));
             if (byteCompare != 0) {
                 return byteCompare;
             }
@@ -144,17 +161,19 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
     }
 
     public short readShort(AtomicInteger cursor) {
-        return (short) (((bytes[cursor.getAndIncrement()] & 0xff)) |
-                 ((bytes[cursor.getAndIncrement()] & 0xff) << 8));
+        return (short) (((readByte(cursor) & 0xff)) |
+                 ((readByte(cursor) & 0xff) << 8));
     }
 
     public long readLong(AtomicInteger cursor) {
-        return ((bytes[cursor.getAndIncrement()] & 0xffL) |
-                ((bytes[cursor.getAndIncrement()] & 0xffL) << 8) |
-                ((bytes[cursor.getAndIncrement()] & 0xffL) << 16) |
-                ((bytes[cursor.getAndIncrement()] & 0xffL) << 24) |
-                ((bytes[cursor.getAndIncrement()] & 0xffL) << 32));
+        return ((readByte(cursor) & 0xffL) |
+                ((readByte(cursor) & 0xffL) << 8) |
+                ((readByte(cursor) & 0xffL) << 16) |
+                ((readByte(cursor) & 0xffL) << 24) |
+                ((readByte(cursor) & 0xffL) << 32));
     }
+
+
 
     public String readString(AtomicInteger cursor) {
         short size = readShort(cursor);
@@ -163,7 +182,21 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
     }
 
     public byte readByte(AtomicInteger cursor) {
-        return bytes[cursor.getAndIncrement()];
+        byte b = get(cursor.getAndIncrement());
+        if (b != -1) {
+            return b;
+        }
+        byte next = get(cursor.getAndIncrement());
+        switch (next) {
+            case MINUS_CODE:
+                return -1;
+            case NL_CODE:
+                return '\n';
+            case RETURN_CODE:
+                return '\r';
+            default:
+                throw new IllegalStateException();
+        }
     }
 
 
@@ -172,10 +205,10 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
     }
 
     public int readInt(AtomicInteger cursor) {
-        return ((bytes[cursor.getAndIncrement()] & 0xff) |
-                ((bytes[cursor.getAndIncrement()] & 0xff) << 8) |
-                ((bytes[cursor.getAndIncrement()] & 0xff) << 16) |
-                ((bytes[cursor.getAndIncrement()]) << 24));
+        return ((readByte(cursor) & 0xff) |
+                ((readByte(cursor) & 0xff) << 8) |
+                ((readByte(cursor) & 0xff) << 16) |
+                ((readByte(cursor)) << 24));
     }
 
     @Override
@@ -191,7 +224,7 @@ public class LineBytesBuffer implements Comparable<LineBytesBuffer> {
             return false;
         }
         for (int i = 0; i < size; i++) {
-            if (bytes[i] != that.bytes[i]) {
+            if (get(i) != that.get(i)) {
                 return false;
             }
         }

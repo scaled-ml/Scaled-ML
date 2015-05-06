@@ -1,11 +1,8 @@
 package io.scaledml.features;
 
 import com.google.inject.Inject;
-import com.lmax.disruptor.dsl.Disruptor;
-import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class FeatureEngineeringRunner {
     private FirstPassRunner firstPassRunner;

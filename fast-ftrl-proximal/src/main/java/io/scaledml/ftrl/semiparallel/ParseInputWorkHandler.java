@@ -3,7 +3,7 @@ package io.scaledml.ftrl.semiparallel;
 import com.google.inject.Inject;
 import com.lmax.disruptor.WorkHandler;
 import io.scaledml.core.SparseItem;
-import io.scaledml.ftrl.disruptor.TwoPhaseEvent;
+import io.scaledml.core.TwoPhaseEvent;
 import io.scaledml.core.inputformats.InputFormat;
 
 
