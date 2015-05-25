@@ -89,5 +89,4 @@ public interface FtrlOptions {
             description ="csv columns delimiter. Must be only one character",
             defaultValue = ",")
     char csvDelimiter();
-
 }

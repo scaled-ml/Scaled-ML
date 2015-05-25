@@ -14,6 +14,11 @@ public class Binning {
 
     public Binning finishBuild() {
         percentiles.sort(Double::compare);
+        for (int i = 0; i < percentiles.size() - 1; i++) {
+            if (Util.doublesEqual(percentiles.getDouble(i), percentiles.getDouble(i + 1), 0.0001)) {
+                percentiles.set(i + 1, percentiles.getDouble(i));
+            }
+        }
         return this;
     }
 
