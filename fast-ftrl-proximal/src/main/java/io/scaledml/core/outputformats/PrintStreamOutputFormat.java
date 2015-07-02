@@ -10,7 +10,7 @@ public class PrintStreamOutputFormat implements OutputFormat {
 
     @Override
     public void emit(SparseItem item, double prediction) {
-        outputStream.print(prediction + "\n");
+        outputStream.print(item.id() + "\t" + prediction + "\n");
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.google.inject.name.Named;
 import io.scaledml.core.SparseItem;
 import io.scaledml.core.util.LineBytesBuffer;
 import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 /**
  * @author Ilya Smagin ilya-sm@yandex-team.ru on 4/2/15.
@@ -16,7 +17,6 @@ public class CSVFormat implements InputFormat {
     private char csvDelimiter = ',';
     private final LineBytesBuffer valueBuffer = new LineBytesBuffer();
     private final LineBytesBuffer namespaceBuffer = new LineBytesBuffer();
-
 
     @Override
     public void parse(LineBytesBuffer line, SparseItem item, long lineNo) {
