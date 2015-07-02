@@ -36,7 +36,7 @@ public class FTRLProximalAlgorithmITest extends BaseIntegrationTest {
         syncFS();
         assertEquals(0.47427705769071893, logLoss, Util.EPSILON);
         double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
-                .stream().mapToDouble(Double::parseDouble).toArray();
+                .stream().map(s -> s.split("\t")[1]).mapToDouble(Double::parseDouble).toArray();
         int predictionsNum = predictions.length;
         assertEquals(predictionsNum, 100);
 
@@ -63,7 +63,7 @@ public class FTRLProximalAlgorithmITest extends BaseIntegrationTest {
         syncFS();
         assertEquals(0.4716154011659849, logLoss, 0.01);
         double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
-                .stream().mapToDouble(Double::parseDouble).toArray();
+                .stream().map(s -> s.split("\t")[1]).mapToDouble(Double::parseDouble).toArray();
         int predictionsNum = predictions.length;
         assertEquals(predictionsNum, 100);
         assertTrue(Arrays.stream(predictions).allMatch(p -> p < 0.5));
@@ -89,7 +89,7 @@ public class FTRLProximalAlgorithmITest extends BaseIntegrationTest {
         assertEquals(0.5183230180345785, logLoss, Util.EPSILON);
 
         double[] predictions = Files.readAllLines(Paths.get(tempDirectory.toString(), "predictions"))
-                .stream().mapToDouble(Double::parseDouble).toArray();
+                .stream().map(s -> s.split("\t")[1]).mapToDouble(Double::parseDouble).toArray();
         int predictionsNum = predictions.length;
         assertEquals(predictionsNum, 100);
     }
