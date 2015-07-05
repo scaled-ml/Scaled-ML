@@ -1,6 +1,8 @@
 package io.scaledml.ftrl.options;
 
 
+import io.scaledml.core.inputformats.InputFormat;
+
 public class FtrlOptionsObject implements FtrlOptions {
     private int hashcodeBits = 18;
     private double alfa = 0.005;
@@ -21,6 +23,7 @@ public class FtrlOptionsObject implements FtrlOptions {
     private char csvDelimiter = ',';
     private int ringSize = 2048;
     private boolean featureEngineering;
+    private String customInputFormatClass;
 
     @Override
     public boolean featureEngineering() {
@@ -83,11 +86,6 @@ public class FtrlOptionsObject implements FtrlOptions {
     }
 
     @Override
-    public boolean quadratic() {
-        return quadratic;
-    }
-
-    @Override
     public int threads() {
         return threads;
     }
@@ -100,6 +98,17 @@ public class FtrlOptionsObject implements FtrlOptions {
     @Override
     public InputFormatType format() {
         return format;
+    }
+
+    @Override
+    public String customInputFormatClass() {
+        return customInputFormatClass;
+    }
+
+
+    public FtrlOptionsObject customInputFormatClass(String customInputFormatClass) {
+        this.customInputFormatClass = customInputFormatClass;
+        return this;
     }
 
     public FtrlOptionsObject hashcodeBits(int hashcodeBits) {

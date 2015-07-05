@@ -1,5 +1,6 @@
 package io.scaledml.ftrl;
 
+import com.google.common.base.Throwables;
 import com.google.inject.*;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
@@ -13,6 +14,7 @@ import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
 import io.scaledml.core.inputformats.*;
 import io.scaledml.core.inputformats.ColumnsMask;
 import io.scaledml.ftrl.options.FtrlOptions;
+import io.scaledml.ftrl.options.InputFormatType;
 import io.scaledml.ftrl.outputformats.FinishCollectStatisticsListener;
 import io.scaledml.core.outputformats.NullOutputFormat;
 import io.scaledml.core.outputformats.OutputFormat;
@@ -124,36 +126,30 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
         ThrowingProviderBinder.forModule(this);
         bindConstant().annotatedWith(Names.named("testOnly")).to(options.testOnly());
         bindConstant().annotatedWith(Names.named("skipFirst")).to(options.skipFirst());
-        switch (options.format()) {
-            case vw:
-                bind(InputFormat.class).to(VowpalWabbitFormat.class);
-                break;
-            case csv:
-                ColumnsMask columnsMask = new ColumnsMask(options.csvMask());
-                bindConstant().annotatedWith(Names.named("csvDelimiter")).to(options.csvDelimiter());
-                bind(new TypeLiteral<ColumnsMask>() {
-                }).annotatedWith(Names.named("csvMask")).toInstance(columnsMask);
-
-                bind(InputFormat.class).to(CSVFormat.class);
-                break;
-            case binary:
-                bind(InputFormat.class).to(BinaryInputFormat.class);
-                break;
-            default:
-                throw new IllegalArgumentException(options.format().toString());
+        try {
+            bindInputFormat();
+        } catch (Exception e) {
+            Throwables.propagate(e);
         }
+        bind(FeaturesProcessor.class);
         bind(FtrlProximalRunner.class).asEagerSingleton();
         bind(FinishCollectStatisticsListener.class).asEagerSingleton();
         bind(Phaser.class).asEagerSingleton();
     }
 
-
-    @Provides
-    public FeaturesProcessor featuresProcessor() {
-        FeaturesProcessor simpleFeaturesProcessor = new FeaturesProcessor();
-        if (!options.quadratic()) {
-            return simpleFeaturesProcessor;
+    private void bindInputFormat() throws ClassNotFoundException {
+        if (options.customInputFormatClass() != null) {
+            bind(InputFormat.class).to(Class.forName(
+                    options.customInputFormatClass())
+                        .asSubclass(InputFormat.class));
+        } else {
+            if (options.format() == InputFormatType.csv) {
+                ColumnsMask columnsMask = new ColumnsMask(options.csvMask());
+                bindConstant().annotatedWith(Names.named("csvDelimiter")).to(options.csvDelimiter());
+                bind(new TypeLiteral<ColumnsMask>() {
+                }).annotatedWith(Names.named("csvMask")).toInstance(columnsMask);
+            }
+            bind(InputFormat.class).to(options.format().formatClass);
         }
-        throw new UnsupportedOperationException();
     }
 }

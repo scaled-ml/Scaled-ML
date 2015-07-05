@@ -2,12 +2,15 @@ package io.scaledml.ftrl.options;
 
 import com.google.common.base.Joiner;
 import com.lexicalscope.jewel.cli.Option;
+import io.scaledml.core.inputformats.InputFormat;
 
 import java.util.Arrays;
 
 public interface FtrlOptions {
     @Option(longName = "feature_engineering",
-            description = "Launch feature engineering program")
+            description = "Launch feature engineering program",
+            hidden = true
+    )
     boolean featureEngineering();
     @Option(shortName = "b", longName = "bit_precision", defaultValue = "18",
             maximum = 40, minimum = 1,
@@ -54,11 +57,6 @@ public interface FtrlOptions {
             description = "Show this help")
     boolean help();
 
-    @Option(shortName = "q", longName = "quadratic",
-            description = "Add quadratic features"
-    )
-    boolean quadratic();
-
     @Option(longName = "threads", defaultValue = "1",
             description = "Parallelization level")
     int threads();
@@ -71,6 +69,10 @@ public interface FtrlOptions {
     @Option(longName = "format", defaultValue = "vw", description = "Input file format." +
             "vw, csv, binary are currently supported")
     InputFormatType format();
+
+    @Option(longName = "custom-format-class", defaultToNull = true, description = "Input file format." +
+            "vw, csv, binary are currently supported")
+    String customInputFormatClass();
 
     @Option(longName = "ring_size", defaultValue = "2048", hidden = true)
     int ringSize();
