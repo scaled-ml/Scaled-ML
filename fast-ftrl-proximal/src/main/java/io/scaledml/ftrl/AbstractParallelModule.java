@@ -135,6 +135,7 @@ public abstract class AbstractParallelModule<T> extends AbstractModule {
         bind(FtrlProximalRunner.class).asEagerSingleton();
         bind(FinishCollectStatisticsListener.class).asEagerSingleton();
         bind(Phaser.class).asEagerSingleton();
+        bind(FtrlOptions.class).toInstance(options);
     }
 
     private void bindInputFormat() throws ClassNotFoundException {

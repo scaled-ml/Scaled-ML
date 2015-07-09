@@ -21,9 +21,9 @@ public class CSVFormatTest {
                 "44.0,1,44,102";
 
         InputFormat format = new CSVFormat()
-                .featruresProcessor(new FeaturesProcessor())
                 .csvMask(new ColumnsMask("lc[37]n"))
-                .csvDelimiter(',');
+                .csvDelimiter(',') 
+                .featruresProcessor(new FeaturesProcessor());
         LineBytesBuffer line = new LineBytesBuffer(line1);
         SparseItem item = new SparseItem();
         format.parse(line, item, 0);

@@ -4,43 +4,17 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import io.scaledml.core.SparseItem;
 import io.scaledml.core.util.LineBytesBuffer;
-import io.scaledml.ftrl.featuresprocessors.FeaturesProcessor;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 /**
  * @author Ilya Smagin ilya-sm@yandex-team.ru on 4/2/15.
  */
-public class CSVFormat implements InputFormat {
+public class CSVFormat extends AbstractDelimiterSeparatedValuesFormat {
 
-    private FeaturesProcessor featuresProcessor;
     private ColumnsMask columnsMask;
     private char csvDelimiter = ',';
-    private final LineBytesBuffer valueBuffer = new LineBytesBuffer();
-    private final LineBytesBuffer namespaceBuffer = new LineBytesBuffer();
 
     @Override
-    public void parse(LineBytesBuffer line, SparseItem item, long lineNo) {
-        item.clear();
-        valueBuffer.clear();
-        int colNum = 0;
-        for (int i = 0; i < line.size(); i++) {
-            byte b = line.get(i);
-            if (((char) b) != csvDelimiter) {
-                valueBuffer.append(b);
-            } else {
-                addFeature(item, colNum);
-                colNum++;
-                valueBuffer.clear();
-            }
-        }
-        addFeature(item, colNum);
-        if (item.id() == null) {
-            item.id(Long.toString(lineNo));
-        }
-        featuresProcessor.finalize(item);
-    }
-
-    private void addFeature(SparseItem item, int colNum) {
+    protected void processColumn(SparseItem item, int colNum, LineBytesBuffer valueBuffer) {
         if (valueBuffer.empty()) {
             return;
         }
@@ -65,20 +39,19 @@ public class CSVFormat implements InputFormat {
         }
     }
 
-    @Inject
-    public CSVFormat featruresProcessor(FeaturesProcessor featuresProcessor) {
-        this.featuresProcessor = featuresProcessor;
-        return this;
+    @Override
+    protected char csvDelimiter() {
+        return csvDelimiter;
     }
 
     @Inject
-    CSVFormat csvMask(@Named("csvMask") ColumnsMask columnsMask) {
+    public CSVFormat csvMask(@Named("csvMask") ColumnsMask columnsMask) {
         this.columnsMask = columnsMask;
         return this;
     }
 
     @Inject
-    CSVFormat csvDelimiter(@Named("csvDelimiter") char csvDelimiter) {
+    public CSVFormat csvDelimiter(@Named("csvDelimiter") char csvDelimiter) {
         this.csvDelimiter = csvDelimiter;
         return this;
     }
