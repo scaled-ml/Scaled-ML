@@ -18,8 +18,9 @@ public class BaseIntegrationTest {
         tempDirectory = Files.createTempDirectory("csv-ftrl-test-" + getClass().getSimpleName());
     }
 
-    protected void syncFS() throws IOException {
+    protected void syncFS() throws Exception {
         try (RandomAccessFile rws = new RandomAccessFile(tempDirectory + "/sync", "rws")) {
+            Thread.sleep(500);
             rws.getFD().sync();
         }
     }
