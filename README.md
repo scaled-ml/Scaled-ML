@@ -5,7 +5,7 @@ Here is java FTRL-Proximal implementation.
 
 This is a machine learning algorithm that predicts the probability of some kind of events such as clicks on ad.
 
-Main advantage of this implementation that it gets benifits from multi-core hardware and can *scale up to 32 cores*.
+Main advantage of this implementation that it gets benifits from multi-core hardware and can _scale up to 32 cores_.
 
 Build
 -----
